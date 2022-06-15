@@ -1,6 +1,7 @@
 package com.triple.mytrip.domain.budget;
 
 import com.triple.mytrip.domain.common.TripCategory;
+import com.triple.mytrip.domain.exception.EntityNotFoundException;
 import com.triple.mytrip.domain.member.Member;
 import com.triple.mytrip.domain.trip.Trip;
 import org.assertj.core.api.Assertions;
@@ -19,7 +20,6 @@ import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
-@Rollback(value = false)
 class BudgetServiceTest {
 
     @Autowired
@@ -92,6 +92,23 @@ class BudgetServiceTest {
         assertThat(modifiedBudget.getContent()).isEqualTo("컨텐츠1");
         assertThat(modifiedBudget.getTripCategory()).isEqualTo(TripCategory.FLIGHT);
         assertThat(modifiedBudget.getPaymentPlan()).isEqualTo(PaymentPlan.CARD);
+    }
+
+    @Test
+    public void 삭제() throws Exception {
+        // given
+        Member member = createMember("email1", "1234");
+        Trip trip = createTrip(member, "제주");
+        Budget budget = createBudget(trip, 10000, "숙소");
+        em.flush();
+        em.clear();
+
+        // when
+        budgetService.delete(budget.getId());
+
+        // then
+        assertThatThrownBy(() -> budgetService.getOne(budget.getId()))
+                .isInstanceOf(EntityNotFoundException.class);
     }
 
     private Budget createBudget(Trip trip, int price, String place) {
