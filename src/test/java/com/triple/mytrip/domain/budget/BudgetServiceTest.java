@@ -54,7 +54,7 @@ class BudgetServiceTest {
         Budget budget4 = createBudget(trip2, 40000, "음식점");
 
         // when
-        List<Budget> result = budgetService.getList(trip1);
+        List<Budget> result = budgetService.getList(trip1.getId());
 
         // then
         assertThat(result.size()).isEqualTo(2);

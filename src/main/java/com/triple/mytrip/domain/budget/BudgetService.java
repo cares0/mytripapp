@@ -33,7 +33,9 @@ public class BudgetService {
                 new EntityNotFoundException("해당 ID와 일치하는 가계부가 없음"));
     }
 
-    public List<Budget> getList(Trip trip) {
+    public List<Budget> getList(Long tripId) {
+        Trip trip = tripRepository.findById(tripId).orElseThrow(() ->
+                new EntityNotFoundException("해당 ID와 일치하는 여행을 찾을 수 없음"));
         return budgetRepository.findAllByTrip(trip);
     }
 
