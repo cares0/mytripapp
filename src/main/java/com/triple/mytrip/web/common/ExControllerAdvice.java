@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver;
 
+import java.time.LocalTime;
+
 @Slf4j
 @RestControllerAdvice
 public class ExControllerAdvice {
@@ -17,14 +19,15 @@ public class ExControllerAdvice {
     @ExceptionHandler
     public ErrorResult entityNotFoundExHandler(EntityNotFoundException e) {
         log.error("[EntityNotFoundException]", e);
-        return new ErrorResult("EntityNotFound", e.getMessage());
+
+        return new ErrorResult(LocalTime.now(), "EntityNotFound", e.getMessage());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler
     public ErrorResult HttpMessageNotReadableExHandler(HttpMessageNotReadableException e) {
         log.error("[HttpMessageNotReadableException]", e);
-        return new ErrorResult("WrongMessage", e.getMessage());
+        return new ErrorResult(LocalTime.now(), "WrongMessage", e.getMessage());
     }
 
 }

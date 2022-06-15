@@ -25,7 +25,7 @@ public class BudgetController {
         return budgetService.save(budget, budgetForm.getTripId());
     }
 
-    @GetMapping("/budgets/{tripId}")
+    @GetMapping("/trip/{tripId}/budgets")
     public ListResult<BudgetDto> searchList(@PathVariable Long tripId) {
         List<Budget> budgets = budgetService.getList(tripId);
 
@@ -34,22 +34,32 @@ public class BudgetController {
         return new ListResult<BudgetDto>(0, result);
     }
 
+    @GetMapping("/budgets/{budgetId}")
+    public BudgetDto searchOne(@PathVariable Long budgetId) {
+        Budget budget = budgetService.getOne(budgetId);
+        return budgetToDto(budget);
+    }
+
+    private BudgetDto budgetToDto(Budget budget) {
+        return new BudgetDto(budget.getId(),
+                budget.getPrice(),
+                budget.getPlace(),
+                budget.getDate(),
+                budget.getBudgetOrder(),
+                budget.getTripCategory(),
+                budget.getPaymentPlan(),
+                budget.getContent());
+    }
+
     private List<BudgetDto> budgetListToDtoList(List<Budget> list) {
         return list.stream().map(
-                        (budget) -> new BudgetDto(
-                                budget.getId(),
-                                budget.getPrice(),
-                                budget.getPlace(),
-                                budget.getDate(),
-                                budget.getBudgetOrder(),
-                                budget.getTripCategory(),
-                                budget.getPaymentPlan(),
-                                budget.getContent()))
+                        (budget) -> budgetToDto(budget))
                 .collect(Collectors.toList());
     }
 
     private Budget formToBudget(BudgetForm budgetSaveForm) {
-        return new Budget(budgetSaveForm.getTripCategory(),
+        return new Budget(
+                budgetSaveForm.getTripCategory(),
                 budgetSaveForm.getPrice(),
                 budgetSaveForm.getDate(),
                 budgetSaveForm.getPaymentPlan(),
