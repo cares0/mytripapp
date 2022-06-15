@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Trip {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "trip_id")
     private Long id;
 
@@ -36,6 +36,13 @@ public class Trip {
 
     @Column(nullable = false)
     private String title;
+
+    /**
+     * 조회용
+     */
+    public Trip(Long id) {
+        this.id = id;
+    }
 
     public Trip(Member member, String city) {
         addMember(member);

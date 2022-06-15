@@ -6,6 +6,7 @@ import com.triple.mytrip.domain.trip.Trip;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -14,9 +15,10 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString(of = {"id", "price"})
 public class Budget {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "budget_id")
     private Long id;
 
@@ -37,26 +39,31 @@ public class Budget {
     @Enumerated(value = EnumType.STRING)
     private PaymentPlan paymentPlan;
 
-    private Integer order;
+    private Integer budgetOrder;
 
     private String place;
 
     private String content;
 
-    public Budget(TripCategory tripCategory, Integer price, LocalDate date, PaymentPlan paymentPlan, Integer order, String place) {
+    public Budget(Trip trip, TripCategory tripCategory, Integer price, LocalDate date, PaymentPlan paymentPlan, Integer budgetOrder, String place) {
+        addTrip(trip);
         this.tripCategory = tripCategory;
         this.price = price;
         this.date = date;
         this.paymentPlan = paymentPlan;
 
         // 데이터 삽입 시 순서 계산 로직 나중에 개발
-        addOrder(order);
+        addBudgetOrder(budgetOrder);
 
         this.place = place;
     }
 
-    public void addOrder(Integer order) {
-        this.order = order;
+    private void addTrip(Trip trip) {
+        this.trip = trip;
+    }
+
+    public void addBudgetOrder(Integer budgetOrder) {
+        this.budgetOrder = budgetOrder;
     }
 
     public void editDate(LocalDate date) {
