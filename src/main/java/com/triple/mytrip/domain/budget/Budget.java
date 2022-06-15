@@ -45,10 +45,9 @@ public class Budget {
 
     private String content;
 
-    public Budget(Trip trip, TripCategory tripCategory, Integer price,
+    public Budget(TripCategory tripCategory, Integer price,
                   LocalDate date, PaymentPlan paymentPlan, Integer budgetOrder,
                   String place, String content) {
-        addTrip(trip);
         this.tripCategory = tripCategory;
         this.price = price;
         this.date = date;
@@ -61,7 +60,7 @@ public class Budget {
         this.content = content;
     }
 
-    private void addTrip(Trip trip) {
+    public void addTrip(Trip trip) {
         this.trip = trip;
     }
 
