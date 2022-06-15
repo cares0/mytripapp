@@ -17,25 +17,25 @@ public class Trip {
     @Column(name = "trip_id")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
-    LocalDate arrivalDate;
+    private LocalDate arrivalDate;
 
-    LocalDate departureDate;
-
-    @Enumerated(value = EnumType.STRING)
-    Partner partner;
+    private LocalDate departureDate;
 
     @Enumerated(value = EnumType.STRING)
-    TripStyle tripStyle;
+    private Partner partner;
+
+    @Enumerated(value = EnumType.STRING)
+    private TripStyle tripStyle;
 
     @Column(nullable = false)
-    String city;
+    private String city;
 
     @Column(nullable = false)
-    String title;
+    private String title;
 
     public Trip(Member member, String city) {
         addMember(member);
