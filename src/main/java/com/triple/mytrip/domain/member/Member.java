@@ -1,16 +1,12 @@
-package com.triple.mytrip;
-
-import lombok.Getter;
+package com.triple.mytrip.domain.member;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Entity
-@Getter
-public class TestEntity {
+public class Member {
 
     @Id @GeneratedValue
     private Long id;
-
 }
