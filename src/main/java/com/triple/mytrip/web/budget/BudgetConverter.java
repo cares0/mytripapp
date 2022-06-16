@@ -23,13 +23,13 @@ public class BudgetConverter {
                 budget.getContent());
     }
 
-    public static List<BudgetDto> budgetListToDtoList(List<Budget> list) {
+    public static List<BudgetDto> entityListToDtoList(List<Budget> list) {
         return list.stream().map(
                         (budget) -> budgetToDto(budget))
                 .collect(Collectors.toList());
     }
 
-    public static Budget formToBudget(BudgetForm budgetForm) {
+    public static Budget formToEntity(BudgetForm budgetForm) {
         return new Budget(
                 budgetForm.getTripCategory(),
                 budgetForm.getPrice(),

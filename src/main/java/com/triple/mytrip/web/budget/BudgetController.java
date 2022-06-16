@@ -4,7 +4,6 @@ import com.triple.mytrip.domain.budget.Budget;
 import com.triple.mytrip.domain.budget.BudgetService;
 import com.triple.mytrip.web.budget.dto.BudgetDto;
 import com.triple.mytrip.web.budget.form.BudgetForm;
-import com.triple.mytrip.web.common.ListResult;
 import com.triple.mytrip.web.common.Result;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -38,7 +36,7 @@ public class BudgetController {
 
     @PatchMapping("/budgets/{budgetId}")
     public Result<String> edit(@PathVariable Long budgetId, @RequestBody BudgetForm budgetForm) {
-        Budget budget = BudgetConverter.formToBudget(budgetForm);
+        Budget budget = BudgetConverter.formToEntity(budgetForm);
         budgetService.editAll(budgetId, budget);
         return new Result<>("Success");
     }
