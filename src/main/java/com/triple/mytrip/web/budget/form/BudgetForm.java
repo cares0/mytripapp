@@ -10,7 +10,6 @@ import java.time.LocalDate;
 @Setter @Getter
 public class BudgetForm {
 
-    private Long tripId;
     private LocalDate date;
     private PaymentPlan paymentPlan;
     private String content;
@@ -18,10 +17,5 @@ public class BudgetForm {
     private Integer price;
     private Integer budgetOrder;
     private String place;
-
-
-
-
-
 
 }

@@ -44,10 +44,7 @@ public class BudgetService {
                 new EntityNotFoundException("해당 ID와 일치하는 가계부가 없음"));
 
         List<UploadFile> uploadFiles = fileManager.storeFiles(multipartFiles);
-
-        List<BudgetFile> budgetFiles = uploadFiles.stream().map(
-                        (uploadFile) -> new BudgetFile(budget, uploadFile.getUploadFileName(), uploadFile.getStoreFileName()))
-                .collect(Collectors.toList());
+        List<BudgetFile> budgetFiles = uploadFilesToBudgetFiles(budget, uploadFiles);
 
         budgetFiles.stream()
                 .forEach((budgetFile) -> budgetFileRepository.save(budgetFile));
@@ -75,7 +72,25 @@ public class BudgetService {
     }
 
     public void delete(Long id) {
+        Budget budget = budgetRepository.findById(id).orElseThrow(() ->
+                new EntityNotFoundException("해당 ID와 일치하는 가계부를 찾을 수 없음"));
+
+        List<BudgetFile> budgetFiles = budgetFileRepository.findAllByBudget(budget);
+
+        // 파일 삭제
+        budgetFiles.stream().forEach((budgetFile) ->
+                fileManager.deleteFile(budgetFile.getFileName()));
+
+        // CASCADE로 같이 삭제됨
         budgetRepository.deleteById(id);
+    }
+
+
+
+    private List<BudgetFile> uploadFilesToBudgetFiles(Budget budget, List<UploadFile> uploadFiles) {
+        return uploadFiles.stream().map(
+                        (uploadFile) -> new BudgetFile(budget, uploadFile.getUploadFileName(), uploadFile.getStoreFileName()))
+                .collect(Collectors.toList());
     }
 
 
