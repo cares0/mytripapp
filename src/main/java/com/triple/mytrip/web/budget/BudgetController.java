@@ -44,13 +44,14 @@ public class BudgetController {
     }
 
     @PatchMapping("/budgets/{budgetId}/edit-order")
-    public Result<String> editOrder(@PathVariable Long budgetId, Integer order) {
+    public Result<String> editOrder(@PathVariable Long budgetId, @RequestBody Integer order) {
         budgetService.editOrder(budgetId, order);
         return new Result<>("Success");
     }
 
     @PatchMapping("/budgets/{budgetId}/edit-date")
-    public Result<String> editDate(@PathVariable Long budgetId, LocalDate date) {
+    public Result<String> editDate(@PathVariable Long budgetId, @RequestBody LocalDate date) {
+        log.info("Date = {}", date);
         budgetService.editDate(budgetId, date);
         return new Result<>("Success");
     }
