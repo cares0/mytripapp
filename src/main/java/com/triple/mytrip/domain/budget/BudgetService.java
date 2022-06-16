@@ -19,7 +19,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class BudgetService {
 
@@ -30,6 +30,7 @@ public class BudgetService {
     private final FileManager fileManager;
 
 
+    @Transactional
     public Long save(Long tripId, Budget budget) {
         Trip trip = findTrip(tripId);
 
@@ -38,6 +39,7 @@ public class BudgetService {
         return budgetRepository.save(budget).getId();
     }
 
+    @Transactional
     public int saveFile(Long budgetId, List<MultipartFile> multipartFiles) throws IOException {
         Budget budget = findBudget(budgetId);
 
@@ -58,24 +60,28 @@ public class BudgetService {
         return budgetRepository.findAllByTrip(trip);
     }
 
+    @Transactional
     public void editAll(Long budgetId, Budget budget) {
         Budget findBudget = getOne(budgetId);
 
         editBudget(budget, findBudget);
     }
 
+    @Transactional
     public void editOrder(Long budgetId, Integer order) {
         Budget findBudget = getOne(budgetId);
 
         findBudget.editOrder(order);
     }
 
+    @Transactional
     public void editDate(Long budgetId, LocalDate date) {
         Budget findBudget = getOne(budgetId);
 
         findBudget.editDate(date);
     }
 
+    @Transactional
     public void delete(Long id) {
         Budget budget = findBudget(id);
 
