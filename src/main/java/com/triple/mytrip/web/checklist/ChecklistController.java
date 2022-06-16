@@ -1,6 +1,8 @@
 package com.triple.mytrip.web.checklist;
 
+import com.triple.mytrip.domain.checklist.Checklist;
 import com.triple.mytrip.domain.checklist.ChecklistService;
+import com.triple.mytrip.web.checklist.dto.ChecklistDto;
 import com.triple.mytrip.web.common.Result;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -10,6 +12,13 @@ import org.springframework.web.bind.annotation.*;
 public class ChecklistController {
 
     private final ChecklistService checklistService;
+
+    @GetMapping("/checklist/{checkedId}")
+    public Result<ChecklistDto> searchOne(@PathVariable Long checkedId) {
+        Checklist checklist = checklistService.getOne(checkedId);
+        ChecklistDto checklistDto = ChecklistConverter.EntityToDto(checklist);
+        return new Result<>(checklistDto);
+    }
 
     @PatchMapping("/checklist/{checklistId}/edit-name")
     public Result<String> editName(@PathVariable Long checklistId, @RequestBody String name) {
