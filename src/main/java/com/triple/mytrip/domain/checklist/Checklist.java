@@ -29,14 +29,13 @@ public class Checklist {
     private String memo;
     private String instruction;
 
-    public Checklist(ChecklistCategory category, String name) {
-        addCategory(category);
+    public Checklist(String name) {
         this.name = name;
         checkStatus = false;
         basicOfferStatus = false;
     }
 
-    private void addCategory(ChecklistCategory category) {
+    public void addCategory(ChecklistCategory category) {
         this.category = category;
     }
 
