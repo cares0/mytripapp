@@ -35,11 +35,12 @@ public class BudgetController {
         return BudgetConverter.budgetToDto(budget);
     }
 
-/*    @PatchMapping("/budgets/{budgetId}")
-    public Result edit(@PathVariable Long budgetId, @RequestBody BudgetEditForm) {
-
-
-    }*/
+    @PatchMapping("/budgets/{budgetId}")
+    public Result<String> edit(@PathVariable Long budgetId, @RequestBody BudgetForm budgetForm) {
+        Budget budget = BudgetConverter.formToBudget(budgetForm);
+        budgetService.editAll(budget, budgetId);
+        return new Result<>("Success");
+    }
 
     @DeleteMapping("/budgets/{budgetId}")
     public Result<String> delete(@PathVariable Long budgetId) {

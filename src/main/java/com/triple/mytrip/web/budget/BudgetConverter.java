@@ -11,7 +11,8 @@ public class BudgetConverter {
 
     public static BudgetDto budgetToDto(Budget budget) {
 
-        return new BudgetDto(budget.getId(),
+        return new BudgetDto(
+                budget.getId(),
                 budget.getPrice(),
                 budget.getPlace(),
                 budget.getDate(),
@@ -27,14 +28,14 @@ public class BudgetConverter {
                 .collect(Collectors.toList());
     }
 
-    public static Budget formToBudget(BudgetForm budgetSaveForm) {
+    public static Budget formToBudget(BudgetForm budgetForm) {
         return new Budget(
-                budgetSaveForm.getTripCategory(),
-                budgetSaveForm.getPrice(),
-                budgetSaveForm.getDate(),
-                budgetSaveForm.getPaymentPlan(),
-                budgetSaveForm.getBudgetOrder(),
-                budgetSaveForm.getPlace(),
-                budgetSaveForm.getContent());
+                budgetForm.getTripCategory(),
+                budgetForm.getPrice(),
+                budgetForm.getDate(),
+                budgetForm.getPaymentPlan(),
+                budgetForm.getBudgetOrder(),
+                budgetForm.getPlace(),
+                budgetForm.getContent());
     }
 }

@@ -66,9 +66,13 @@ public class BudgetService {
     public void editAll(Budget budget, Long budgetId) {
         Budget findBudget = getOne(budgetId);
 
-        findBudget.editAll(budget.getTripCategory(), budget.getPrice(),
-                budget.getDate(), budget.getPaymentPlan(),
-                budget.getPlace(), budget.getContent());
+        findBudget.editAll(
+                budget.getTripCategory(),
+                budget.getPrice(),
+                budget.getDate(),
+                budget.getPaymentPlan(),
+                budget.getPlace(),
+                budget.getContent());
     }
 
     public void delete(Long id) {
@@ -84,8 +88,6 @@ public class BudgetService {
         // CASCADE로 같이 삭제됨
         budgetRepository.deleteById(id);
     }
-
-
 
     private List<BudgetFile> uploadFilesToBudgetFiles(Budget budget, List<UploadFile> uploadFiles) {
         return uploadFiles.stream().map(

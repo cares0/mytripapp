@@ -1,5 +1,6 @@
 package com.triple.mytrip.domain.util;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Component
+@Slf4j
 public class FileManager {
 
     @Value("${file.dir}")
@@ -41,6 +43,12 @@ public class FileManager {
             }
         }
         return storeFileResult;
+    }
+
+    public boolean deleteFile(String fileName) {
+        File file = new File(getFullPath(fileName));
+        log.info("filePath = {}", file.getPath());
+        return file.delete();
     }
 
     private String createStoreFileName(String originalFilename) {
