@@ -1,5 +1,6 @@
 package com.triple.mytrip.domain.checklist;
 
+import com.triple.mytrip.domain.checklist.category.ChecklistCategory;
 import com.triple.mytrip.domain.exception.NonEditableEntityException;
 import lombok.AccessLevel;
 import lombok.Getter;
