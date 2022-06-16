@@ -24,6 +24,10 @@ public class ChecklistService {
         return checklistRepository.save(checklist).getId();
     }
 
+    public Checklist getOne(Long checklistId) {
+        return findChecklist(checklistId);
+    }
+
     @Transactional
     public void editName(Long checklistId, String name) {
         Checklist checklist = findChecklist(checklistId);
@@ -43,6 +47,11 @@ public class ChecklistService {
         Checklist checklist = findChecklist(checklistId);
 
         checklist.editMemo(memo);
+    }
+
+    @Transactional
+    public void delete(Long checklistId) {
+        checklistRepository.deleteById(checklistId);
     }
 
     private Checklist findChecklist(Long checklistId) {

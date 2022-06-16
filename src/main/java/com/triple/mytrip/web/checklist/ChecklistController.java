@@ -29,6 +29,9 @@ public class ChecklistController {
         return new Result<>("Success");
     }
 
-
-
+    @DeleteMapping("/checklist/{checklistId}")
+    public Result<String> delete(@PathVariable Long checklistId) {
+        checklistService.delete(checklistId);
+        return new Result<>("Success");
+    }
 }
