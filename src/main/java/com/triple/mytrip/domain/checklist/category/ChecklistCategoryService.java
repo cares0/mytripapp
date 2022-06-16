@@ -5,9 +5,11 @@ import com.triple.mytrip.domain.trip.Trip;
 import com.triple.mytrip.domain.trip.TripRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ChecklistCategoryService {
 
     private final ChecklistCategoryRepository checklistCategoryRepository;
@@ -24,10 +26,10 @@ public class ChecklistCategoryService {
         return saved.getId();
     }
 
+    @Transactional
     public void editName(Long categoryId, String name) {
         ChecklistCategory category = checklistCategoryRepository.findById(categoryId).orElseThrow(() ->
                 new EntityNotFoundException("해당 ID와 일치하는 체크리스트 카테고리를 찾을 수 없음"));
-
         category.editName(name);
     }
 }
