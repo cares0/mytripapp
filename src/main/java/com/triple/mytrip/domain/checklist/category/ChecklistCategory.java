@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static javax.persistence.FetchType.*;
@@ -25,9 +26,9 @@ public class ChecklistCategory {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "trip_id")
     private Trip trip;
-    
+
     @OneToMany(mappedBy = "category", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<Checklist> checklists;
+    private List<Checklist> checklists = new ArrayList<>();
 
     private Boolean basicOfferStatus;
     private String name;

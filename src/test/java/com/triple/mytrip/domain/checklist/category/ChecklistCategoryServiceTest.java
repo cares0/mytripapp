@@ -1,20 +1,25 @@
 package com.triple.mytrip.domain.checklist.category;
 
+import com.triple.mytrip.domain.checklist.Checklist;
+import com.triple.mytrip.domain.checklist.ChecklistService;
 import com.triple.mytrip.domain.member.Member;
 import com.triple.mytrip.domain.trip.Trip;
-import jdk.jfr.Category;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+
+import java.util.List;
+import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
+@Rollback(value = false)
 class ChecklistCategoryServiceTest {
 
     @Autowired
@@ -22,6 +27,9 @@ class ChecklistCategoryServiceTest {
 
     @Autowired
     private ChecklistCategoryService checklistCategoryService;
+
+    @Autowired
+    private ChecklistService checklistService;
 
     @Test
     public void 카테고리_저장() throws Exception {
@@ -53,6 +61,37 @@ class ChecklistCategoryServiceTest {
         // then
         ChecklistCategory modifiedCategory = em.find(ChecklistCategory.class, category.getId());
         assertThat(modifiedCategory.getName()).isEqualTo("변경");
+    }
+
+    @Test
+    public void 전체조회_체크리스트포함() throws Exception {
+        // given
+        Member member = createMember("email1", "1234");
+        Trip trip = createTrip(member, "제주");
+        ChecklistCategory category1 = createCategory(trip.getId(), "카테고리1");
+        ChecklistCategory category2 = createCategory(trip.getId(), "카테고리2");
+        Checklist checklist1 = createChecklist(category1.getId(), "체크리스트1");
+        Checklist checklist2 = createChecklist(category1.getId(), "체크리스트2");
+        Checklist checklist3 = createChecklist(category2.getId(), "체크리스트3");
+        Checklist checklist4 = createChecklist(category2.getId(), "체크리스트4");
+
+        em.flush();
+        em.clear();
+        // when
+        List<ChecklistCategory> results = checklistCategoryService.getListWithChecklist(trip.getId());
+
+        // then
+        assertThat(results).extracting("name").containsExactly("카테고리1", "카테고리2");
+        assertThat(results.get(0).getChecklists()).extracting("name")
+                .containsExactly("체크리스트1", "체크리스트2");
+        assertThat(results.get(1).getChecklists()).extracting("name")
+                .containsExactly("체크리스트3", "체크리스트4");
+    }
+
+    private Checklist createChecklist(Long categoryId, String name) {
+        Checklist checklist = new Checklist(name);
+        checklistService.save(categoryId, checklist);
+        return checklist;
     }
 
     private Trip createTrip(Member member, String city) {

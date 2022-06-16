@@ -37,6 +37,7 @@ public class Checklist {
 
     public void addCategory(ChecklistCategory category) {
         this.category = category;
+        category.getChecklists().add(this);
     }
 
     public void editName(String name) {
