@@ -7,6 +7,12 @@ public class ChecklistConverter {
 
 
     public static ChecklistDto EntityToDto(Checklist checklist) {
-        return new ChecklistDto(checklist.getMemo(), checklist.getInstruction());
+        return new ChecklistDto(
+                checklist.getId(),
+                checklist.getCheckStatus(),
+                checklist.getBasicOfferStatus(),
+                checklist.getName(),
+                checklist.getMemo(),
+                checklist.getInstruction());
     }
 }
