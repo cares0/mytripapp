@@ -13,7 +13,7 @@ public class ChecklistController {
 
     private final ChecklistService checklistService;
 
-    @GetMapping("/checklist/{checkelistId}")
+    @GetMapping("/checklist/{checklistId}")
     public Result<ChecklistDto> searchOne(@PathVariable Long checklistId) {
         Checklist checklist = checklistService.getOne(checklistId);
         ChecklistDto checklistDto = ChecklistConverter.EntityToDto(checklist);
