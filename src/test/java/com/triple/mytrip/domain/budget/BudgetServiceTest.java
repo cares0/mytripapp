@@ -79,7 +79,7 @@ class BudgetServiceTest {
                 LocalDate.now(), PaymentPlan.CARD,"숙소", "컨텐츠1");
 
         // 수정된 budget 객체를 넘김 -> 영속성 컨텍스트에 기존 데이터가 조회 -> 변경된 데이터 변경감지 시작
-        budgetService.editAll(budget, budget.getId());
+        budgetService.editAll(budget.getId(), budget);
 
         em.flush();
         em.clear();

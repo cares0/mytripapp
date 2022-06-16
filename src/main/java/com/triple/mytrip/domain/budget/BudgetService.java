@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -63,7 +64,7 @@ public class BudgetService {
         return budgetRepository.findAllByTrip(trip);
     }
 
-    public void editAll(Budget budget, Long budgetId) {
+    public void editAll(Long budgetId, Budget budget) {
         Budget findBudget = getOne(budgetId);
 
         findBudget.editAll(
@@ -73,6 +74,18 @@ public class BudgetService {
                 budget.getPaymentPlan(),
                 budget.getPlace(),
                 budget.getContent());
+    }
+
+    public void editOrder(Long budgetId, Integer order) {
+        Budget findBudget = getOne(budgetId);
+
+        findBudget.editOrder(order);
+    }
+
+    public void editDate(Long budgetId, LocalDate date) {
+        Budget findBudget = getOne(budgetId);
+
+        findBudget.editDate(date);
     }
 
     public void delete(Long id) {

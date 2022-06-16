@@ -45,17 +45,13 @@ public class Budget {
 
     private String content;
 
-    public Budget(TripCategory tripCategory, Integer price,
-                  LocalDate date, PaymentPlan paymentPlan, Integer budgetOrder,
-                  String place, String content) {
+    public Budget(TripCategory tripCategory, Integer price, LocalDate date,
+                  PaymentPlan paymentPlan, Integer budgetOrder, String place, String content) {
         this.tripCategory = tripCategory;
         this.price = price;
         this.date = date;
         this.paymentPlan = paymentPlan;
-
-        // 데이터 삽입 시 순서 계산 로직 나중에 개발
-        addBudgetOrder(budgetOrder);
-
+        this.budgetOrder = budgetOrder;
         this.place = place;
         this.content = content;
     }
@@ -64,7 +60,7 @@ public class Budget {
         this.trip = trip;
     }
 
-    public void addBudgetOrder(Integer budgetOrder) {
+    public void editOrder(Integer budgetOrder) {
         this.budgetOrder = budgetOrder;
     }
 
@@ -74,8 +70,6 @@ public class Budget {
 
     public void editAll(TripCategory tripCategory, Integer price, LocalDate date,
                         PaymentPlan paymentPlan, String place, String content) {
-        // 나중에 파일 수정하는 로직 개발
-
         this.tripCategory = tripCategory;
         this.price = price;
         this.date = date;
@@ -83,6 +77,5 @@ public class Budget {
         this.place = place;
         this.content = content;
     }
-
 
 }

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,7 +39,19 @@ public class BudgetController {
     @PatchMapping("/budgets/{budgetId}")
     public Result<String> edit(@PathVariable Long budgetId, @RequestBody BudgetForm budgetForm) {
         Budget budget = BudgetConverter.formToBudget(budgetForm);
-        budgetService.editAll(budget, budgetId);
+        budgetService.editAll(budgetId, budget);
+        return new Result<>("Success");
+    }
+
+    @PatchMapping("/budgets/{budgetId}/edit-order")
+    public Result<String> editOrder(@PathVariable Long budgetId, Integer order) {
+        budgetService.editOrder(budgetId, order);
+        return new Result<>("Success");
+    }
+
+    @PatchMapping("/budgets/{budgetId}/edit-date")
+    public Result<String> editDate(@PathVariable Long budgetId, LocalDate date) {
+        budgetService.editDate(budgetId, date);
         return new Result<>("Success");
     }
 
