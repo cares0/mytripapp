@@ -26,7 +26,7 @@ public class ChecklistCategory {
     @JoinColumn(name = "trip_id")
     private Trip trip;
     
-    @OneToMany(mappedBy = "category")
+    @OneToMany(mappedBy = "category", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Checklist> checklists;
 
     private Boolean basicOfferStatus;

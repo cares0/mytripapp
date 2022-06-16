@@ -23,4 +23,11 @@ public class ChecklistCategoryService {
 
         return saved.getId();
     }
+
+    public void editName(Long categoryId, String name) {
+        ChecklistCategory category = checklistCategoryRepository.findById(categoryId).orElseThrow(() ->
+                new EntityNotFoundException("해당 ID와 일치하는 체크리스트 카테고리를 찾을 수 없음"));
+
+        category.editName(name);
+    }
 }

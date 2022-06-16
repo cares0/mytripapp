@@ -26,7 +26,7 @@ public class Budget {
     @JoinColumn(name = "trip_id")
     private Trip trip;
 
-    @OneToMany(mappedBy = "budget", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "budget", cascade = CascadeType.REMOVE, orphanRemoval = true )
     private List<BudgetFile> budgetFiles;
 
     @Enumerated(value = EnumType.STRING)
