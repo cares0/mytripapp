@@ -33,10 +33,10 @@ public class Place {
     private LocalTime visitTime;
     private String memo;
     private String location;
-    private Integer order;
+    private Integer placeOrder;
 
     public Place(Trip trip, String name, LocalDate date, TripCategory tripCategory,
-                 String location, Integer order) {
+                 String location, Integer placeOrder) {
         addTrip(trip);
         this.name = name;
         this.date = date;
@@ -44,7 +44,7 @@ public class Place {
         this.location = location;
 
         // 나중에 순서 로직 구현해야함
-        editOrder(order);
+        editPlaceOrder(placeOrder);
     }
 
     private void addTrip(Trip trip) {
@@ -63,8 +63,8 @@ public class Place {
         this.date = date;
     }
 
-    public void editOrder(Integer order) {
-        this.order = order;
+    public void editPlaceOrder(Integer placeOrder) {
+        this.placeOrder = placeOrder;
     }
 
 }
