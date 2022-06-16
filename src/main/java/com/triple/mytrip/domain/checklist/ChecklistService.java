@@ -15,12 +15,44 @@ public class ChecklistService {
     private final ChecklistRepository checklistRepository;
     private final ChecklistCategoryRepository categoryRepository;
 
+    @Transactional
     public Long save(Long categoryId, Checklist checklist) {
-        ChecklistCategory category = categoryRepository.findById(categoryId).orElseThrow(() ->
-                new EntityNotFoundException("해당 ID와 일치하는 체크리스트 카테고리를 찾을 수 없음"));
+        ChecklistCategory category = findCategory(categoryId);
 
         checklist.addCategory(category);
 
         return checklistRepository.save(checklist).getId();
     }
+
+    @Transactional
+    public void editName(Long checklistId, String name) {
+        Checklist checklist = findChecklist(checklistId);
+
+        checklist.editName(name);
+    }
+
+    @Transactional
+    public void editCheckStatus(Long checklistId) {
+        Checklist checklist = findChecklist(checklistId);
+
+        checklist.editCheckStatus();
+    }
+
+    @Transactional
+    public void editMemo(Long checklistId, String memo) {
+        Checklist checklist = findChecklist(checklistId);
+
+        checklist.editMemo(memo);
+    }
+
+    private Checklist findChecklist(Long checklistId) {
+        return checklistRepository.findById(checklistId).orElseThrow(() ->
+                new EntityNotFoundException("해당 ID와 일치하는 체크리스트를 찾을 수 없음"));
+    }
+
+    private ChecklistCategory findCategory(Long categoryId) {
+        return categoryRepository.findById(categoryId).orElseThrow(() ->
+                new EntityNotFoundException("해당 ID와 일치하는 체크리스트 카테고리를 찾을 수 없음"));
+    }
+
 }

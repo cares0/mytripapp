@@ -51,11 +51,8 @@ public class Checklist {
         this.memo = memo;
     }
 
-    public void checked() {
-        this.checkStatus = true;
+    public void editCheckStatus() {
+        this.checkStatus = !this.checkStatus;
     }
 
-    public void unchecked() {
-        this.checkStatus = false;
-    }
 }

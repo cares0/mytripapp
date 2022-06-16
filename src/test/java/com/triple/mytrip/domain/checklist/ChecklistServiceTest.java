@@ -40,6 +40,30 @@ class ChecklistServiceTest {
         assertThat(findChecklist.getId()).isEqualTo(savedId);
     }
 
+    @Test
+    public void 체크리스트_수정() throws Exception {
+        // given
+        Member member = createMember("email1", "1234");
+        Trip trip = createTrip(member, "제주");
+        ChecklistCategory category = createCategory(trip, "카테고리1");
+        Checklist checklist = new Checklist("체크리스트1");
+        Long savedId = checklistService.save(category.getId(), checklist);
+
+        // when
+        checklistService.editMemo(savedId, "메모수정");
+        checklistService.editCheckStatus(savedId);
+        checklistService.editName(savedId, "이름수정");
+        em.flush();
+        em.clear();
+
+        Checklist modified = em.find(Checklist.class, checklist.getId());
+
+        // then
+        assertThat(modified.getCheckStatus()).isTrue();
+        assertThat(modified.getMemo()).isEqualTo("메모수정");
+        assertThat(modified.getName()).isEqualTo("이름수정");
+    }
+
     private Trip createTrip(Member member, String city) {
         Trip trip = new Trip(member, city);
         em.persist(trip);
