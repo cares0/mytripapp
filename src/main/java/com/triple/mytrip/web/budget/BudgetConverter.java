@@ -7,6 +7,7 @@ import com.triple.mytrip.web.budget.form.BudgetForm;
 import java.util.List;
 import java.util.stream.Collectors;
 
+// 나중에 인터페이스로 구현 고려, 어댑터 패턴 적용 고려
 public class BudgetConverter {
 
     public static BudgetDto budgetToDto(Budget budget) {

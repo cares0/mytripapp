@@ -30,50 +30,38 @@ public class BudgetService {
     private final FileManager fileManager;
 
 
-    public Long save(Budget budget, Long tripId) {
-        Trip trip = tripRepository.findById(tripId).orElseThrow(() ->
-                new EntityNotFoundException("해당 ID와 일치하는 여행을 찾을 수 없음"));
+    public Long save(Long tripId, Budget budget) {
+        Trip trip = findTrip(tripId);
 
         budget.addTrip(trip);
 
-        Budget saved = budgetRepository.save(budget);
-        return saved.getId();
+        return budgetRepository.save(budget).getId();
     }
 
     public int saveFile(Long budgetId, List<MultipartFile> multipartFiles) throws IOException {
-        Budget budget = budgetRepository.findById(budgetId).orElseThrow(() ->
-                new EntityNotFoundException("해당 ID와 일치하는 가계부가 없음"));
+        Budget budget = findBudget(budgetId);
 
         List<UploadFile> uploadFiles = fileManager.storeFiles(multipartFiles);
         List<BudgetFile> budgetFiles = uploadFilesToBudgetFiles(budget, uploadFiles);
 
-        budgetFiles.stream()
-                .forEach((budgetFile) -> budgetFileRepository.save(budgetFile));
+        saveFile(budgetFiles);
 
         return budgetFiles.size();
     }
 
     public Budget getOne(Long id) {
-        return budgetRepository.findById(id).orElseThrow(() ->
-                new EntityNotFoundException("해당 ID와 일치하는 가계부가 없음"));
+        return findBudget(id);
     }
 
     public List<Budget> getList(Long tripId) {
-        Trip trip = tripRepository.findById(tripId).orElseThrow(() ->
-                new EntityNotFoundException("해당 ID와 일치하는 여행을 찾을 수 없음"));
+        Trip trip = findTrip(tripId);
         return budgetRepository.findAllByTrip(trip);
     }
 
     public void editAll(Long budgetId, Budget budget) {
         Budget findBudget = getOne(budgetId);
 
-        findBudget.editAll(
-                budget.getTripCategory(),
-                budget.getPrice(),
-                budget.getDate(),
-                budget.getPaymentPlan(),
-                budget.getPlace(),
-                budget.getContent());
+        editBudget(budget, findBudget);
     }
 
     public void editOrder(Long budgetId, Integer order) {
@@ -89,23 +77,51 @@ public class BudgetService {
     }
 
     public void delete(Long id) {
-        Budget budget = budgetRepository.findById(id).orElseThrow(() ->
-                new EntityNotFoundException("해당 ID와 일치하는 가계부를 찾을 수 없음"));
+        Budget budget = findBudget(id);
 
         List<BudgetFile> budgetFiles = budgetFileRepository.findAllByBudget(budget);
 
-        // 파일 삭제
-        budgetFiles.stream().forEach((budgetFile) ->
-                fileManager.deleteFile(budgetFile.getFileName()));
+        // 디스크에 저장된 파일 삭제
+        deleteFile(budgetFiles);
 
         // CASCADE로 같이 삭제됨
         budgetRepository.deleteById(id);
+    }
+
+    private Budget findBudget(Long id) {
+        return budgetRepository.findById(id).orElseThrow(() ->
+                new EntityNotFoundException("해당 ID와 일치하는 가계부를 찾을 수 없음"));
+    }
+
+    private Trip findTrip(Long tripId) {
+        return tripRepository.findById(tripId).orElseThrow(() ->
+                new EntityNotFoundException("해당 ID와 일치하는 여행을 찾을 수 없음"));
     }
 
     private List<BudgetFile> uploadFilesToBudgetFiles(Budget budget, List<UploadFile> uploadFiles) {
         return uploadFiles.stream().map(
                         (uploadFile) -> new BudgetFile(budget, uploadFile.getUploadFileName(), uploadFile.getStoreFileName()))
                 .collect(Collectors.toList());
+    }
+
+    private void saveFile(List<BudgetFile> budgetFiles) {
+        budgetFiles.stream()
+                .forEach((budgetFile) -> budgetFileRepository.save(budgetFile));
+    }
+
+    private void deleteFile(List<BudgetFile> budgetFiles) {
+        budgetFiles.stream().forEach((budgetFile) ->
+                fileManager.deleteFile(budgetFile.getFileName()));
+    }
+
+    private void editBudget(Budget budget, Budget findBudget) {
+        findBudget.editAll(
+                budget.getTripCategory(),
+                budget.getPrice(),
+                budget.getDate(),
+                budget.getPaymentPlan(),
+                budget.getPlace(),
+                budget.getContent());
     }
 
 

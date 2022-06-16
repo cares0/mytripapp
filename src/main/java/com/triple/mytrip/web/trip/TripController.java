@@ -23,7 +23,7 @@ public class TripController {
     @PostMapping("/trip/{tripId}/budgets")
     public Result<Long> save(@PathVariable Long tripId, @RequestBody BudgetForm budgetForm) {
         Budget budget = BudgetConverter.formToBudget(budgetForm);
-        Long save = budgetService.save(budget, tripId);
+        Long save = budgetService.save(tripId, budget);
         return new Result<>(save);
     }
 

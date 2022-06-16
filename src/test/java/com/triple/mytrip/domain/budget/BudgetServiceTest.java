@@ -113,7 +113,7 @@ class BudgetServiceTest {
 
     private Budget createBudget(Trip trip, int price, String place) {
         Budget budget = new Budget(TripCategory.ACCOMMODATIONS, price, LocalDate.now(), PaymentPlan.CARD, 0, place, "content1");
-        budgetService.save(budget, trip.getId());
+        budgetService.save(trip.getId(), budget);
         return budget;
     }
 
