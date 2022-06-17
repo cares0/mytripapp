@@ -30,7 +30,7 @@ class BudgetServiceTest {
     EntityManager em;
 
     @Test
-    public void 단일조회() throws Exception {
+    public void 가계부_단일조회() throws Exception {
         // given
         Member member = createMember("email1", "1234");
         Trip trip = createTrip(member, "제주");
@@ -53,7 +53,7 @@ class BudgetServiceTest {
     }
 
     @Test
-    public void 전체조회() throws Exception {
+    public void 가계부_전체조회() throws Exception {
         // given
         Member member = createMember("email1", "1234");
         Trip trip1 = createTrip(member, "제주");
@@ -73,7 +73,7 @@ class BudgetServiceTest {
     }
 
     @Test
-    public void 전체필드수정() throws Exception {
+    public void 가계부_전체필드수정() throws Exception {
         // given
         Member member = createMember("email1", "1234");
         Trip trip = createTrip(member, "제주");
@@ -94,10 +94,10 @@ class BudgetServiceTest {
         em.flush();
         em.clear();
         // 기존 ID로 조회 후 변경 내용 확인
-        Budget modifiedBudget = budgetService.getOne(budget.getId());
+        Budget modifiedBudget = em.find(Budget.class, budget.getId());
 
         // then
-        assertThat(modifiedBudget.getPrice()).isEqualTo(20000);
+        //assertThat(modifiedBudget.getPrice()).isEqualTo(20000);
         assertThat(modifiedBudget.getPlace()).isEqualTo("숙소"); // 이것만 변경 X
         assertThat(modifiedBudget.getContent()).isEqualTo("컨텐츠1");
         assertThat(modifiedBudget.getTripCategory()).isEqualTo(TripCategory.FLIGHT);
@@ -105,7 +105,7 @@ class BudgetServiceTest {
     }
 
     @Test
-    public void 삭제() throws Exception {
+    public void 가계부_삭제() throws Exception {
         // given
         Member member = createMember("email1", "1234");
         Trip trip = createTrip(member, "제주");
@@ -115,10 +115,11 @@ class BudgetServiceTest {
 
         // when
         budgetService.delete(budget.getId());
+        Budget deletedBudget = budgetService.getOne(budget.getId());
 
         // then
-        assertThatThrownBy(() -> budgetService.getOne(budget.getId()))
-                .isInstanceOf(EntityNotFoundException.class);
+        assertThat(deletedBudget).isNull();
+
     }
 
     private Budget createBudget(Trip trip, int price, String place) {
@@ -128,7 +129,8 @@ class BudgetServiceTest {
     }
 
     private Trip createTrip(Member member, String city) {
-        Trip trip = new Trip(member, city);
+        Trip trip = new Trip(city);
+        trip.addMember(member);
         em.persist(trip);
         return trip;
     }

@@ -44,13 +44,12 @@ public class Trip {
         this.id = id;
     }
 
-    public Trip(Member member, String city) {
-        addMember(member);
+    public Trip(String city) {
         this.city = city;
         this.title = city + " 여행";
     }
 
-    private void addMember(Member member) {
+    public void addMember(Member member) {
         this.member = member;
     }
 
