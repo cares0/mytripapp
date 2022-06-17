@@ -31,23 +31,20 @@ public class Place {
     @Enumerated(value = EnumType.STRING)
     private TripCategory tripCategory;
     private LocalTime visitTime;
-    private String memo;
     private String location;
     private Integer placeOrder;
+    private String memo;
 
-    public Place(Trip trip, String name, LocalDate date, TripCategory tripCategory,
+    public Place(String name, LocalDate date, TripCategory tripCategory,
                  String location, Integer placeOrder) {
-        addTrip(trip);
         this.name = name;
         this.date = date;
         this.tripCategory = tripCategory;
         this.location = location;
-
-        // 나중에 순서 로직 구현해야함
-        editPlaceOrder(placeOrder);
+        this.placeOrder = placeOrder;
     }
 
-    private void addTrip(Trip trip) {
+    public void addTrip(Trip trip) {
         this.trip = trip;
     }
 

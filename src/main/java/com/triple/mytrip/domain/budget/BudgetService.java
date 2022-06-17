@@ -50,21 +50,21 @@ public class BudgetService {
 
     @Transactional
     public void editAll(Long budgetId, Budget budget) {
-        Budget findBudget = getOne(budgetId);
+        Budget findBudget = findBudget(budgetId);
 
         editBudget(budget, findBudget);
     }
 
     @Transactional
     public void editOrder(Long budgetId, Integer order) {
-        Budget findBudget = getOne(budgetId);
+        Budget findBudget = findBudget(budgetId);
 
         findBudget.editOrder(order);
     }
 
     @Transactional
     public void editDate(Long budgetId, LocalDate date) {
-        Budget findBudget = getOne(budgetId);
+        Budget findBudget = findBudget(budgetId);
 
         findBudget.editDate(date);
     }
