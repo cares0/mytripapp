@@ -6,6 +6,11 @@ import com.triple.mytrip.domain.checklist.category.ChecklistCategory;
 import com.triple.mytrip.domain.checklist.category.ChecklistCategoryService;
 import com.triple.mytrip.domain.place.Place;
 import com.triple.mytrip.domain.place.PlaceService;
+import com.triple.mytrip.domain.place.accommodation.Accommodation;
+import com.triple.mytrip.domain.place.flight.Flight;
+import com.triple.mytrip.domain.place.restaurant.Restaurant;
+import com.triple.mytrip.domain.place.shop.Shop;
+import com.triple.mytrip.domain.place.tour.Tour;
 import com.triple.mytrip.web.budget.BudgetConverter;
 import com.triple.mytrip.web.budget.dto.BudgetDto;
 import com.triple.mytrip.web.budget.form.BudgetForm;
@@ -30,13 +35,17 @@ public class TripController {
     private final PlaceService placeService;
 
     // ======= place ====== //
+    // 파라미터 값 매핑 조건을 주어서 핸들러를 5종류로 다 만들 것인지 (params 속성)
+    // 아니면 PlaceForm에 그냥 모든 정보를 담아놓고 파라미터로 구분할 것인지
     @PostMapping("/trip/{tripId}/places")
-    public Result<Long> savePlace(@PathVariable Long tripId, @RequestBody PlaceForm placeForm) {
-        Place place = PlaceConverter.formToEntity(placeForm);
+    public Result<Long> savePlace(@PathVariable Long tripId, @RequestBody PlaceForm placeForm, @RequestParam String placeType) {
+
+        Place place =  PlaceConverter.formToEntity(placeForm, placeType);
         Long savedId = placeService.save(tripId, place);
 
-        return new Result<>(savedId);
+        return new Result<>(1L);
     }
+
 
 
     // ======= checklistCategory ======= //
