@@ -11,6 +11,8 @@ import java.time.LocalTime;
 @ToString
 public class PlaceForm {
 
+    private PlaceSubType subType;
+
     private String name;
     private LocalDate date;
     private String location;

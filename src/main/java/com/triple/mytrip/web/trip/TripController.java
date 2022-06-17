@@ -35,15 +35,13 @@ public class TripController {
     private final PlaceService placeService;
 
     // ======= place ====== //
-    // 파라미터 값 매핑 조건을 주어서 핸들러를 5종류로 다 만들 것인지 (params 속성)
-    // 아니면 PlaceForm에 그냥 모든 정보를 담아놓고 파라미터로 구분할 것인지
     @PostMapping("/trip/{tripId}/places")
-    public Result<Long> savePlace(@PathVariable Long tripId, @RequestBody PlaceForm placeForm, @RequestParam String placeType) {
+    public Result<Long> savePlace(@PathVariable Long tripId, @RequestBody PlaceForm placeForm) {
 
-        Place place =  PlaceConverter.formToEntity(placeForm, placeType);
+        Place place =  PlaceConverter.formToEntity(placeForm);
         Long savedId = placeService.save(tripId, place);
 
-        return new Result<>(1L);
+        return new Result<>(savedId);
     }
 
 

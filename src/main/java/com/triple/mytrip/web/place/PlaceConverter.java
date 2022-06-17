@@ -7,17 +7,20 @@ import com.triple.mytrip.domain.place.restaurant.Restaurant;
 import com.triple.mytrip.domain.place.shop.Shop;
 import com.triple.mytrip.domain.place.tour.Tour;
 import com.triple.mytrip.web.place.form.PlaceForm;
+import com.triple.mytrip.web.place.form.PlaceSubType;
+
+import static com.triple.mytrip.web.place.form.PlaceSubType.*;
 
 public class PlaceConverter {
 
-    public static Place formToEntity(PlaceForm placeForm, String placeType) {
-        if (placeType.equals("accommodation")) {
+    public static Place formToEntity(PlaceForm placeForm) {
+        if (placeForm.getSubType() == ACCOMMODATION) {
             return new Accommodation(
                     placeForm.getName(),
                     placeForm.getDate(),
                     placeForm.getLocation(),
                     placeForm.getPlaceOrder());
-        } else if (placeType.equals("flight")) {
+        } else if (placeForm.getSubType() == FLIGHT) {
             return new Flight(
                     placeForm.getName(),
                     placeForm.getDate(),
@@ -30,13 +33,13 @@ public class PlaceConverter {
                     placeForm.getArrivalTime(),
                     placeForm.getDepartureAirport(),
                     placeForm.getArrivalAirport());
-        } else if (placeType.equals("restaurant")) {
+        } else if (placeForm.getSubType() == RESTAURANT) {
             return new Restaurant(
                     placeForm.getName(),
                     placeForm.getDate(),
                     placeForm.getLocation(),
                     placeForm.getPlaceOrder());
-        } else if (placeType.equals("shop")) {
+        } else if (placeForm.getSubType() == SHOP) {
             return new Shop(
                     placeForm.getName(),
                     placeForm.getDate(),
