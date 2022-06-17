@@ -4,20 +4,22 @@ import com.triple.mytrip.domain.budget.Budget;
 import com.triple.mytrip.domain.budget.BudgetService;
 import com.triple.mytrip.domain.checklist.category.ChecklistCategory;
 import com.triple.mytrip.domain.checklist.category.ChecklistCategoryService;
+import com.triple.mytrip.domain.place.Place;
+import com.triple.mytrip.domain.place.PlaceService;
 import com.triple.mytrip.web.budget.BudgetConverter;
 import com.triple.mytrip.web.budget.dto.BudgetDto;
 import com.triple.mytrip.web.budget.form.BudgetForm;
 import com.triple.mytrip.web.checklist.ChecklistCategoryConverter;
 import com.triple.mytrip.web.checklist.dto.ChecklistCategoryDto;
-import com.triple.mytrip.web.checklist.dto.ChecklistDto;
 import com.triple.mytrip.web.checklist.form.ChecklistCategoryForm;
 import com.triple.mytrip.web.common.ListResult;
 import com.triple.mytrip.web.common.Result;
+import com.triple.mytrip.web.place.PlaceConverter;
+import com.triple.mytrip.web.place.form.PlaceForm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,6 +27,17 @@ public class TripController {
 
     private final BudgetService budgetService;
     private final ChecklistCategoryService checklistCategoryService;
+    private final PlaceService placeService;
+
+    // ======= place ====== //
+    @PostMapping("/trip/{tripId}/places")
+    public Result<Long> savePlace(@PathVariable Long tripId, @RequestBody PlaceForm placeForm) {
+        Place place = PlaceConverter.formToEntity(placeForm);
+        Long savedId = placeService.save(tripId, place);
+
+        return new Result<>(savedId);
+    }
+
 
     // ======= checklistCategory ======= //
     @PostMapping("/trip/{tripId}/checklist-categories")
