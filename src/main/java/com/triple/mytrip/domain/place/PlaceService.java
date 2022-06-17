@@ -7,6 +7,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -23,5 +26,32 @@ public class PlaceService {
         return saved.getId();
     }
 
+    public void editVisitTime(Long placeId, LocalTime visitTime) {
+        Place place = placeRepository.findById(placeId).orElseThrow(() ->
+                new EntityNotFoundException("해당 ID와 일치하는 장소가 없음"));
+
+        place.editVisitTime(visitTime);
+    }
+
+    public void editMemo(Long placeId, String memo) {
+        Place place = placeRepository.findById(placeId).orElseThrow(() ->
+                new EntityNotFoundException("해당 ID와 일치하는 장소가 없음"));
+
+        place.editMemo(memo);
+    }
+
+    public void editDate(Long placeId, LocalDate date) {
+        Place place = placeRepository.findById(placeId).orElseThrow(() ->
+                new EntityNotFoundException("해당 ID와 일치하는 장소가 없음"));
+
+        place.editDate(date);
+    }
+
+    public void editOrder(Long placeId, Integer order) {
+        Place place = placeRepository.findById(placeId).orElseThrow(() ->
+                new EntityNotFoundException("해당 ID와 일치하는 장소가 없음"));
+
+        place.editPlaceOrder(order);
+    }
 
 }

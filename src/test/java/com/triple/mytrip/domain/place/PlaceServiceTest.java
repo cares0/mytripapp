@@ -12,6 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
+
+import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -35,8 +38,32 @@ class PlaceServiceTest {
         Place findPlace = em.find(Place.class, savedId);
 
         // then
-        Assertions.assertThat(findPlace).isEqualTo(place);
+        assertThat(findPlace).isEqualTo(place);
 
+    }
+
+    @Test
+    public void 장소_수정() throws Exception {
+        // given
+        Member member = createMember("email1", "1234");
+        Trip trip = createTrip(member, "제주");
+        Place place = createPlace(trip, "장소1", LocalDate.now(), TripCategory.ETC, "위치1", 0);
+
+        // when
+        placeService.editDate(place.getId(), LocalDate.of(2022, 5, 20));
+        placeService.editMemo(place.getId(), "메모");
+        placeService.editOrder(place.getId(), 1);
+        placeService.editVisitTime(place.getId(), LocalTime.of(1, 10, 10));
+
+        em.flush();
+        em.clear();
+
+        Place modified = em.find(Place.class, place.getId());
+        // then
+        assertThat(modified.getDate()).isEqualTo(LocalDate.of(2022, 5, 20));
+        assertThat(modified.getMemo()).isEqualTo("메모");
+        assertThat(modified.getPlaceOrder()).isEqualTo(1);
+        assertThat(modified.getVisitTime()).isEqualTo(LocalTime.of(1, 10, 10));
 
     }
 
