@@ -23,8 +23,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class BudgetService {
 
-    private final BudgetRepository budgetRepository;
     private final TripRepository tripRepository;
+    private final BudgetRepository budgetRepository;
     private final BudgetFileRepository budgetFileRepository;
 
     private final FileManager fileManager;
@@ -39,20 +39,8 @@ public class BudgetService {
         return budgetRepository.save(budget).getId();
     }
 
-    @Transactional
-    public int saveFile(Long budgetId, List<MultipartFile> multipartFiles) throws IOException {
-        Budget budget = findBudget(budgetId);
-
-        List<UploadFile> uploadFiles = fileManager.storeFiles(multipartFiles);
-        List<BudgetFile> budgetFiles = uploadFilesToBudgetFiles(budget, uploadFiles);
-
-        saveFile(budgetFiles);
-
-        return budgetFiles.size();
-    }
-
     public Budget getOne(Long id) {
-        return findBudget(id);
+        return budgetRepository.findByIdWithBudgetFiles(id);
     }
 
     public List<Budget> getList(Long tripId) {
@@ -102,17 +90,6 @@ public class BudgetService {
     private Trip findTrip(Long tripId) {
         return tripRepository.findById(tripId).orElseThrow(() ->
                 new EntityNotFoundException("해당 ID와 일치하는 여행을 찾을 수 없음"));
-    }
-
-    private List<BudgetFile> uploadFilesToBudgetFiles(Budget budget, List<UploadFile> uploadFiles) {
-        return uploadFiles.stream().map(
-                        (uploadFile) -> new BudgetFile(budget, uploadFile.getUploadFileName(), uploadFile.getStoreFileName()))
-                .collect(Collectors.toList());
-    }
-
-    private void saveFile(List<BudgetFile> budgetFiles) {
-        budgetFiles.stream()
-                .forEach((budgetFile) -> budgetFileRepository.save(budgetFile));
     }
 
     private void deleteFile(List<BudgetFile> budgetFiles) {

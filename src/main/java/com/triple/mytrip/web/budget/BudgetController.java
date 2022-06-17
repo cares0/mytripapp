@@ -2,6 +2,7 @@ package com.triple.mytrip.web.budget;
 
 import com.triple.mytrip.domain.budget.Budget;
 import com.triple.mytrip.domain.budget.BudgetService;
+import com.triple.mytrip.domain.budget.budgetfile.BudgetFileService;
 import com.triple.mytrip.web.budget.dto.BudgetDto;
 import com.triple.mytrip.web.budget.form.BudgetForm;
 import com.triple.mytrip.web.common.Result;
@@ -20,18 +21,20 @@ import java.util.List;
 public class BudgetController {
 
     private final BudgetService budgetService;
+    private final BudgetFileService budgetFileService;
 
     @PostMapping("/budgets/{budgetId}/budget-files")
     public Result<Integer> saveFile(@PathVariable Long budgetId, List<MultipartFile> files) throws IOException {
-        int count = budgetService.saveFile(budgetId, files);
+        int count = budgetFileService.save(budgetId, files);
 
         return new Result<>(count);
     }
 
     @GetMapping("/budgets/{budgetId}")
-    public BudgetDto searchOne(@PathVariable Long budgetId) {
+    public Result<BudgetDto> searchOne(@PathVariable Long budgetId) {
         Budget budget = budgetService.getOne(budgetId);
-        return BudgetConverter.budgetToDto(budget);
+        BudgetDto budgetDto = BudgetConverter.budgetToDto(budget);
+        return new Result<>(budgetDto);
     }
 
     @PatchMapping("/budgets/{budgetId}")

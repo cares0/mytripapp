@@ -1,5 +1,6 @@
 package com.triple.mytrip.domain.budget;
 
+import com.triple.mytrip.domain.budget.budgetfile.BudgetFile;
 import com.triple.mytrip.domain.common.TripCategory;
 import com.triple.mytrip.domain.exception.EntityNotFoundException;
 import com.triple.mytrip.domain.member.Member;
@@ -34,12 +35,21 @@ class BudgetServiceTest {
         Member member = createMember("email1", "1234");
         Trip trip = createTrip(member, "제주");
         Budget budget = createBudget(trip, 10000, "숙소");
+        BudgetFile budgetFile1 = new BudgetFile(budget, "oriName1", "fileName1");
+        BudgetFile budgetFile2 = new BudgetFile(budget, "oriName2", "fileName2");
+        em.persist(budgetFile1);
+        em.persist(budgetFile2);
 
+        em.flush();
+        em.clear();
         // when
         Budget findBudget = budgetService.getOne(budget.getId());
-
+        System.out.println("findBudget.getBudgetFiles().size() = " + findBudget.getBudgetFiles().size());
         // then
-        assertThat(findBudget).isEqualTo(budget);
+        assertThat(findBudget.getId()).isEqualTo(budget.getId());
+        assertThat(findBudget.getBudgetFiles()).extracting("oriName").containsExactly("oriName1", "oriName2");
+        assertThat(findBudget.getBudgetFiles()).extracting("fileName").containsExactly("fileName1", "fileName2");
+
     }
 
     @Test

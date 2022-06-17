@@ -2,6 +2,7 @@ package com.triple.mytrip.web.budget;
 
 import com.triple.mytrip.domain.budget.Budget;
 import com.triple.mytrip.web.budget.dto.BudgetDto;
+import com.triple.mytrip.web.budget.dto.BudgetFileDto;
 import com.triple.mytrip.web.budget.form.BudgetForm;
 
 import java.util.List;
@@ -11,15 +12,19 @@ import java.util.stream.Collectors;
 public class BudgetConverter {
 
     public static BudgetDto budgetToDto(Budget budget) {
-
         return new BudgetDto(
                 budget.getId(),
                 budget.getPrice(),
                 budget.getPlace(),
                 budget.getDate(),
                 budget.getBudgetOrder(),
-                budget.getTripCategory(),
+                budget.getBudgetFiles().stream().map((budgetFile) -> new BudgetFileDto(
+                        budgetFile.getId(),
+                        budgetFile.getOriName(),
+                        budgetFile.getFileName())
+                ).collect(Collectors.toList()),
                 budget.getPaymentPlan(),
+                budget.getTripCategory(),
                 budget.getContent());
     }
 

@@ -10,6 +10,7 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -27,7 +28,7 @@ public class Budget {
     private Trip trip;
 
     @OneToMany(mappedBy = "budget", cascade = CascadeType.REMOVE, orphanRemoval = true )
-    private List<BudgetFile> budgetFiles;
+    private List<BudgetFile> budgetFiles = new ArrayList<>();
 
     @Enumerated(value = EnumType.STRING)
     private TripCategory tripCategory;

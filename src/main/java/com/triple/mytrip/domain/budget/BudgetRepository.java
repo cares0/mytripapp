@@ -11,4 +11,7 @@ public interface BudgetRepository extends JpaRepository<Budget, Long> {
 
     List<Budget> findAllByTrip(Trip trip);
 
+    @Query("select distinct b from Budget b join fetch b.budgetFiles where b.id = :id")
+    Budget findByIdWithBudgetFiles(@Param("id") Long budgetId);
+
 }
