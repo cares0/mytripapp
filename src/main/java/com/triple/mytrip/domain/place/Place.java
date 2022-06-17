@@ -15,6 +15,8 @@ import static javax.persistence.FetchType.*;
 
 @Entity
 @Getter
+@Inheritance(strategy = InheritanceType.JOINED)
+@DiscriminatorColumn(name = "place_type")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Place {
 
@@ -27,19 +29,15 @@ public class Place {
     private Trip trip;
     private String name;
     private LocalDate date;
-
-    @Enumerated(value = EnumType.STRING)
-    private TripCategory tripCategory;
-    private LocalTime visitTime;
-    private String location;
     private Integer placeOrder;
+    private String location;
+
+    private LocalTime visitTime;
     private String memo;
 
-    public Place(String name, LocalDate date, TripCategory tripCategory,
-                 String location, Integer placeOrder) {
+    public Place(String name, LocalDate date, String location, Integer placeOrder) {
         this.name = name;
         this.date = date;
-        this.tripCategory = tripCategory;
         this.location = location;
         this.placeOrder = placeOrder;
     }

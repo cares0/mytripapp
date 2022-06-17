@@ -9,7 +9,6 @@ public class PlaceConverter {
         return new Place(
                 placeForm.getName(),
                 placeForm.getDate(),
-                placeForm.getTripCategory(),
                 placeForm.getLocation(),
                 placeForm.getPlaceOrder());
     }

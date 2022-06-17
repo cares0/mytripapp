@@ -31,7 +31,7 @@ class PlaceServiceTest {
         // given
         Member member = createMember("email1", "1234");
         Trip trip = createTrip(member, "제주");
-        Place place = new Place("장소1", LocalDate.now(),TripCategory.ETC, "위치1", 0);
+        Place place = new Place("장소1", LocalDate.now(), "위치1", 0);
 
         // when
         Long savedId = placeService.save(trip.getId(), place);
@@ -47,7 +47,7 @@ class PlaceServiceTest {
         // given
         Member member = createMember("email1", "1234");
         Trip trip = createTrip(member, "제주");
-        Place place = createPlace(trip, "장소1", LocalDate.now(), TripCategory.ETC, "위치1", 0);
+        Place place = createPlace(trip, "장소1", LocalDate.now(), "위치1", 0);
 
         // when
         placeService.editDate(place.getId(), LocalDate.of(2022, 5, 20));
@@ -67,8 +67,8 @@ class PlaceServiceTest {
 
     }
 
-    private Place createPlace(Trip trip, String name, LocalDate date, TripCategory tripCategory, String position, int placeOrder) {
-        Place place = new Place(name, date, tripCategory, position, placeOrder);
+    private Place createPlace(Trip trip, String name, LocalDate date, String position, int placeOrder) {
+        Place place = new Place(name, date, position, placeOrder);
         place.addTrip(trip);
         em.persist(place);
         return place;
