@@ -1,9 +1,10 @@
 package com.triple.mytrip.web.budget;
 
 import com.triple.mytrip.domain.budget.Budget;
-import com.triple.mytrip.web.budget.dto.BudgetDto;
-import com.triple.mytrip.web.budget.dto.BudgetFileDto;
-import com.triple.mytrip.web.budget.form.BudgetForm;
+import com.triple.mytrip.web.budget.response.BudgetSearchResponse;
+import com.triple.mytrip.web.budget.response.BudgetEditResponse;
+import com.triple.mytrip.web.budget.response.BudgetFileSearchResponse;
+import com.triple.mytrip.web.budget.request.BudgetSaveRequest;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -11,14 +12,14 @@ import java.util.stream.Collectors;
 // 나중에 인터페이스로 구현 고려, 어댑터 패턴 적용 고려
 public class BudgetConverter {
 
-    public static BudgetDto budgetToDto(Budget budget) {
-        return new BudgetDto(
+    public static BudgetSearchResponse budgetToDto(Budget budget) {
+        return new BudgetSearchResponse(
                 budget.getId(),
                 budget.getPrice(),
                 budget.getPlace(),
                 budget.getDate(),
-                budget.getBudgetOrder(),
-                budget.getBudgetFiles().stream().map((budgetFile) -> new BudgetFileDto(
+                budget.getOrder(),
+                budget.getBudgetFiles().stream().map((budgetFile) -> new BudgetFileSearchResponse(
                         budgetFile.getId(),
                         budgetFile.getOriName(),
                         budgetFile.getFileName())
@@ -28,20 +29,32 @@ public class BudgetConverter {
                 budget.getContent());
     }
 
-    public static List<BudgetDto> entityListToDtoList(List<Budget> list) {
+    public static List<BudgetSearchResponse> entityListToDtoList(List<Budget> list) {
         return list.stream().map(
                         (budget) -> budgetToDto(budget))
                 .collect(Collectors.toList());
     }
 
-    public static Budget formToEntity(BudgetForm budgetForm) {
+    public static Budget formToEntity(BudgetSaveRequest budgetSaveRequest) {
         return new Budget(
-                budgetForm.getTripCategory(),
-                budgetForm.getPrice(),
-                budgetForm.getDate(),
-                budgetForm.getPaymentPlan(),
-                budgetForm.getBudgetOrder(),
-                budgetForm.getPlace(),
-                budgetForm.getContent());
+                budgetSaveRequest.getTripCategory(),
+                budgetSaveRequest.getPrice(),
+                budgetSaveRequest.getDate(),
+                budgetSaveRequest.getPaymentPlan(),
+                budgetSaveRequest.getBudgetOrder(),
+                budgetSaveRequest.getPlace(),
+                budgetSaveRequest.getContent());
+    }
+
+    public static BudgetEditResponse entityToEditResponse(Budget budget) {
+        return new BudgetEditResponse(
+                budget.getId(),
+                budget.getTripCategory(),
+                budget.getPrice(),
+                budget.getDate(),
+                budget.getPaymentPlan(),
+                budget.getOrder(),
+                budget.getPlace(),
+                budget.getContent());
     }
 }

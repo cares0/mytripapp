@@ -6,17 +6,11 @@ import com.triple.mytrip.domain.exception.EntityNotFoundException;
 import com.triple.mytrip.domain.trip.Trip;
 import com.triple.mytrip.domain.trip.TripRepository;
 import com.triple.mytrip.domain.util.FileManager;
-import com.triple.mytrip.domain.util.UploadFile;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -49,24 +43,19 @@ public class BudgetService {
     }
 
     @Transactional
-    public void editAll(Long budgetId, Budget budget) {
+    public Budget editAll(Long budgetId, Budget modifiedBudget) {
         Budget findBudget = findBudget(budgetId);
 
-        editBudget(budget, findBudget);
+        editBudgetAll(findBudget, modifiedBudget);
+        return findBudget;
     }
 
     @Transactional
-    public void editOrder(Long budgetId, Integer order) {
+    public Budget editOrderAndDate(Long budgetId, Budget modifiedBudget) {
         Budget findBudget = findBudget(budgetId);
 
-        findBudget.editOrder(order);
-    }
-
-    @Transactional
-    public void editDate(Long budgetId, LocalDate date) {
-        Budget findBudget = findBudget(budgetId);
-
-        findBudget.editDate(date);
+        editBudgetOrderAndDate(findBudget, modifiedBudget);
+        return findBudget;
     }
 
     @Transactional
@@ -97,14 +86,20 @@ public class BudgetService {
                 fileManager.deleteFile(budgetFile.getFileName()));
     }
 
-    private void editBudget(Budget budget, Budget findBudget) {
+    private void editBudgetOrderAndDate(Budget findBudget, Budget modifiedBudget) {
+        findBudget.editOrderAndDate(
+                modifiedBudget.getOrder(),
+                modifiedBudget.getDate());
+    }
+
+    private void editBudgetAll(Budget findBudget, Budget modifiedBudget) {
         findBudget.editAll(
-                budget.getTripCategory(),
-                budget.getPrice(),
-                budget.getDate(),
-                budget.getPaymentPlan(),
-                budget.getPlace(),
-                budget.getContent());
+                modifiedBudget.getTripCategory(),
+                modifiedBudget.getPrice(),
+                modifiedBudget.getDate(),
+                modifiedBudget.getPaymentPlan(),
+                modifiedBudget.getPlace(),
+                modifiedBudget.getContent());
     }
 
 

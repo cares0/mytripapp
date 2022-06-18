@@ -1,4 +1,4 @@
-package com.triple.mytrip.web.budget.dto;
+package com.triple.mytrip.web.budget.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter @Setter
 @AllArgsConstructor
-public class BudgetFileDto {
+public class BudgetFileSearchResponse {
 
     private Long id;
     private String oriName;

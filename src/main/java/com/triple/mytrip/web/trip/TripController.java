@@ -6,14 +6,9 @@ import com.triple.mytrip.domain.checklist.category.ChecklistCategory;
 import com.triple.mytrip.domain.checklist.category.ChecklistCategoryService;
 import com.triple.mytrip.domain.place.Place;
 import com.triple.mytrip.domain.place.PlaceService;
-import com.triple.mytrip.domain.place.accommodation.Accommodation;
-import com.triple.mytrip.domain.place.flight.Flight;
-import com.triple.mytrip.domain.place.restaurant.Restaurant;
-import com.triple.mytrip.domain.place.shop.Shop;
-import com.triple.mytrip.domain.place.tour.Tour;
 import com.triple.mytrip.web.budget.BudgetConverter;
-import com.triple.mytrip.web.budget.dto.BudgetDto;
-import com.triple.mytrip.web.budget.form.BudgetForm;
+import com.triple.mytrip.web.budget.response.BudgetSearchResponse;
+import com.triple.mytrip.web.budget.request.BudgetSaveRequest;
 import com.triple.mytrip.web.checklist.ChecklistCategoryConverter;
 import com.triple.mytrip.web.checklist.dto.ChecklistCategoryDto;
 import com.triple.mytrip.web.checklist.form.ChecklistCategoryForm;
@@ -65,17 +60,17 @@ public class TripController {
 
     // ======= budgets ======= //
     @PostMapping("/trip/{tripId}/budgets")
-    public Result<Long> saveBudget(@PathVariable Long tripId, @RequestBody BudgetForm budgetForm) {
-        Budget budget = BudgetConverter.formToEntity(budgetForm);
+    public Result<Long> saveBudget(@PathVariable Long tripId, @RequestBody BudgetSaveRequest budgetSaveRequest) {
+        Budget budget = BudgetConverter.formToEntity(budgetSaveRequest);
         Long save = budgetService.save(tripId, budget);
         return new Result<>(save);
     }
 
     @GetMapping("/trip/{tripId}/budgets")
-    public ListResult<BudgetDto> searchBudgetList(@PathVariable Long tripId) {
+    public ListResult<BudgetSearchResponse> searchBudgetList(@PathVariable Long tripId) {
         List<Budget> budgets = budgetService.getList(tripId);
 
-        List<BudgetDto> result = BudgetConverter.entityListToDtoList(budgets);
+        List<BudgetSearchResponse> result = BudgetConverter.entityListToDtoList(budgets);
 
         return new ListResult<>(result.size(), result);
     }

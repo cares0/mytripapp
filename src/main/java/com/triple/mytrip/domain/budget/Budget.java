@@ -40,32 +40,35 @@ public class Budget {
     @Enumerated(value = EnumType.STRING)
     private PaymentPlan paymentPlan;
 
-    private Integer budgetOrder;
+    @Column(name = "budget_order")
+    private Integer order;
 
     private String place;
 
     private String content;
 
     public Budget(TripCategory tripCategory, Integer price, LocalDate date,
-                  PaymentPlan paymentPlan, Integer budgetOrder, String place, String content) {
+                  PaymentPlan paymentPlan, Integer order, String place, String content) {
         this.tripCategory = tripCategory;
         this.price = price;
         this.date = date;
         this.paymentPlan = paymentPlan;
-        this.budgetOrder = budgetOrder;
+        this.order = order;
         this.place = place;
         this.content = content;
+    }
+
+    public Budget(Integer order, LocalDate date) {
+        this.date = date;
+        this.order = order;
     }
 
     public void addTrip(Trip trip) {
         this.trip = trip;
     }
 
-    public void editOrder(Integer budgetOrder) {
-        this.budgetOrder = budgetOrder;
-    }
-
-    public void editDate(LocalDate date) {
+    public void editOrderAndDate(Integer budgetOrder, LocalDate date) {
+        this.order = budgetOrder;
         this.date = date;
     }
 

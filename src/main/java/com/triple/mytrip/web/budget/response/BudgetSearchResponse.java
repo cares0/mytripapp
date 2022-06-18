@@ -1,7 +1,6 @@
-package com.triple.mytrip.web.budget.dto;
+package com.triple.mytrip.web.budget.response;
 
 import com.triple.mytrip.domain.budget.PaymentPlan;
-import com.triple.mytrip.domain.budget.budgetfile.BudgetFile;
 import com.triple.mytrip.domain.common.TripCategory;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,7 +11,7 @@ import java.util.List;
 
 @AllArgsConstructor
 @Getter @Setter
-public class BudgetDto {
+public class BudgetSearchResponse {
 
     private Long id;
     private Integer price;
@@ -21,7 +20,7 @@ public class BudgetDto {
 
     private Integer order;
 
-    private List<BudgetFileDto> budgetFiles;
+    private List<BudgetFileSearchResponse> budgetFiles;
     private PaymentPlan paymentPlan;
     private TripCategory tripCategory;
     private String content;

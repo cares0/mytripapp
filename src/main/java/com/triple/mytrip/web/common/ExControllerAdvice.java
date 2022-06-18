@@ -7,7 +7,6 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver;
 
 import java.time.LocalTime;
 
@@ -15,7 +14,7 @@ import java.time.LocalTime;
 @RestControllerAdvice
 public class ExControllerAdvice {
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler
     public ErrorResult entityNotFoundExHandler(EntityNotFoundException e) {
         log.error("[EntityNotFoundException]", e);

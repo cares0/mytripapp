@@ -1,4 +1,4 @@
-package com.triple.mytrip.web.budget.form;
+package com.triple.mytrip.web.budget.request;
 
 import com.triple.mytrip.domain.budget.PaymentPlan;
 import com.triple.mytrip.domain.common.TripCategory;
@@ -8,7 +8,7 @@ import lombok.Setter;
 import java.time.LocalDate;
 
 @Setter @Getter
-public class BudgetForm {
+public class BudgetSaveRequest {
 
     private LocalDate date;
     private PaymentPlan paymentPlan;
