@@ -1,6 +1,7 @@
 package com.triple.mytrip.web.budget;
 
 import com.triple.mytrip.domain.budget.Budget;
+import com.triple.mytrip.web.budget.request.BudgetEditRequest;
 import com.triple.mytrip.web.budget.response.BudgetSearchResponse;
 import com.triple.mytrip.web.budget.response.BudgetEditResponse;
 import com.triple.mytrip.web.budget.response.BudgetFileSearchResponse;
@@ -44,6 +45,18 @@ public class BudgetConverter {
                 budgetSaveRequest.getBudgetOrder(),
                 budgetSaveRequest.getPlace(),
                 budgetSaveRequest.getContent());
+    }
+
+    public static Budget editRequestToEntity(BudgetEditRequest budgetEditRequest) {
+        return new Budget(
+                budgetEditRequest.getTripCategory(),
+                budgetEditRequest.getPrice(),
+                budgetEditRequest.getDate(),
+                budgetEditRequest.getPaymentPlan(),
+                budgetEditRequest.getOrder(),
+                budgetEditRequest.getPlace(),
+                budgetEditRequest.getContent()
+        );
     }
 
     public static BudgetEditResponse entityToEditResponse(Budget budget) {

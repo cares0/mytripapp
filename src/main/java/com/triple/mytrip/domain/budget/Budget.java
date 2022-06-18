@@ -58,28 +58,35 @@ public class Budget {
         this.content = content;
     }
 
-    public Budget(Integer order, LocalDate date) {
-        this.date = date;
-        this.order = order;
-    }
-
     public void addTrip(Trip trip) {
         this.trip = trip;
     }
 
-    public void editOrderAndDate(Integer budgetOrder, LocalDate date) {
-        this.order = budgetOrder;
+    public void editTripCategory(TripCategory tripCategory) {
+        this.tripCategory = tripCategory;
+    }
+
+    public void editPrice(Integer price) {
+        this.price = price;
+    }
+
+    public void editDate(LocalDate date) {
         this.date = date;
     }
 
-    public void editAll(TripCategory tripCategory, Integer price, LocalDate date,
-                        PaymentPlan paymentPlan, String place, String content) {
-        this.tripCategory = tripCategory;
-        this.price = price;
-        this.date = date;
+    public void editPaymentPlan(PaymentPlan paymentPlan) {
         this.paymentPlan = paymentPlan;
+    }
+
+    public void editOrder(Integer order) {
+        this.order = order;
+    }
+
+    public void editPlace(String place) {
         this.place = place;
+    }
+
+    public void editContent(String content) {
         this.content = content;
     }
-
 }

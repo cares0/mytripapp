@@ -2,6 +2,7 @@ package com.triple.mytrip.domain.budget;
 
 import com.triple.mytrip.domain.budget.budgetfile.BudgetFile;
 import com.triple.mytrip.domain.budget.budgetfile.BudgetFileRepository;
+import com.triple.mytrip.domain.common.TripCategory;
 import com.triple.mytrip.domain.exception.EntityNotFoundException;
 import com.triple.mytrip.domain.trip.Trip;
 import com.triple.mytrip.domain.trip.TripRepository;
@@ -10,7 +11,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @Transactional(readOnly = true)
@@ -22,7 +25,6 @@ public class BudgetService {
     private final BudgetFileRepository budgetFileRepository;
 
     private final FileManager fileManager;
-
 
     @Transactional
     public Long save(Long tripId, Budget budget) {
@@ -43,19 +45,12 @@ public class BudgetService {
     }
 
     @Transactional
-    public Budget editAll(Long budgetId, Budget modifiedBudget) {
-        Budget findBudget = findBudget(budgetId);
+    public Budget edit(Long budgetId, Budget modified) {
+        Budget original = findBudget(budgetId);
 
-        editBudgetAll(findBudget, modifiedBudget);
-        return findBudget;
-    }
+        update(modified, original);
 
-    @Transactional
-    public Budget editOrderAndDate(Long budgetId, Budget modifiedBudget) {
-        Budget findBudget = findBudget(budgetId);
-
-        editBudgetOrderAndDate(findBudget, modifiedBudget);
-        return findBudget;
+        return original;
     }
 
     @Transactional
@@ -86,22 +81,35 @@ public class BudgetService {
                 fileManager.deleteFile(budgetFile.getFileName()));
     }
 
-    private void editBudgetOrderAndDate(Budget findBudget, Budget modifiedBudget) {
-        findBudget.editOrderAndDate(
-                modifiedBudget.getOrder(),
-                modifiedBudget.getDate());
+    private void update(Budget modified, Budget original) {
+        TripCategory tripCategory = modified.getTripCategory();
+        if (Objects.nonNull(tripCategory)) {
+            original.editTripCategory(tripCategory);
+        }
+        Integer price = modified.getPrice();
+        if (Objects.nonNull(price)) {
+            original.editPrice(price);
+        }
+        LocalDate date = modified.getDate();
+        if (Objects.nonNull(date)) {
+            original.editDate(date);
+        }
+        PaymentPlan paymentPlan = modified.getPaymentPlan();
+        if (Objects.nonNull(paymentPlan)) {
+            original.editPaymentPlan(paymentPlan);
+        }
+        Integer order = modified.getOrder();
+        if (Objects.nonNull(order)) {
+            original.editOrder(order);
+        }
+        String place = modified.getPlace();
+        if (Objects.nonNull(place)) {
+            original.editPlace(place);
+        }
+        String content = modified.getContent();
+        if (Objects.nonNull(content)) {
+            original.editContent(content);
+        }
     }
-
-    private void editBudgetAll(Budget findBudget, Budget modifiedBudget) {
-        findBudget.editAll(
-                modifiedBudget.getTripCategory(),
-                modifiedBudget.getPrice(),
-                modifiedBudget.getDate(),
-                modifiedBudget.getPaymentPlan(),
-                modifiedBudget.getPlace(),
-                modifiedBudget.getContent());
-    }
-
-
 
 }
