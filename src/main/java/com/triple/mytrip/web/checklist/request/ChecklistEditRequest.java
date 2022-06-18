@@ -7,6 +7,6 @@ import lombok.Setter;
 public class ChecklistEditRequest {
 
     private String name;
-    private Boolean status;
+    private Boolean checkStatus;
     private String memo;
 }

@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
+
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -29,26 +31,13 @@ public class ChecklistService {
     }
 
     @Transactional
-    public Checklist editName(Long checklistId, String name) {
-        Checklist checklist = findChecklist(checklistId);
-        checklist.editName(name);
-        return checklist;
-    }
+    public Checklist edit(Long checklistId, Checklist modifiedChecklist) {
+        Checklist original = findChecklist(checklistId);
 
-    @Transactional
-    public Checklist editCheckStatus(Long checklistId, Boolean checkStatus) {
-        Checklist checklist = findChecklist(checklistId);
-        checklist.editCheckStatus(checkStatus);
-        return checklist;
-    }
+        update(original, modifiedChecklist);
 
-    @Transactional
-    public Checklist editMemo(Long checklistId, String memo) {
-        Checklist checklist = findChecklist(checklistId);
-        checklist.editMemo(memo);
-        return checklist;
+        return original;
     }
-
     @Transactional
     public void delete(Long checklistId) {
         checklistRepository.deleteById(checklistId);
@@ -64,4 +53,18 @@ public class ChecklistService {
                 new EntityNotFoundException("해당 ID와 일치하는 체크리스트 카테고리를 찾을 수 없음"));
     }
 
+    private void update(Checklist original, Checklist modifiedChecklist) {
+        String name = modifiedChecklist.getName();
+        if (Objects.nonNull(name)) {
+            original.editName(name);
+        }
+        String memo = modifiedChecklist.getMemo();
+        if (Objects.nonNull(memo)) {
+            original.editMemo(memo);
+        }
+        Boolean checkStatus = modifiedChecklist.getCheckStatus();
+        if (Objects.nonNull(checkStatus)) {
+            original.editCheckStatus(checkStatus);
+        }
+    }
 }

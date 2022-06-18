@@ -73,7 +73,7 @@ class BudgetServiceTest {
     }
 
     @Test
-    public void 가계부_전체필드수정() throws Exception {
+    public void 가계부_수정() throws Exception {
         // given
         Member member = createMember("email1", "1234");
         Trip trip = createTrip(member, "제주");
@@ -81,27 +81,17 @@ class BudgetServiceTest {
 
         em.flush();
         em.clear();
-
-        // when
-        // 영속성 컨텍스트 초기화 후 기존 ID를 가지고 있는 Budget 객체가 클라이언트에서 넘어왔다고 가정
-        // 그리고 해당 Budget 객체를 엔티티 로직으로 일단 수정 (변경감지 안됨)
-        budget.editAll(TripCategory.FLIGHT, 20000,
-                LocalDate.now(), PaymentPlan.CARD,"숙소", "컨텐츠1");
-
-        // 수정된 budget 객체를 넘김 -> 영속성 컨텍스트에 기존 데이터가 조회 -> 변경된 데이터 변경감지 시작
-        budgetService.editAll(budget.getId(), budget);
-
-        em.flush();
-        em.clear();
         // 기존 ID로 조회 후 변경 내용 확인
-        Budget modifiedBudget = em.find(Budget.class, budget.getId());
+        Budget modified = new Budget(TripCategory.ETC, 10000, LocalDate.of(2020, 12, 22),
+                PaymentPlan.CASH, 3, "수정장소", "수정컨텐츠");
+        modified = budgetService.edit(budget.getId(), modified);
 
         // then
-        //assertThat(modifiedBudget.getPrice()).isEqualTo(20000);
-        assertThat(modifiedBudget.getPlace()).isEqualTo("숙소"); // 이것만 변경 X
-        assertThat(modifiedBudget.getContent()).isEqualTo("컨텐츠1");
-        assertThat(modifiedBudget.getTripCategory()).isEqualTo(TripCategory.FLIGHT);
-        assertThat(modifiedBudget.getPaymentPlan()).isEqualTo(PaymentPlan.CARD);
+        assertThat(modified.getPrice()).isEqualTo(10000); // 이것만 동일
+        assertThat(modified.getPlace()).isEqualTo("수정장소");
+        assertThat(modified.getContent()).isEqualTo("수정컨텐츠");
+        assertThat(modified.getTripCategory()).isEqualTo(TripCategory.ETC);
+        assertThat(modified.getPaymentPlan()).isEqualTo(PaymentPlan.CASH);
     }
 
     @Test

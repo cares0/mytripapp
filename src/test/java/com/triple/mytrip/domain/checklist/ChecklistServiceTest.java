@@ -52,14 +52,11 @@ class ChecklistServiceTest {
         Checklist checklist = new Checklist("체크리스트1");
         Long savedId = checklistService.save(category.getId(), checklist);
 
-        // when
-        checklistService.editMemo(savedId, "메모수정");
-        checklistService.editCheckStatus(savedId, true);
-        checklistService.editName(savedId, "이름수정");
         em.flush();
         em.clear();
-
-        Checklist modified = em.find(Checklist.class, checklist.getId());
+        // when
+        Checklist modified = new Checklist("이름수정", "메모수정", true);
+        modified = checklistService.edit(checklist.getId(), modified);
 
         // then
         assertThat(modified.getCheckStatus()).isTrue();

@@ -29,10 +29,22 @@ public class Checklist {
     private String memo;
     private String instruction;
 
+    /**
+     * 등록 전용
+     */
     public Checklist(String name) {
         this.name = name;
         checkStatus = false;
         basicOfferStatus = false;
+    }
+
+    /**
+     * 수정 전용
+     */
+    public Checklist(String name, String memo, Boolean checkStatus) {
+        this.name = name;
+        this.memo = memo;
+        this.checkStatus = checkStatus;
     }
 
     public void addCategory(ChecklistCategory category) {

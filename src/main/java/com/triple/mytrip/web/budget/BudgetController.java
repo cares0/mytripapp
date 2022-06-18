@@ -15,6 +15,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 
+import static com.triple.mytrip.web.budget.BudgetConverter.*;
+
 @RestController
 @RequiredArgsConstructor
 @Slf4j
@@ -33,21 +35,20 @@ public class BudgetController {
     @GetMapping("/budgets/{budgetId}")
     public Result<BudgetSearchResponse> searchOne(@PathVariable Long budgetId) {
         Budget budget = budgetService.getOne(budgetId);
-        BudgetSearchResponse budgetSearchResponse = BudgetConverter.entityToSearchResponse(budget);
+        BudgetSearchResponse budgetSearchResponse = entityToSearchResponse(budget);
         return new Result<>(budgetSearchResponse);
     }
 
     @PatchMapping(value = "/budgets/{budgetId}")
     public BudgetEditResponse edit(@PathVariable Long budgetId, @RequestBody BudgetEditRequest budgetEditRequest) {
-        Budget modifiedBudget = BudgetConverter.editRequestToEntity(budgetEditRequest);
+        Budget modifiedBudget = editRequestToEntity(budgetEditRequest);
 
         modifiedBudget = budgetService.edit(budgetId, modifiedBudget);
 
-        BudgetEditResponse budgetEditResponse = BudgetConverter.entityToEditResponse(modifiedBudget);
+        BudgetEditResponse budgetEditResponse = entityToEditResponse(modifiedBudget);
 
         return budgetEditResponse;
     }
-
 
     @DeleteMapping("/budgets/{budgetId}")
     public Result<String> delete(@PathVariable Long budgetId) {

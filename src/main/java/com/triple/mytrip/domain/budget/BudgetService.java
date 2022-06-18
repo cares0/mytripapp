@@ -48,7 +48,7 @@ public class BudgetService {
     public Budget edit(Long budgetId, Budget modified) {
         Budget original = findBudget(budgetId);
 
-        update(modified, original);
+        update(original, modified);
 
         return original;
     }
@@ -81,7 +81,7 @@ public class BudgetService {
                 fileManager.deleteFile(budgetFile.getFileName()));
     }
 
-    private void update(Budget modified, Budget original) {
+    private void update(Budget original, Budget modified) {
         TripCategory tripCategory = modified.getTripCategory();
         if (Objects.nonNull(tripCategory)) {
             original.editTripCategory(tripCategory);
