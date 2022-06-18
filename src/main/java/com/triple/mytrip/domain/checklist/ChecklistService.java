@@ -29,24 +29,24 @@ public class ChecklistService {
     }
 
     @Transactional
-    public void editName(Long checklistId, String name) {
+    public Checklist editName(Long checklistId, String name) {
         Checklist checklist = findChecklist(checklistId);
-
         checklist.editName(name);
+        return checklist;
     }
 
     @Transactional
-    public void editCheckStatus(Long checklistId) {
+    public Checklist editCheckStatus(Long checklistId, Boolean checkStatus) {
         Checklist checklist = findChecklist(checklistId);
-
-        checklist.editCheckStatus();
+        checklist.editCheckStatus(checkStatus);
+        return checklist;
     }
 
     @Transactional
-    public void editMemo(Long checklistId, String memo) {
+    public Checklist editMemo(Long checklistId, String memo) {
         Checklist checklist = findChecklist(checklistId);
-
         checklist.editMemo(memo);
+        return checklist;
     }
 
     @Transactional

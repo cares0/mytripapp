@@ -54,7 +54,7 @@ class ChecklistServiceTest {
 
         // when
         checklistService.editMemo(savedId, "메모수정");
-        checklistService.editCheckStatus(savedId);
+        checklistService.editCheckStatus(savedId, true);
         checklistService.editName(savedId, "이름수정");
         em.flush();
         em.clear();

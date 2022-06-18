@@ -52,8 +52,8 @@ public class Checklist {
         this.memo = memo;
     }
 
-    public void editCheckStatus() {
-        this.checkStatus = !this.checkStatus;
+    public void editCheckStatus(Boolean checkStatus) {
+        this.checkStatus = checkStatus;
     }
 
 }

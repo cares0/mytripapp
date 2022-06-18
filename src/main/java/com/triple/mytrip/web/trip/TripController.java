@@ -10,8 +10,8 @@ import com.triple.mytrip.web.budget.BudgetConverter;
 import com.triple.mytrip.web.budget.response.BudgetSearchResponse;
 import com.triple.mytrip.web.budget.request.BudgetSaveRequest;
 import com.triple.mytrip.web.checklist.ChecklistCategoryConverter;
-import com.triple.mytrip.web.checklist.dto.ChecklistCategoryDto;
-import com.triple.mytrip.web.checklist.form.ChecklistCategoryForm;
+import com.triple.mytrip.web.checklist.response.ChecklistCategoryDto;
+import com.triple.mytrip.web.checklist.request.ChecklistCategorySaveRequest;
 import com.triple.mytrip.web.common.ListResult;
 import com.triple.mytrip.web.common.Result;
 import com.triple.mytrip.web.place.PlaceConverter;
@@ -43,7 +43,7 @@ public class TripController {
 
     // ======= checklistCategory ======= //
     @PostMapping("/trip/{tripId}/checklist-categories")
-    public Result<Long> saveCategory(@PathVariable Long tripId, @RequestBody ChecklistCategoryForm categoryForm) {
+    public Result<Long> saveCategory(@PathVariable Long tripId, @RequestBody ChecklistCategorySaveRequest categoryForm) {
         ChecklistCategory category = ChecklistCategoryConverter.formToEntity(categoryForm);
         Long savedId = checklistCategoryService.save(tripId, category);
         return new Result<>(savedId);

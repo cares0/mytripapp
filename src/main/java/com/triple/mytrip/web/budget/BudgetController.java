@@ -9,6 +9,7 @@ import com.triple.mytrip.web.budget.request.BudgetEditAll;
 import com.triple.mytrip.web.budget.request.BudgetEditOrderAndDate;
 import com.triple.mytrip.web.budget.request.BudgetEditRequest;
 import com.triple.mytrip.web.common.Result;
+import com.triple.mytrip.web.exception.NoModifiedDataException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -56,24 +57,25 @@ public class BudgetController {
     }
 
     private Budget updateEntity(Long budgetId, BudgetEditRequest budgetEditRequest) {
-        if (Objects.nonNull(budgetEditRequest.getBudgetEditAll())) {
-            BudgetEditAll budgetEditAll = budgetEditRequest.getBudgetEditAll();
+        BudgetEditAll editAll = budgetEditRequest.getEditAll();
+        BudgetEditOrderAndDate editOrderAndDate = budgetEditRequest.getEditOrderAndDate();
+        if (Objects.nonNull(editAll)) {
             Budget modifiedBudget = new Budget(
-                    budgetEditAll.getTripCategory(),
-                    budgetEditAll.getPrice(),
-                    budgetEditAll.getDate(),
-                    budgetEditAll.getPaymentPlan(),
-                    budgetEditAll.getOrder(),
-                    budgetEditAll.getPlace(),
-                    budgetEditAll.getContent());
+                    editAll.getTripCategory(),
+                    editAll.getPrice(),
+                    editAll.getDate(),
+                    editAll.getPaymentPlan(),
+                    editAll.getOrder(),
+                    editAll.getPlace(),
+                    editAll.getContent());
             return budgetService.editAll(budgetId, modifiedBudget);
-        } else {
-            BudgetEditOrderAndDate budgetEditOrderAndDate = budgetEditRequest.getBudgetEditOrderAndDate();
+        } else if (Objects.nonNull(editOrderAndDate)) {
             Budget modifiedBudget = new Budget(
-                    budgetEditOrderAndDate.getOrder(),
-                    budgetEditOrderAndDate.getDate());
+                    editOrderAndDate.getOrder(),
+                    editOrderAndDate.getDate());
             return budgetService.editOrderAndDate(budgetId, modifiedBudget);
         }
+        throw new NoModifiedDataException();
     }
 
 }

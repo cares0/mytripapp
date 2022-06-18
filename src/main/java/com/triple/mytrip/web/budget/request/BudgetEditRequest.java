@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter @Setter
 public class BudgetEditRequest {
 
-    private BudgetEditAll budgetEditAll;
-    private BudgetEditOrderAndDate budgetEditOrderAndDate;
+    private BudgetEditAll editAll;
+    private BudgetEditOrderAndDate editOrderAndDate;
 
 }
