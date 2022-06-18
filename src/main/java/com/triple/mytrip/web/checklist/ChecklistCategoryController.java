@@ -2,11 +2,16 @@ package com.triple.mytrip.web.checklist;
 
 import com.triple.mytrip.domain.checklist.Checklist;
 import com.triple.mytrip.domain.checklist.ChecklistService;
+import com.triple.mytrip.domain.checklist.category.ChecklistCategory;
 import com.triple.mytrip.domain.checklist.category.ChecklistCategoryService;
+import com.triple.mytrip.web.checklist.request.ChecklistCategoryRequest;
 import com.triple.mytrip.web.checklist.request.ChecklistSaveRequest;
+import com.triple.mytrip.web.checklist.response.ChecklistCategoryEditResponse;
 import com.triple.mytrip.web.common.Result;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import static com.triple.mytrip.web.checklist.ChecklistCategoryConverter.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,9 +28,10 @@ public class ChecklistCategoryController {
     }
 
     @PatchMapping("/checklist-categories/{categoryId}")
-    public Result<String> editName(@PathVariable Long categoryId, @RequestBody String name) {
-        categoryService.editName(categoryId, name);
-        return new Result<>("Success");
+    public Result<ChecklistCategoryEditResponse> edit(@PathVariable Long categoryId, @RequestBody ChecklistCategoryRequest checklistCategoryRequest) {
+        ChecklistCategory modifiedCategory = categoryService.editName(categoryId, checklistCategoryRequest.getName());
+        ChecklistCategoryEditResponse checklistCategoryEditResponse = entityToEditResponse(modifiedCategory);
+        return new Result<>(checklistCategoryEditResponse);
     }
 
     @DeleteMapping("/checklist-categories/{categoryId}")

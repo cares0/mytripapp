@@ -8,7 +8,7 @@ import java.util.List;
 
 @AllArgsConstructor
 @Setter @Getter
-public class ChecklistCategoryDto {
+public class ChecklistCategorySearchResponse {
 
     private Long id;
     private Long tripId;

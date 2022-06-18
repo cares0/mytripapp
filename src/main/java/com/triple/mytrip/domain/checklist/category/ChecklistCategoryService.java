@@ -19,8 +19,7 @@ public class ChecklistCategoryService {
 
     @Transactional
     public Long save(Long tripId, ChecklistCategory checklistCategory) {
-        Trip trip = tripRepository.findById(tripId).orElseThrow(() ->
-                new EntityNotFoundException("해당 ID와 일치하는 여행을 찾을 수 없음"));
+        Trip trip = findTrip(tripId);
 
         checklistCategory.addTrip(trip);
 
@@ -34,14 +33,24 @@ public class ChecklistCategoryService {
     }
 
     @Transactional
-    public void editName(Long categoryId, String name) {
-        ChecklistCategory category = checklistCategoryRepository.findById(categoryId).orElseThrow(() ->
-                new EntityNotFoundException("해당 ID와 일치하는 체크리스트 카테고리를 찾을 수 없음"));
+    public ChecklistCategory editName(Long categoryId, String name) {
+        ChecklistCategory category = findCategory(categoryId);
         category.editName(name);
+        return category;
     }
 
     @Transactional
     public void delete(Long categoryId) {
         checklistCategoryRepository.deleteById(categoryId);
+    }
+
+    private ChecklistCategory findCategory(Long categoryId) {
+        return checklistCategoryRepository.findById(categoryId).orElseThrow(() ->
+                new EntityNotFoundException("해당 ID와 일치하는 체크리스트 카테고리를 찾을 수 없음"));
+    }
+
+    private Trip findTrip(Long tripId) {
+        return tripRepository.findById(tripId).orElseThrow(() ->
+                new EntityNotFoundException("해당 ID와 일치하는 여행을 찾을 수 없음"));
     }
 }

@@ -10,8 +10,8 @@ import com.triple.mytrip.web.budget.BudgetConverter;
 import com.triple.mytrip.web.budget.response.BudgetSearchResponse;
 import com.triple.mytrip.web.budget.request.BudgetSaveRequest;
 import com.triple.mytrip.web.checklist.ChecklistCategoryConverter;
-import com.triple.mytrip.web.checklist.response.ChecklistCategoryDto;
-import com.triple.mytrip.web.checklist.request.ChecklistCategorySaveRequest;
+import com.triple.mytrip.web.checklist.response.ChecklistCategorySearchResponse;
+import com.triple.mytrip.web.checklist.request.ChecklistCategoryRequest;
 import com.triple.mytrip.web.common.ListResult;
 import com.triple.mytrip.web.common.Result;
 import com.triple.mytrip.web.place.PlaceConverter;
@@ -43,25 +43,25 @@ public class TripController {
 
     // ======= checklistCategory ======= //
     @PostMapping("/trip/{tripId}/checklist-categories")
-    public Result<Long> saveCategory(@PathVariable Long tripId, @RequestBody ChecklistCategorySaveRequest categoryForm) {
-        ChecklistCategory category = ChecklistCategoryConverter.formToEntity(categoryForm);
+    public Result<Long> saveCategory(@PathVariable Long tripId, @RequestBody ChecklistCategoryRequest categoryRequest) {
+        ChecklistCategory category = ChecklistCategoryConverter.saveRequestToEntity(categoryRequest);
         Long savedId = checklistCategoryService.save(tripId, category);
         return new Result<>(savedId);
     }
 
     @GetMapping("/trip/{tripId}/checklist-categories")
-    public ListResult<ChecklistCategoryDto> searchChecklistCategory(@PathVariable Long tripId) {
+    public ListResult<ChecklistCategorySearchResponse> searchChecklistCategory(@PathVariable Long tripId) {
         List<ChecklistCategory> categories = checklistCategoryService.getListWithChecklist(tripId);
 
-        List<ChecklistCategoryDto> result = ChecklistCategoryConverter.entityListToDtoList(categories);
+        List<ChecklistCategorySearchResponse> result = ChecklistCategoryConverter.entityListToDtoList(categories);
 
-        return new ListResult<ChecklistCategoryDto>(result.size(), result);
+        return new ListResult<ChecklistCategorySearchResponse>(result.size(), result);
     }
 
     // ======= budgets ======= //
     @PostMapping("/trip/{tripId}/budgets")
     public Result<Long> saveBudget(@PathVariable Long tripId, @RequestBody BudgetSaveRequest budgetSaveRequest) {
-        Budget budget = BudgetConverter.formToEntity(budgetSaveRequest);
+        Budget budget = BudgetConverter.saveRequestToEntity(budgetSaveRequest);
         Long save = budgetService.save(tripId, budget);
         return new Result<>(save);
     }
@@ -70,7 +70,7 @@ public class TripController {
     public ListResult<BudgetSearchResponse> searchBudgetList(@PathVariable Long tripId) {
         List<Budget> budgets = budgetService.getList(tripId);
 
-        List<BudgetSearchResponse> result = BudgetConverter.entityListToDtoList(budgets);
+        List<BudgetSearchResponse> result = BudgetConverter.entityListToSearchResponseList(budgets);
 
         return new ListResult<>(result.size(), result);
     }

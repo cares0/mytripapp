@@ -37,7 +37,7 @@ public class BudgetController {
     @GetMapping("/budgets/{budgetId}")
     public Result<BudgetSearchResponse> searchOne(@PathVariable Long budgetId) {
         Budget budget = budgetService.getOne(budgetId);
-        BudgetSearchResponse budgetSearchResponse = BudgetConverter.budgetToDto(budget);
+        BudgetSearchResponse budgetSearchResponse = BudgetConverter.entityToSearchResponse(budget);
         return new Result<>(budgetSearchResponse);
     }
 

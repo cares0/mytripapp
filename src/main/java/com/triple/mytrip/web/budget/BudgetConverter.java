@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 // 나중에 인터페이스로 구현 고려, 어댑터 패턴 적용 고려
 public class BudgetConverter {
 
-    public static BudgetSearchResponse budgetToDto(Budget budget) {
+    public static BudgetSearchResponse entityToSearchResponse(Budget budget) {
         return new BudgetSearchResponse(
                 budget.getId(),
                 budget.getPrice(),
@@ -29,13 +29,13 @@ public class BudgetConverter {
                 budget.getContent());
     }
 
-    public static List<BudgetSearchResponse> entityListToDtoList(List<Budget> list) {
+    public static List<BudgetSearchResponse> entityListToSearchResponseList(List<Budget> list) {
         return list.stream().map(
-                        (budget) -> budgetToDto(budget))
+                        (budget) -> entityToSearchResponse(budget))
                 .collect(Collectors.toList());
     }
 
-    public static Budget formToEntity(BudgetSaveRequest budgetSaveRequest) {
+    public static Budget saveRequestToEntity(BudgetSaveRequest budgetSaveRequest) {
         return new Budget(
                 budgetSaveRequest.getTripCategory(),
                 budgetSaveRequest.getPrice(),

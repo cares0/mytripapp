@@ -1,20 +1,25 @@
 package com.triple.mytrip.web.checklist;
 
 import com.triple.mytrip.domain.checklist.category.ChecklistCategory;
-import com.triple.mytrip.web.checklist.response.ChecklistCategoryDto;
+import com.triple.mytrip.web.checklist.response.ChecklistCategoryEditResponse;
+import com.triple.mytrip.web.checklist.response.ChecklistCategorySearchResponse;
 import com.triple.mytrip.web.checklist.response.ChecklistSearchResponse;
-import com.triple.mytrip.web.checklist.request.ChecklistCategorySaveRequest;
+import com.triple.mytrip.web.checklist.request.ChecklistCategoryRequest;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class ChecklistCategoryConverter {
 
-    public static ChecklistCategory formToEntity(ChecklistCategorySaveRequest categoryForm) {
-        return new ChecklistCategory(categoryForm.getName());
+    public static ChecklistCategory saveRequestToEntity(ChecklistCategoryRequest checklistCategoryRequest) {
+        return new ChecklistCategory(checklistCategoryRequest.getName());
     }
 
-    public static List<ChecklistCategoryDto> entityListToDtoList(List<ChecklistCategory> result) {
+    public static ChecklistCategoryEditResponse entityToEditResponse(ChecklistCategory modifiedCategory) {
+        return new ChecklistCategoryEditResponse(modifiedCategory.getId(), modifiedCategory.getName());
+    }
+
+    public static List<ChecklistCategorySearchResponse> entityListToDtoList(List<ChecklistCategory> result) {
         return result.stream().map((category) -> {
             List<ChecklistSearchResponse> checklistSearchResponses = category.getChecklists().stream().map((checklist) -> new ChecklistSearchResponse(
                     checklist.getId(),
@@ -23,7 +28,7 @@ public class ChecklistCategoryConverter {
                     checklist.getName(),
                     checklist.getMemo(),
                     checklist.getInstruction())).collect(Collectors.toList());
-            return new ChecklistCategoryDto(
+            return new ChecklistCategorySearchResponse(
                     category.getId(),
                     category.getTrip().getId(),
                     checklistSearchResponses,
