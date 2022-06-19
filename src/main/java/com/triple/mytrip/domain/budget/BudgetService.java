@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -36,7 +37,7 @@ public class BudgetService {
     }
 
     public Budget getOne(Long id) {
-        return budgetRepository.findByIdWithBudgetFiles(id);
+        return findBudgetWithBudgetFiles(id);
     }
 
     public List<Budget> getList(Long tripId) {
@@ -68,6 +69,11 @@ public class BudgetService {
 
     private Budget findBudget(Long id) {
         return budgetRepository.findById(id).orElseThrow(() ->
+                new EntityNotFoundException("해당 ID와 일치하는 가계부를 찾을 수 없음"));
+    }
+
+    private Budget findBudgetWithBudgetFiles(Long id) {
+        return Optional.ofNullable(budgetRepository.findByIdWithBudgetFiles(id)).orElseThrow(() ->
                 new EntityNotFoundException("해당 ID와 일치하는 가계부를 찾을 수 없음"));
     }
 

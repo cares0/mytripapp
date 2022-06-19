@@ -20,9 +20,9 @@ public class BudgetSearchResponse {
 
     private Integer order;
 
-    private List<BudgetFileSearchResponse> budgetFiles;
     private PaymentPlan paymentPlan;
     private TripCategory tripCategory;
     private String content;
+    private List<BudgetFileSearchResponse> budgetFiles;
 
 }
