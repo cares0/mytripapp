@@ -30,6 +30,9 @@ public class Flight {
     private String departureAirport;
     private String arrivalAirport;
 
+    /**
+     * 등록, 수정 겸용 (등록되어야 할 데이터와 수정되어야 할 데이터가 같음)
+     */
     public Flight(String flightNumber, String airline, LocalDate departureDate,
                   LocalTime departureTime, LocalTime arrivalTime,
                   String departureAirport, String arrivalAirport) {
@@ -46,4 +49,31 @@ public class Flight {
         return departureAirport + departureTime + " - " + arrivalAirport + arrivalTime;
     }
 
+    public void editFlightNumber(String flightNumber) {
+        this.flightNumber = flightNumber;
+    }
+
+    public void editAirline(String airline) {
+        this.airline = airline;
+    }
+
+    public void editDepartureDate(LocalDate departureDate) {
+        this.departureDate = departureDate;
+    }
+
+    public void editDepartureTime(LocalTime departureTime) {
+        this.departureTime = departureTime;
+    }
+
+    public void editArrivalTime(LocalTime arrivalTime) {
+        this.arrivalTime = arrivalTime;
+    }
+
+    public void editDepartureAirport(String departureAirport) {
+        this.departureAirport = departureAirport;
+    }
+
+    public void editArrivalAirport(String arrivalAirport) {
+        this.arrivalAirport = arrivalAirport;
+    }
 }

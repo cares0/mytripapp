@@ -9,8 +9,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 @Service
 @Transactional(readOnly = true)
@@ -32,6 +35,15 @@ public class FlightService {
         return idMap;
     }
 
+    @Transactional
+    public Flight edit(Long flightId, Flight modified) {
+        Flight original = flightRepository.findById(flightId).orElseThrow(() ->
+                new EntityNotFoundException("해당 ID와 일치하는 항공을 찾을 수 없습니다."));
+
+        update(original, modified);
+        return original;
+    }
+
     private Trip findTrip(Long tripId) {
         return tripRepository.findById(tripId).orElseThrow(() ->
                 new EntityNotFoundException("해당 ID와 일치하는 여행을 찾을 수 없음"));
@@ -50,5 +62,36 @@ public class FlightService {
         idMap.put("flightId", savedFlight.getId());
         idMap.put("scheduleId", savedSchedule.getId());
         return idMap;
+    }
+
+    private void update(Flight original, Flight modified) {
+        String flightNumber = modified.getFlightNumber();
+        if (Objects.nonNull(flightNumber)) {
+            original.editFlightNumber(flightNumber);
+        }
+        String airline = modified.getAirline();
+        if (Objects.nonNull(airline)) {
+            original.editAirline(airline);
+        }
+        LocalDate departureDate = modified.getDepartureDate();
+        if (Objects.nonNull(departureDate)) {
+            original.editDepartureDate(departureDate);
+        }
+        LocalTime departureTime = modified.getDepartureTime();
+        if (Objects.nonNull(departureTime)) {
+            original.editDepartureTime(departureTime);
+        }
+        LocalTime arrivalTime = modified.getArrivalTime();
+        if (Objects.nonNull(arrivalTime)) {
+            original.editArrivalTime(arrivalTime);
+        }
+        String departureAirport = modified.getDepartureAirport();
+        if (Objects.nonNull(departureAirport)) {
+            original.editDepartureAirport(departureAirport);
+        }
+        String arrivalAirport = modified.getArrivalAirport();
+        if (Objects.nonNull(arrivalAirport)) {
+            original.editArrivalAirport(arrivalAirport);
+        }
     }
 }
