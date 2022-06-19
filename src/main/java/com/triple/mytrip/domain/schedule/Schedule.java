@@ -1,5 +1,7 @@
 package com.triple.mytrip.domain.schedule;
 
+import com.triple.mytrip.domain.place.Place;
+import com.triple.mytrip.domain.schedule.flight.Flight;
 import com.triple.mytrip.domain.trip.Trip;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -24,23 +26,38 @@ public class Schedule {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "trip_id")
     private Trip trip;
-    private String name;
+
+    @OneToOne(fetch = LAZY)
+    @JoinColumn(name = "flight_id")
+    private Flight flight;
+
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "place_id")
+    private Place place;
+
     private LocalDate date;
-    private Integer placeOrder;
-    private String location;
+    private Integer visitOrder;
+    private Integer arrangeOrder;
 
     private LocalTime visitTime;
     private String memo;
 
-    public Schedule(String name, LocalDate date, String location, Integer placeOrder) {
-        this.name = name;
+    public Schedule(LocalDate date, Integer visitOrder, Integer arrangeOrder) {
         this.date = date;
-        this.location = location;
-        this.placeOrder = placeOrder;
+        this.visitOrder = visitOrder;
+        this.arrangeOrder = arrangeOrder;
     }
 
     public void addTrip(Trip trip) {
         this.trip = trip;
+    }
+
+    public void addPlace(Place place) {
+        this.place = place;
+    }
+
+    public void addFlight(Flight flight) {
+        this.flight = flight;
     }
 
     public void editVisitTime(LocalTime visitTime) {
@@ -55,8 +72,11 @@ public class Schedule {
         this.date = date;
     }
 
-    public void editPlaceOrder(Integer placeOrder) {
-        this.placeOrder = placeOrder;
+    public void editVisitOrder(Integer visitOrder) {
+        this.visitOrder = visitOrder;
     }
 
+    public void editArrangeOrder(Integer arrangeOrder) {
+        this.arrangeOrder = arrangeOrder;
+    }
 }

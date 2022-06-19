@@ -4,15 +4,19 @@ import com.triple.mytrip.domain.schedule.Schedule;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
+
+import static javax.persistence.GenerationType.*;
 
 @Entity
 @DiscriminatorValue("FLIGHT")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Flight extends Schedule {
+public class Flight {
+
+    @Id @GeneratedValue(strategy = IDENTITY)
+    private Long id;
 
     private String flightNumber;
     private String airline;
@@ -25,11 +29,9 @@ public class Flight extends Schedule {
     private String departureAirport;
     private String arrivalAirport;
 
-    public Flight(LocalDate date, String location, Integer placeOrder,
-                  String flightNumber, String airline, LocalDate departureDate,
+    public Flight(String flightNumber, String airline, LocalDate departureDate,
                   LocalTime departureTime, LocalTime arrivalTime,
                   String departureAirport, String arrivalAirport) {
-        super(createName(departureTime, arrivalTime, departureAirport, arrivalAirport), date, location, placeOrder);
         this.flightNumber = flightNumber;
         this.airline = airline;
         this.departureDate = departureDate;
