@@ -47,6 +47,11 @@ public class ScheduleService {
         return original;
     }
 
+    @Transactional
+    public void delete(Long id) {
+        scheduleRepository.deleteById(id);
+    }
+
     private void update(Schedule original, Schedule modified) {
         LocalTime visitTime = modified.getVisitTime();
         if (Objects.nonNull(visitTime)) {
