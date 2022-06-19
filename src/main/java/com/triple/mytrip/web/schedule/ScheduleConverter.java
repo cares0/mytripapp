@@ -2,7 +2,11 @@ package com.triple.mytrip.web.schedule;
 
 import com.triple.mytrip.domain.place.Place;
 import com.triple.mytrip.domain.schedule.Schedule;
+import com.triple.mytrip.domain.schedule.flight.Flight;
 import com.triple.mytrip.web.schedule.request.ScheduleEditRequest;
+import com.triple.mytrip.web.schedule.request.ScheduleSaveRequest;
+import com.triple.mytrip.web.schedule.response.FlightDto;
+import com.triple.mytrip.web.schedule.response.PlaceDto;
 import com.triple.mytrip.web.schedule.response.ScheduleEditResponse;
 import com.triple.mytrip.web.schedule.response.ScheduleSearchResponse;
 
@@ -45,13 +49,35 @@ public class ScheduleConverter {
                     schedule.getMemo()
             );
             Place place = schedule.getPlace();
+            Flight flight = schedule.getFlight();
             if (Objects.nonNull(place)) {
-                scheduleSearchResponse.ifPlace(place.getName(), place.getPlaceType().getKorName(), place.getLocation());
+                scheduleSearchResponse.setPlace(new PlaceDto(
+                        place.getId(),
+                        place.getName(),
+                        place.getPlaceType().getKorName(),
+                        place.getLocation()
+                ));
             } else {
-                scheduleSearchResponse.ifFlight(schedule.getFlight().getAirline(), schedule.getFlight().getFlightNumber());
+                scheduleSearchResponse.setFlight(new FlightDto(
+                        flight.getId(),
+                        flight.getAirline(),
+                        flight.getFlightNumber(),
+                        flight.getDepartureTime(),
+                        flight.getArrivalTime(),
+                        flight.getDepartureAirport(),
+                        flight.getArrivalAirport()
+                ));
             }
             scheduleSearchResponses.add(scheduleSearchResponse);
         }
         return scheduleSearchResponses;
+    }
+
+    public static Schedule saveRequestToEntity(ScheduleSaveRequest scheduleSaveRequest) {
+        return new Schedule(
+                scheduleSaveRequest.getDate(),
+                scheduleSaveRequest.getVisitOrder(),
+                scheduleSaveRequest.getArrangeOrder()
+        );
     }
 }

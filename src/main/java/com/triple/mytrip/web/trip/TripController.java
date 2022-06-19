@@ -4,7 +4,6 @@ import com.triple.mytrip.domain.budget.Budget;
 import com.triple.mytrip.domain.budget.BudgetService;
 import com.triple.mytrip.domain.checklist.category.ChecklistCategory;
 import com.triple.mytrip.domain.checklist.category.ChecklistCategoryService;
-import com.triple.mytrip.domain.place.Place;
 import com.triple.mytrip.domain.schedule.Schedule;
 import com.triple.mytrip.domain.schedule.ScheduleService;
 import com.triple.mytrip.domain.schedule.flight.Flight;
@@ -25,10 +24,8 @@ import com.triple.mytrip.web.schedule.response.ScheduleSearchResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 
 @RestController
@@ -45,19 +42,13 @@ public class TripController {
     @PostMapping("/trip/{tripId}/schedules/flights")
     public Result<Map<String, Long>> saveFlight(@PathVariable Long tripId, @RequestBody FlightSaveRequest flightSaveRequest) {
         Flight flight = FlightConverter.saveRequestToEntity(flightSaveRequest);
-
         Map<String, Long> savedIdMap = flightService.save(tripId, flight);
-
         return new Result<>(savedIdMap);
     }
 
     @PostMapping("/trip/{tripId}/schedules/place/{placeId}")
     public Result<Long> saveSchedule(@PathVariable Long tripId, @PathVariable Long placeId, @RequestBody ScheduleSaveRequest scheduleSaveRequest) {
-        Schedule schedule = new Schedule(
-                scheduleSaveRequest.getDate(),
-                scheduleSaveRequest.getVisitOrder(),
-                scheduleSaveRequest.getArrangeOrder()
-        );
+        Schedule schedule = ScheduleConverter.saveRequestToEntity(scheduleSaveRequest);
         Long savedId = scheduleService.save(tripId, placeId, schedule);
         return new Result<>(savedId);
     }
@@ -68,10 +59,6 @@ public class TripController {
         List<ScheduleSearchResponse> scheduleSearchResponses = ScheduleConverter.entityListToResponseList(schedules);
         return new ListResult<>(scheduleSearchResponses.size(), scheduleSearchResponses);
     }
-
-
-    // ======= place ====== //
-
 
     // ======= checklistCategory ======= //
     @PostMapping("/trip/{tripId}/checklist-categories")
@@ -84,9 +71,7 @@ public class TripController {
     @GetMapping("/trip/{tripId}/checklist-categories")
     public ListResult<ChecklistCategorySearchResponse> searchChecklistCategoryList(@PathVariable Long tripId) {
         List<ChecklistCategory> categories = checklistCategoryService.getListWithChecklist(tripId);
-
         List<ChecklistCategorySearchResponse> result = ChecklistCategoryConverter.entityListToDtoList(categories);
-
         return new ListResult<>(result.size(), result);
     }
 
@@ -101,9 +86,7 @@ public class TripController {
     @GetMapping("/trip/{tripId}/budgets")
     public ListResult<BudgetSearchResponse> searchBudgetList(@PathVariable Long tripId) {
         List<Budget> budgets = budgetService.getList(tripId);
-
         List<BudgetSearchResponse> result = BudgetConverter.entityListToSearchResponseList(budgets);
-
         return new ListResult<>(result.size(), result);
     }
 }

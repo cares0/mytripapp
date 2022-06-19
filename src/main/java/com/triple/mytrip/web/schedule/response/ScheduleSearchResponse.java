@@ -17,14 +17,10 @@ public class ScheduleSearchResponse {
     private LocalTime visitTime;
     private String memo;
 
-    // place
-    private String name;
-    private String placeType;
-    private String location;
-    // flight
+    private PlaceDto place;
 
-    private String airline;
-    private String flightNumber;
+    private FlightDto flight;
+
 
     public ScheduleSearchResponse(Long id, LocalDate date, Integer visitOrder, Integer arrangeOrder, LocalTime visitTime, String memo) {
         this.id = id;
@@ -35,14 +31,4 @@ public class ScheduleSearchResponse {
         this.memo = memo;
     }
 
-    public void ifPlace(String name, String placeType, String location) {
-        this.name = name;
-        this.placeType = placeType;
-        this.location = location;
-    }
-
-    public void ifFlight(String airline, String flightNumber) {
-        this.airline = airline;
-        this.flightNumber = flightNumber;
-    }
 }
