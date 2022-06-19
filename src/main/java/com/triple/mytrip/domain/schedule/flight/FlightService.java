@@ -44,6 +44,11 @@ public class FlightService {
         return original;
     }
 
+    @Transactional
+    public void delete(Long id) {
+        flightRepository.deleteById(id);
+    }
+
     private Trip findTrip(Long tripId) {
         return tripRepository.findById(tripId).orElseThrow(() ->
                 new EntityNotFoundException("해당 ID와 일치하는 여행을 찾을 수 없음"));

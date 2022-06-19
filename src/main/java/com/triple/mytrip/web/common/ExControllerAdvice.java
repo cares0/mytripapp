@@ -3,6 +3,7 @@ package com.triple.mytrip.web.common;
 import com.triple.mytrip.domain.exception.EntityNotFoundException;
 import com.triple.mytrip.web.exception.NoModifiedDataException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -30,12 +31,19 @@ public class ExControllerAdvice {
         return new ErrorResult(LocalTime.now(), "WrongMessage", e.getMessage());
     }
 
-
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler
     public ErrorResult NoModifiedDataExHandler(NoModifiedDataException e) {
         log.error("[NoModifiedDataException]", e);
         return new ErrorResult(LocalTime.now(), "NoData", e.getMessage());
     }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler
+    public ErrorResult EmptyResultDataAccessExHandler(EmptyResultDataAccessException e) {
+        log.error("[EmptyResultDataAccessException]", e);
+        return new ErrorResult(LocalTime.now(), "EntityNotFound", "삭제하려는 데이터가 없습니다.");
+    }
+
 
 }

@@ -38,6 +38,7 @@ public class ChecklistService {
 
         return original;
     }
+
     @Transactional
     public void delete(Long checklistId) {
         checklistRepository.deleteById(checklistId);
