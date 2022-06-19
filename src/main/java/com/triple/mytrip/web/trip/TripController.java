@@ -14,8 +14,6 @@ import com.triple.mytrip.web.checklist.response.ChecklistCategorySearchResponse;
 import com.triple.mytrip.web.checklist.request.ChecklistCategoryRequest;
 import com.triple.mytrip.web.common.ListResult;
 import com.triple.mytrip.web.common.Result;
-import com.triple.mytrip.web.schedule.PlaceConverter;
-import com.triple.mytrip.web.schedule.form.PlaceForm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,20 +28,6 @@ public class TripController {
     private final ScheduleService scheduleService;
 
     // ======= place ====== //
-    @PostMapping("/trip/{tripId}/places")
-    public Result<Long> savePlace(@PathVariable Long tripId, @RequestBody PlaceForm placeForm) {
-
-        Schedule schedule =  PlaceConverter.formToEntity(placeForm);
-        Long savedId = scheduleService.save(tripId, schedule);
-
-        return new Result<>(savedId);
-    }
-
-    @GetMapping("/trip/{tripId}/places")
-    public void searchPlace(@PathVariable Long tripId) {
-        scheduleService.getList(tripId);
-    }
-
 
 
     // ======= checklistCategory ======= //

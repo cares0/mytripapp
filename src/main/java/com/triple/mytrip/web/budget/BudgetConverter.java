@@ -20,14 +20,14 @@ public class BudgetConverter {
                 budget.getPlace(),
                 budget.getDate(),
                 budget.getOrder(),
+                budget.getPaymentPlan(),
+                budget.getTripCategory(),
+                budget.getContent(),
                 budget.getBudgetFiles().stream().map((budgetFile) -> new BudgetFileSearchResponse(
                         budgetFile.getId(),
                         budgetFile.getOriName(),
                         budgetFile.getFileName())
-                ).collect(Collectors.toList()),
-                budget.getPaymentPlan(),
-                budget.getTripCategory(),
-                budget.getContent());
+                ).collect(Collectors.toList()));
     }
 
     public static List<BudgetSearchResponse> entityListToSearchResponseList(List<Budget> list) {
