@@ -21,6 +21,7 @@ public class FlightService {
     private final FlightRepository flightRepository;
     private final ScheduleRepository scheduleRepository;
 
+    @Transactional
     public Map<String, Long> save(Long tripId, Flight flight) {
         Trip trip = findTrip(tripId);
         Flight savedFlight = flightRepository.save(flight);

@@ -16,14 +16,15 @@ import com.triple.mytrip.web.checklist.response.ChecklistCategorySearchResponse;
 import com.triple.mytrip.web.checklist.request.ChecklistCategoryRequest;
 import com.triple.mytrip.web.common.ListResult;
 import com.triple.mytrip.web.common.Result;
+import com.triple.mytrip.web.schedule.flight.FlightConverter;
 import com.triple.mytrip.web.schedule.flight.request.FlightSaveRequest;
+import com.triple.mytrip.web.schedule.request.ScheduleSaveRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
 
-import static com.triple.mytrip.web.schedule.flight.FlightConverter.saveRequestToEntity;
 
 @RestController
 @RequiredArgsConstructor
@@ -37,13 +38,24 @@ public class TripController {
     // ======= schedule ======= //
     // flight
     @PostMapping("/trip/{tripId}/schedules/flights")
-    public Result<Map<String, Long>> save(@PathVariable Long tripId, @RequestBody FlightSaveRequest flightSaveRequest) {
-        Flight flight = saveRequestToEntity(flightSaveRequest);
+    public Result<Map<String, Long>> saveFlight(@PathVariable Long tripId, @RequestBody FlightSaveRequest flightSaveRequest) {
+        Flight flight = FlightConverter.saveRequestToEntity(flightSaveRequest);
 
-        Map<String, Long> save = flightService.save(tripId, flight);
+        Map<String, Long> savedIdMap = flightService.save(tripId, flight);
 
-        return new Result<>(save);
+        return new Result<>(savedIdMap);
     }
+    @PostMapping("/trip/{tripId}/schedules/place/{placeId}")
+    public Result<Long> saveSchedule(@PathVariable Long tripId, @PathVariable Long placeId, @RequestBody ScheduleSaveRequest scheduleSaveRequest) {
+        Schedule schedule = new Schedule(
+                scheduleSaveRequest.getDate(),
+                scheduleSaveRequest.getVisitOrder(),
+                scheduleSaveRequest.getArrangeOrder()
+        );
+        Long savedId = scheduleService.save(tripId, placeId, schedule);
+        return new Result<>(savedId);
+    }
+
 
     // ======= place ====== //
 
