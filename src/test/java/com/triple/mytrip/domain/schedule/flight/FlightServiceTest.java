@@ -1,10 +1,8 @@
 package com.triple.mytrip.domain.schedule.flight;
 
 import com.triple.mytrip.domain.member.Member;
-import com.triple.mytrip.domain.place.Place;
 import com.triple.mytrip.domain.schedule.Schedule;
 import com.triple.mytrip.domain.trip.Trip;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,7 +15,6 @@ import java.time.LocalTime;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -38,7 +35,7 @@ class FlightServiceTest {
                 LocalTime.of(10, 10), LocalTime.of(12, 10), "인천공항", "제주공항");
 
         // when
-        Map<String, Long> idMap = flightService.save(flight);
+        Map<String, Long> idMap = flightService.save(trip.getId(), flight);
         em.flush();
         em.clear();
 
