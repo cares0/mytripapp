@@ -20,7 +20,7 @@ public class ChecklistCategoryRepositoryImpl implements ChecklistCategoryReposit
     }
 
     @Override
-    public List<ChecklistCategory> findAllByTripWithChecklist(Long tripId) {
+    public List<ChecklistCategory> findAllByTripIdWithChecklist(Long tripId) {
         return queryFactory
                 .selectFrom(checklistCategory).distinct()
                 .join(checklistCategory.checklists, checklist).fetchJoin()

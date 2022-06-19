@@ -29,7 +29,7 @@ public class ChecklistCategoryService {
     }
 
     public List<ChecklistCategory> getListWithChecklist(Long tripId) {
-        return checklistCategoryRepository.findAllByTripWithChecklist(tripId);
+        return checklistCategoryRepository.findAllByTripIdWithChecklist(tripId);
     }
 
     @Transactional

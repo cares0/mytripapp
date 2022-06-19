@@ -1,6 +1,5 @@
 package com.triple.mytrip.domain.schedule.flight;
 
-import com.triple.mytrip.domain.schedule.Schedule;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

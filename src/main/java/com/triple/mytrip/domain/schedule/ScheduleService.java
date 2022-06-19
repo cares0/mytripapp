@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -35,6 +36,10 @@ public class ScheduleService {
         Schedule saved = scheduleRepository.save(schedule);
 
         return saved.getId();
+    }
+
+    public List<Schedule> getList(Long tripId) {
+        return scheduleRepository.findAllByTripIdWithAll(tripId);
     }
 
     @Transactional
