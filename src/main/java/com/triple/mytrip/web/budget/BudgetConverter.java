@@ -20,8 +20,8 @@ public class BudgetConverter {
                 budget.getPlace(),
                 budget.getDate(),
                 budget.getOrder(),
-                budget.getPaymentPlan(),
-                budget.getTripCategory(),
+                budget.getPaymentPlan().getKorName(),
+                budget.getTripCategory().getKorName(),
                 budget.getContent(),
                 budget.getBudgetFiles().stream().map((budgetFile) -> new BudgetFileSearchResponse(
                         budgetFile.getId(),

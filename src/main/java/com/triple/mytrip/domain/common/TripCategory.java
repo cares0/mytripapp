@@ -10,13 +10,13 @@ public enum TripCategory {
     SHOPPING("쇼핑"),
     ETC("기타");
 
-    private final String budgetCategory;
+    private final String korName;
 
-    TripCategory(String budgetCategory) {
-        this.budgetCategory = budgetCategory;
+    TripCategory(String korName) {
+        this.korName = korName;
     }
 
-    public String getBudgetCategory() {
-        return budgetCategory;
+    public String getKorName() {
+        return korName;
     }
 }

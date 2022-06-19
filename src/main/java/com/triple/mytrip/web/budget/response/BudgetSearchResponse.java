@@ -20,8 +20,8 @@ public class BudgetSearchResponse {
 
     private Integer order;
 
-    private PaymentPlan paymentPlan;
-    private TripCategory tripCategory;
+    private String paymentPlan;
+    private String tripCategory;
     private String content;
     private List<BudgetFileSearchResponse> budgetFiles;
 

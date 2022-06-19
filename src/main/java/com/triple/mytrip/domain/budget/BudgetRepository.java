@@ -13,7 +13,7 @@ public interface BudgetRepository extends JpaRepository<Budget, Long> {
     List<Budget> findAllByTrip(Trip trip);
 
     @EntityGraph(attributePaths = "budgetFiles")
-    @Query("select distinct b from Budget b where b.id = :id")
+    @Query("select distinct b from Budget b where b.id = :id order by b.date asc, b.order asc")
     Budget findByIdWithBudgetFiles(@Param("id") Long budgetId);
 
     //join fetch b.budgetFiles
