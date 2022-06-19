@@ -9,7 +9,6 @@ import lombok.Setter;
 import java.time.LocalDate;
 import java.util.List;
 
-@AllArgsConstructor
 @Getter @Setter
 public class BudgetSearchResponse {
 
@@ -23,6 +22,21 @@ public class BudgetSearchResponse {
     private String paymentPlan;
     private String tripCategory;
     private String content;
+
+    public BudgetSearchResponse(Long id, Integer price, String place, LocalDate date, Integer order, String paymentPlan, String tripCategory, String content) {
+        this.id = id;
+        this.price = price;
+        this.place = place;
+        this.date = date;
+        this.order = order;
+        this.paymentPlan = paymentPlan;
+        this.tripCategory = tripCategory;
+        this.content = content;
+    }
+
     private List<BudgetFileSearchResponse> budgetFiles;
 
+    public void setBudgetFiles(List<BudgetFileSearchResponse> budgetFiles) {
+        this.budgetFiles = budgetFiles;
+    }
 }

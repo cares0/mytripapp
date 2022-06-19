@@ -14,25 +14,22 @@ import java.util.stream.Collectors;
 public class BudgetConverter {
 
     public static BudgetSearchResponse entityToSearchResponse(Budget budget) {
-        return new BudgetSearchResponse(
-                budget.getId(),
-                budget.getPrice(),
-                budget.getPlace(),
-                budget.getDate(),
-                budget.getOrder(),
-                budget.getPaymentPlan().getKorName(),
-                budget.getTripCategory().getKorName(),
-                budget.getContent(),
-                budget.getBudgetFiles().stream().map((budgetFile) -> new BudgetFileSearchResponse(
-                        budgetFile.getId(),
-                        budgetFile.getOriName(),
-                        budgetFile.getFileName())
-                ).collect(Collectors.toList()));
+        BudgetSearchResponse budgetSearchResponse = createBudgetSearchResponse(budget);
+        List<BudgetFileSearchResponse> budgetFileSearchResponses =
+                budget.getBudgetFiles().stream().map((budgetFile) ->
+                        new BudgetFileSearchResponse(
+                                budgetFile.getId(),
+                                budgetFile.getOriName(),
+                                budgetFile.getFileName())
+                ).collect(Collectors.toList());
+        budgetSearchResponse.setBudgetFiles(budgetFileSearchResponses);
+        return budgetSearchResponse;
     }
 
+    // budgetFile은 응답할 필요가 없기에, 기본 Response 객체를 만드는 private메서드를 만들어서 재사용(단건 조회할 때는 기본 Request객체 + File이 필요함)
     public static List<BudgetSearchResponse> entityListToSearchResponseList(List<Budget> list) {
         return list.stream().map(
-                        (budget) -> entityToSearchResponse(budget))
+                        (budget) -> createBudgetSearchResponse(budget))
                 .collect(Collectors.toList());
     }
 
@@ -68,6 +65,18 @@ public class BudgetConverter {
                 budget.getPaymentPlan(),
                 budget.getOrder(),
                 budget.getPlace(),
+                budget.getContent());
+    }
+
+    private static BudgetSearchResponse createBudgetSearchResponse(Budget budget) {
+        return new BudgetSearchResponse(
+                budget.getId(),
+                budget.getPrice(),
+                budget.getPlace(),
+                budget.getDate(),
+                budget.getOrder(),
+                budget.getPaymentPlan().getKorName(),
+                budget.getTripCategory().getKorName(),
                 budget.getContent());
     }
 }

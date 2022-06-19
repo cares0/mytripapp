@@ -10,12 +10,11 @@ import java.util.List;
 
 public interface BudgetRepository extends JpaRepository<Budget, Long> {
 
-    List<Budget> findAllByTrip(Trip trip);
+    @Query("select b from Budget b where b.trip.id = :id order by b.date asc, b.order asc")
+    List<Budget> findAllByTripId(@Param("id") Long tripId);
 
     @EntityGraph(attributePaths = "budgetFiles")
-    @Query("select distinct b from Budget b where b.id = :id order by b.date asc, b.order asc")
+    @Query("select b from Budget b where b.id = :id")
     Budget findByIdWithBudgetFiles(@Param("id") Long budgetId);
-
-    //join fetch b.budgetFiles
 
 }

@@ -41,8 +41,8 @@ public class BudgetService {
     }
 
     public List<Budget> getList(Long tripId) {
-        Trip trip = findTrip(tripId);
-        return budgetRepository.findAllByTrip(trip);
+        // Trip trip = findTrip(tripId);
+        return budgetRepository.findAllByTripId(tripId);
     }
 
     @Transactional
