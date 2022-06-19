@@ -1,9 +1,8 @@
-package com.triple.mytrip.domain.place.flight;
+package com.triple.mytrip.domain.schedule.flight;
 
-import com.triple.mytrip.domain.place.Place;
+import com.triple.mytrip.domain.schedule.Schedule;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -13,7 +12,7 @@ import java.time.LocalTime;
 @Entity
 @DiscriminatorValue("FLIGHT")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Flight extends Place {
+public class Flight extends Schedule {
 
     private String flightNumber;
     private String airline;
@@ -26,7 +25,7 @@ public class Flight extends Place {
     private String departureAirport;
     private String arrivalAirport;
 
-    public Flight(String name, LocalDate date, String location, Integer placeOrder,
+    public Flight(LocalDate date, String location, Integer placeOrder,
                   String flightNumber, String airline, LocalDate departureDate,
                   LocalTime departureTime, LocalTime arrivalTime,
                   String departureAirport, String arrivalAirport) {

@@ -1,11 +1,9 @@
-package com.triple.mytrip.domain.place;
+package com.triple.mytrip.domain.schedule;
 
-import com.triple.mytrip.domain.common.TripCategory;
 import com.triple.mytrip.domain.trip.Trip;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 import javax.persistence.*;
 
@@ -16,10 +14,8 @@ import static javax.persistence.FetchType.*;
 
 @Entity
 @Getter
-@Inheritance(strategy = InheritanceType.JOINED)
-@DiscriminatorColumn(name = "place_type")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Place {
+public class Schedule {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "place_id")
@@ -36,7 +32,7 @@ public class Place {
     private LocalTime visitTime;
     private String memo;
 
-    public Place(String name, LocalDate date, String location, Integer placeOrder) {
+    public Schedule(String name, LocalDate date, String location, Integer placeOrder) {
         this.name = name;
         this.date = date;
         this.location = location;

@@ -4,8 +4,8 @@ import com.triple.mytrip.domain.budget.Budget;
 import com.triple.mytrip.domain.budget.BudgetService;
 import com.triple.mytrip.domain.checklist.category.ChecklistCategory;
 import com.triple.mytrip.domain.checklist.category.ChecklistCategoryService;
-import com.triple.mytrip.domain.place.Place;
-import com.triple.mytrip.domain.place.PlaceService;
+import com.triple.mytrip.domain.schedule.Schedule;
+import com.triple.mytrip.domain.schedule.ScheduleService;
 import com.triple.mytrip.web.budget.BudgetConverter;
 import com.triple.mytrip.web.budget.response.BudgetSearchResponse;
 import com.triple.mytrip.web.budget.request.BudgetSaveRequest;
@@ -14,8 +14,8 @@ import com.triple.mytrip.web.checklist.response.ChecklistCategorySearchResponse;
 import com.triple.mytrip.web.checklist.request.ChecklistCategoryRequest;
 import com.triple.mytrip.web.common.ListResult;
 import com.triple.mytrip.web.common.Result;
-import com.triple.mytrip.web.place.PlaceConverter;
-import com.triple.mytrip.web.place.form.PlaceForm;
+import com.triple.mytrip.web.schedule.PlaceConverter;
+import com.triple.mytrip.web.schedule.form.PlaceForm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,16 +27,21 @@ public class TripController {
 
     private final BudgetService budgetService;
     private final ChecklistCategoryService checklistCategoryService;
-    private final PlaceService placeService;
+    private final ScheduleService scheduleService;
 
     // ======= place ====== //
     @PostMapping("/trip/{tripId}/places")
     public Result<Long> savePlace(@PathVariable Long tripId, @RequestBody PlaceForm placeForm) {
 
-        Place place =  PlaceConverter.formToEntity(placeForm);
-        Long savedId = placeService.save(tripId, place);
+        Schedule schedule =  PlaceConverter.formToEntity(placeForm);
+        Long savedId = scheduleService.save(tripId, schedule);
 
         return new Result<>(savedId);
+    }
+
+    @GetMapping("/trip/{tripId}/places")
+    public void searchPlace(@PathVariable Long tripId) {
+        scheduleService.getList(tripId);
     }
 
 
@@ -55,7 +60,7 @@ public class TripController {
 
         List<ChecklistCategorySearchResponse> result = ChecklistCategoryConverter.entityListToDtoList(categories);
 
-        return new ListResult<ChecklistCategorySearchResponse>(result.size(), result);
+        return new ListResult<>(result.size(), result);
     }
 
     // ======= budgets ======= //
