@@ -20,7 +20,7 @@ import static javax.persistence.FetchType.*;
 public class Schedule {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "place_id")
+    @Column(name = "schedule_id")
     private Long id;
 
     @ManyToOne(fetch = LAZY)

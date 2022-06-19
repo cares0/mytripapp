@@ -2,6 +2,7 @@ package com.triple.mytrip.domain.schedule.flight;
 
 import com.triple.mytrip.domain.schedule.Schedule;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -11,7 +12,7 @@ import java.time.LocalTime;
 import static javax.persistence.GenerationType.*;
 
 @Entity
-@DiscriminatorValue("FLIGHT")
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Flight {
 
