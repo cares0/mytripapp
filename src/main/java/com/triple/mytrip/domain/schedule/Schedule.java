@@ -27,7 +27,7 @@ public class Schedule {
     @JoinColumn(name = "trip_id")
     private Trip trip;
 
-    @OneToOne(fetch = LAZY)
+    @OneToOne(fetch = LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     @JoinColumn(name = "flight_id")
     private Flight flight;
 
@@ -42,10 +42,24 @@ public class Schedule {
     private LocalTime visitTime;
     private String memo;
 
+    /**
+     * 저장 전용
+     */
     public Schedule(LocalDate date, Integer visitOrder, Integer arrangeOrder) {
         this.date = date;
         this.visitOrder = visitOrder;
         this.arrangeOrder = arrangeOrder;
+    }
+
+    /**
+     * 수정 전용
+     */
+    public Schedule(LocalDate date, Integer visitOrder, Integer arrangeOrder, LocalTime visitTime, String memo) {
+        this.date = date;
+        this.visitOrder = visitOrder;
+        this.arrangeOrder = arrangeOrder;
+        this.visitTime = visitTime;
+        this.memo = memo;
     }
 
     public void addTrip(Trip trip) {

@@ -9,6 +9,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.Objects;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -31,6 +35,39 @@ public class ScheduleService {
         Schedule saved = scheduleRepository.save(schedule);
 
         return saved.getId();
+    }
+
+    @Transactional
+    public Schedule edit(Long id, Schedule modified) {
+        Schedule original = scheduleRepository.findById(id).orElseThrow(() ->
+                new EntityNotFoundException("해당 ID와 일치하는 일정을 찾을 수 없음"));
+
+        update(original, modified);
+
+        return original;
+    }
+
+    private void update(Schedule original, Schedule modified) {
+        LocalTime visitTime = modified.getVisitTime();
+        if (Objects.nonNull(visitTime)) {
+            original.editVisitTime(visitTime);
+        }
+        String memo = modified.getMemo();
+        if (Objects.nonNull(memo)) {
+            original.editMemo(memo);
+        }
+        LocalDate date = modified.getDate();
+        if (Objects.nonNull(date)) {
+            original.editDate(date);
+        }
+        Integer visitOrder = modified.getVisitOrder();
+        if (Objects.nonNull(visitOrder)) {
+            original.editVisitOrder(visitOrder);
+        }
+        Integer arrangeOrder = modified.getArrangeOrder();
+        if (Objects.nonNull(arrangeOrder)) {
+            original.editArrangeOrder(arrangeOrder);
+        }
     }
 
 }
