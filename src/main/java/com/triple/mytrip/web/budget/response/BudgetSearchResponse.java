@@ -1,8 +1,6 @@
 package com.triple.mytrip.web.budget.response;
 
-import com.triple.mytrip.domain.budget.PaymentPlan;
-import com.triple.mytrip.domain.common.TripCategory;
-import lombok.AllArgsConstructor;
+import com.triple.mytrip.web.budget.budgetfile.response.BudgetFileSearchResponse;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -1,10 +1,11 @@
 package com.triple.mytrip.domain.checklist;
 
-import com.triple.mytrip.domain.checklist.category.ChecklistCategory;
+import com.triple.mytrip.domain.checklistcategory.checklist.Checklist;
+import com.triple.mytrip.domain.checklistcategory.checklist.ChecklistService;
+import com.triple.mytrip.domain.checklistcategory.ChecklistCategory;
 import com.triple.mytrip.domain.exception.EntityNotFoundException;
 import com.triple.mytrip.domain.member.Member;
 import com.triple.mytrip.domain.trip.Trip;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,10 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 
-import java.util.NoSuchElementException;
-
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional

@@ -16,4 +16,5 @@ public class FlightSaveRequest {
     private LocalTime arrivalTime;
     private String departureAirport;
     private String arrivalAirport;
+
 }

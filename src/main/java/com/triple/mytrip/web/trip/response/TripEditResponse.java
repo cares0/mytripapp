@@ -1,15 +1,13 @@
 package com.triple.mytrip.web.trip.response;
 
-import com.triple.mytrip.domain.trip.Partner;
-import com.triple.mytrip.domain.trip.TripStyle;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
 
 @Getter @Setter
-@AllArgsConstructor
+@NoArgsConstructor
 public class TripEditResponse {
 
     private Long id;

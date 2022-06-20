@@ -4,7 +4,7 @@ import com.triple.mytrip.domain.budget.Budget;
 import com.triple.mytrip.web.budget.request.BudgetEditRequest;
 import com.triple.mytrip.web.budget.response.BudgetSearchResponse;
 import com.triple.mytrip.web.budget.response.BudgetEditResponse;
-import com.triple.mytrip.web.budget.response.BudgetFileSearchResponse;
+import com.triple.mytrip.web.budget.budgetfile.response.BudgetFileSearchResponse;
 import com.triple.mytrip.web.budget.request.BudgetSaveRequest;
 
 import java.util.List;
