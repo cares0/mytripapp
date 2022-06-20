@@ -43,7 +43,7 @@ public class TripController {
     private final FlightService flightService;
 
     // ======= trip ======= //
-    @PatchMapping("/trip/{tripId}")
+    @PatchMapping("/trips/{tripId}")
     public TripEditResponse editTrip(@PathVariable Long tripId, @RequestBody TripEditRequest tripEditRequest) {
         Trip trip = TripConverter.editRequestToEntity(tripEditRequest);
         Trip modified = tripService.edit(tripId, trip);
@@ -51,24 +51,30 @@ public class TripController {
         return tripEditResponse;
     }
 
+    @DeleteMapping("/trips/{tripId}")
+    public Result<String> deleteTrip(@PathVariable Long tripId) {
+        tripService.delete(tripId);
+        return new Result<>("success");
+    }
+
 
     // ======= schedule ======= //
     // flight
-    @PostMapping("/trip/{tripId}/schedules/flights")
+    @PostMapping("/trips/{tripId}/schedules/flights")
     public Result<Map<String, Long>> saveFlight(@PathVariable Long tripId, @RequestBody FlightSaveRequest flightSaveRequest) {
         Flight flight = FlightConverter.saveRequestToEntity(flightSaveRequest);
         Map<String, Long> savedIdMap = flightService.save(tripId, flight);
         return new Result<>(savedIdMap);
     }
 
-    @PostMapping("/trip/{tripId}/schedules/place/{placeId}")
+    @PostMapping("/trips/{tripId}/schedules/place/{placeId}")
     public Result<Long> saveSchedule(@PathVariable Long tripId, @PathVariable Long placeId, @RequestBody ScheduleSaveRequest scheduleSaveRequest) {
         Schedule schedule = ScheduleConverter.saveRequestToEntity(scheduleSaveRequest);
         Long savedId = scheduleService.save(tripId, placeId, schedule);
         return new Result<>(savedId);
     }
 
-    @GetMapping("/trip/{tripId}/schedules")
+    @GetMapping("/trips/{tripId}/schedules")
     public ListResult<ScheduleSearchResponse> searchScheduleList(@PathVariable Long tripId) {
         List<Schedule> schedules = scheduleService.getList(tripId);
         List<ScheduleSearchResponse> scheduleSearchResponses = ScheduleConverter.entityListToResponseList(schedules);
@@ -76,14 +82,14 @@ public class TripController {
     }
 
     // ======= checklistCategory ======= //
-    @PostMapping("/trip/{tripId}/checklist-categories")
+    @PostMapping("/trips/{tripId}/checklist-categories")
     public Result<Long> saveCategory(@PathVariable Long tripId, @RequestBody ChecklistCategoryRequest categoryRequest) {
         ChecklistCategory category = ChecklistCategoryConverter.saveRequestToEntity(categoryRequest);
         Long savedId = checklistCategoryService.save(tripId, category);
         return new Result<>(savedId);
     }
 
-    @GetMapping("/trip/{tripId}/checklist-categories")
+    @GetMapping("/trips/{tripId}/checklist-categories")
     public ListResult<ChecklistCategorySearchResponse> searchChecklistCategoryList(@PathVariable Long tripId) {
         List<ChecklistCategory> categories = checklistCategoryService.getListWithChecklist(tripId);
         List<ChecklistCategorySearchResponse> result = ChecklistCategoryConverter.entityListToDtoList(categories);
@@ -91,14 +97,14 @@ public class TripController {
     }
 
     // ======= budgets ======= //
-    @PostMapping("/trip/{tripId}/budgets")
+    @PostMapping("/trips/{tripId}/budgets")
     public Result<Long> saveBudget(@PathVariable Long tripId, @RequestBody BudgetSaveRequest budgetSaveRequest) {
         Budget budget = BudgetConverter.saveRequestToEntity(budgetSaveRequest);
         Long save = budgetService.save(tripId, budget);
         return new Result<>(save);
     }
 
-    @GetMapping("/trip/{tripId}/budgets")
+    @GetMapping("/trips/{tripId}/budgets")
     public ListResult<BudgetSearchResponse> searchBudgetList(@PathVariable Long tripId) {
         List<Budget> budgets = budgetService.getList(tripId);
         List<BudgetSearchResponse> result = BudgetConverter.entityListToSearchResponseList(budgets);

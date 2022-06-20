@@ -65,6 +65,24 @@ class TripServiceTest {
         assertThat(modified.getTripStyle()).isEqualTo(null);
     }
 
+    @Test
+    public void 여행_삭제() throws Exception {
+        // given
+        Member member = createMember("email1", "1234");
+        Trip trip = createTrip(member, "제주");
+
+        em.flush();
+        em.clear();
+        // when
+        tripService.delete(trip.getId());
+        em.flush();
+        em.clear();
+        Trip deletedTrip = em.find(Trip.class, trip.getId());
+
+        // then
+        assertThat(deletedTrip).isNull();
+    }
+
     private Trip createTrip(Member member, String city) {
         Trip trip = new Trip(city);
         trip.addMember(member);

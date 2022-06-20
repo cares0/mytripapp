@@ -37,6 +37,11 @@ public class TripService {
         return original;
     }
 
+    @Transactional
+    public void delete(Long tripId) {
+        tripRepository.deleteById(tripId);
+    }
+
     private void update(Trip original, Trip modified) {
         String city = modified.getCity();
         if (Objects.nonNull(city)) {
