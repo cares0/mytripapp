@@ -4,6 +4,7 @@ import com.triple.mytrip.domain.schedule.flight.Flight;
 import com.triple.mytrip.web.schedule.flight.request.FlightEditRequest;
 import com.triple.mytrip.web.schedule.flight.request.FlightSaveRequest;
 import com.triple.mytrip.web.schedule.flight.response.FlightEditResponse;
+import com.triple.mytrip.web.schedule.flight.response.FlightSearchResponse;
 
 public class FlightConverter {
 
@@ -18,6 +19,20 @@ public class FlightConverter {
                 flightSaveRequest.getDepartureAirport(),
                 flightSaveRequest.getArrivalAirport()
         );
+    }
+
+    public static FlightSearchResponse entityToSearchResponse(Flight flight) {
+        FlightSearchResponse flightSearchResponse = new FlightSearchResponse(
+                flight.getId(),
+                flight.getFlightNumber(),
+                flight.getAirline(),
+                flight.getDepartureDate(),
+                flight.getDepartureTime(),
+                flight.getArrivalTime(),
+                flight.getDepartureAirport(),
+                flight.getArrivalAirport()
+        );
+        return flightSearchResponse;
     }
 
     public static Flight editRequestToEntity(FlightEditRequest flightEditRequest) {

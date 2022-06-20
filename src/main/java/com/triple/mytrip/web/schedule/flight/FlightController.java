@@ -6,6 +6,7 @@ import com.triple.mytrip.domain.schedule.flight.FlightService;
 import com.triple.mytrip.web.common.Result;
 import com.triple.mytrip.web.schedule.flight.request.FlightEditRequest;
 import com.triple.mytrip.web.schedule.flight.response.FlightEditResponse;
+import com.triple.mytrip.web.schedule.flight.response.FlightSearchResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,16 +17,17 @@ public class FlightController {
 
     private final FlightService flightService;
 
+    @GetMapping("/flights/{flightId}")
+    public FlightSearchResponse searchOne(@PathVariable Long flightId) {
+        Flight flight = flightService.getOne(flightId);
+        return FlightConverter.entityToSearchResponse(flight);
+    }
+
     @PatchMapping("/flights/{flightId}")
     public FlightEditResponse edit(@PathVariable Long flightId, @RequestBody FlightEditRequest flightEditRequest) {
-
         Flight flight = FlightConverter.editRequestToEntity(flightEditRequest);
-
         Flight modified = flightService.edit(flightId, flight);
-
-        FlightEditResponse flightEditResponse = FlightConverter.entityToEditResponse(modified);
-
-        return flightEditResponse;
+        return FlightConverter.entityToEditResponse(modified);
     }
 
     @DeleteMapping("/flights/{flightId}")

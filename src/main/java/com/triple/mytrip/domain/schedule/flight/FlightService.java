@@ -35,6 +35,11 @@ public class FlightService {
         return idMap;
     }
 
+    public Flight getOne(Long flightId) {
+        return flightRepository.findById(flightId).orElseThrow(() ->
+                new EntityNotFoundException("해당 ID와 일치하는 항공을 찾을 수 없습니다."));
+    }
+
     @Transactional
     public Flight edit(Long flightId, Flight modified) {
         Flight original = flightRepository.findById(flightId).orElseThrow(() ->
@@ -45,8 +50,8 @@ public class FlightService {
     }
 
     @Transactional
-    public void delete(Long id) {
-        flightRepository.deleteById(id);
+    public void delete(Long flightId) {
+        flightRepository.deleteById(flightId);
     }
 
     private Trip findTrip(Long tripId) {
