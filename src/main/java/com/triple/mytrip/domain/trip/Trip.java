@@ -1,12 +1,15 @@
 package com.triple.mytrip.domain.trip;
 
 import com.triple.mytrip.domain.member.Member;
+import com.triple.mytrip.domain.schedule.Schedule;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -20,6 +23,9 @@ public class Trip {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
+
+    @OneToMany(mappedBy = "trip")
+    private List<Schedule> schedules = new ArrayList<>();
 
     @Column(nullable = false)
     private String city;

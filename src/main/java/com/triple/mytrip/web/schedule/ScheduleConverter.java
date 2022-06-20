@@ -9,6 +9,9 @@ import com.triple.mytrip.web.schedule.response.FlightDto;
 import com.triple.mytrip.web.schedule.response.PlaceDto;
 import com.triple.mytrip.web.schedule.response.ScheduleEditResponse;
 import com.triple.mytrip.web.schedule.response.ScheduleSearchResponse;
+import com.triple.mytrip.web.trip.response.schdule.FlightResponse;
+import com.triple.mytrip.web.trip.response.schdule.PlaceResponse;
+import com.triple.mytrip.web.trip.response.schdule.ScheduleResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,47 +40,53 @@ public class ScheduleConverter {
         );
     }
 
-    public static  List<ScheduleSearchResponse> entityListToResponseList(List<Schedule> schedules) {
-        List<ScheduleSearchResponse> scheduleSearchResponses = new ArrayList<>();
-        for (Schedule schedule : schedules) {
-            ScheduleSearchResponse scheduleSearchResponse = new ScheduleSearchResponse(
-                    schedule.getId(),
-                    schedule.getDate(),
-                    schedule.getVisitOrder(),
-                    schedule.getArrangeOrder(),
-                    schedule.getVisitTime(),
-                    schedule.getMemo()
-            );
-            Place place = schedule.getPlace();
-            Flight flight = schedule.getFlight();
-            if (Objects.nonNull(place)) {
-                scheduleSearchResponse.setPlace(new PlaceDto(
-                        place.getId(),
-                        place.getName(),
-                        place.getPlaceType().getKorName(),
-                        place.getLocation()
-                ));
-            } else {
-                scheduleSearchResponse.setFlight(new FlightDto(
-                        flight.getId(),
-                        flight.getAirline(),
-                        flight.getFlightNumber(),
-                        flight.getDepartureTime(),
-                        flight.getArrivalTime(),
-                        flight.getDepartureAirport(),
-                        flight.getArrivalAirport()
-                ));
-            }
-            scheduleSearchResponses.add(scheduleSearchResponse);
-        }
-        return scheduleSearchResponses;
-    }
-
     public static Schedule saveRequestToEntity(ScheduleSaveRequest scheduleSaveRequest) {
         return new Schedule(
                 scheduleSaveRequest.getDate(),
                 scheduleSaveRequest.getVisitOrder(),
                 scheduleSaveRequest.getArrangeOrder()
         );
+    }
+
+    public static List<ScheduleResponse> entityListToResponseList(List<Schedule> schedules) {
+        List<ScheduleResponse> scheduleResponses = new ArrayList<>();
+        schedules.stream().forEach((schedule) ->
+                scheduleResponses.add(entityToResponse(schedule))
+        );
+        return scheduleResponses;
+    }
+
+    public static ScheduleResponse entityToResponse(Schedule schedule) {
+        ScheduleResponse scheduleResponse = new ScheduleResponse(
+                schedule.getId(),
+                schedule.getDate(),
+                schedule.getVisitOrder(),
+                schedule.getArrangeOrder(),
+                schedule.getVisitTime(),
+                schedule.getMemo()
+        );
+        Flight flight = schedule.getFlight();
+        Place place = schedule.getPlace();
+        if (Objects.nonNull(flight)) {
+            scheduleResponse.setFlight(new FlightResponse(
+                    flight.getId(),
+                    flight.getAirline(),
+                    flight.getFlightNumber(),
+                    flight.getDepartureTime(),
+                    flight.getArrivalTime(),
+                    flight.getDepartureAirport(),
+                    flight.getArrivalAirport()
+            ));
+        } else if (Objects.nonNull(place)){
+            scheduleResponse.setPlace(new PlaceResponse(
+                    place.getId(),
+                    place.getName(),
+                    place.getPlaceType().getKorName(),
+                    place.getLocation()
+            ));
+        } else {
+            throw new RuntimeException("Mandatory 위반");
+        }
+        return scheduleResponse;
     }
 }

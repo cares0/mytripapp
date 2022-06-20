@@ -4,6 +4,7 @@ import com.triple.mytrip.domain.budget.Budget;
 import com.triple.mytrip.domain.budget.BudgetService;
 import com.triple.mytrip.domain.checklist.category.ChecklistCategory;
 import com.triple.mytrip.domain.checklist.category.ChecklistCategoryService;
+import com.triple.mytrip.domain.place.Place;
 import com.triple.mytrip.domain.schedule.Schedule;
 import com.triple.mytrip.domain.schedule.ScheduleService;
 import com.triple.mytrip.domain.schedule.flight.Flight;
@@ -22,14 +23,19 @@ import com.triple.mytrip.web.schedule.ScheduleConverter;
 import com.triple.mytrip.web.schedule.flight.FlightConverter;
 import com.triple.mytrip.web.schedule.flight.request.FlightSaveRequest;
 import com.triple.mytrip.web.schedule.request.ScheduleSaveRequest;
-import com.triple.mytrip.web.schedule.response.ScheduleSearchResponse;
 import com.triple.mytrip.web.trip.request.TripEditRequest;
 import com.triple.mytrip.web.trip.response.TripEditResponse;
+import com.triple.mytrip.web.trip.response.TripWithScheduleResponse;
+import com.triple.mytrip.web.trip.response.schdule.FlightResponse;
+import com.triple.mytrip.web.trip.response.schdule.PlaceResponse;
+import com.triple.mytrip.web.trip.response.schdule.ScheduleResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 
 @RestController
@@ -75,10 +81,10 @@ public class TripController {
     }
 
     @GetMapping("/trips/{tripId}/schedules")
-    public ListResult<ScheduleSearchResponse> searchScheduleList(@PathVariable Long tripId) {
-        List<Schedule> schedules = scheduleService.getList(tripId);
-        List<ScheduleSearchResponse> scheduleSearchResponses = ScheduleConverter.entityListToResponseList(schedules);
-        return new ListResult<>(scheduleSearchResponses.size(), scheduleSearchResponses);
+    public TripWithScheduleResponse searchWithSchedule(@PathVariable Long tripId) {
+        Trip tripWithSchedule = tripService.getTripWithSchedule(tripId);
+        TripWithScheduleResponse tripWithScheduleResponse = TripConverter.entityToResponse(tripWithSchedule);
+        return tripWithScheduleResponse;
     }
 
     // ======= checklistCategory ======= //

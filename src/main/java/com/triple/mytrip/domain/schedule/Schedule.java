@@ -64,6 +64,7 @@ public class Schedule {
 
     public void addTrip(Trip trip) {
         this.trip = trip;
+        trip.getSchedules().add(this);
     }
 
     public void addPlace(Place place) {

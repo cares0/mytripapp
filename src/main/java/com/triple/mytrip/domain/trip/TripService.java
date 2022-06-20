@@ -28,6 +28,11 @@ public class TripService {
         return saved.getId();
     }
 
+    public Trip getTripWithSchedule(Long tripId) {
+        Trip trip = tripRepository.findAllByIdWithSchedule(tripId);
+        return trip;
+    }
+
     @Transactional
     public Trip edit(Long tripId, Trip modified) {
         Trip original = tripRepository.findById(tripId).orElseThrow(() ->
