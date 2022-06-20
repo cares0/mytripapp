@@ -1,10 +1,10 @@
 package com.triple.mytrip.domain.trip;
 
+import com.triple.mytrip.domain.budget.Budget;
+import com.triple.mytrip.domain.checklistcategory.ChecklistCategory;
 import com.triple.mytrip.domain.member.Member;
 import com.triple.mytrip.domain.schedule.Schedule;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -14,6 +14,8 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
 public class Trip {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,6 +28,12 @@ public class Trip {
 
     @OneToMany(mappedBy = "trip")
     private List<Schedule> schedules = new ArrayList<>();
+
+    @OneToMany(mappedBy = "trip")
+    private List<Budget> budgets = new ArrayList<>();
+
+    @OneToMany(mappedBy = "trip")
+    private List<ChecklistCategory> checklistCategories = new ArrayList<>();
 
     @Column(nullable = false)
     private String city;

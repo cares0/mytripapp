@@ -81,7 +81,7 @@ public class TripController {
     public TripSearchResponse searchWithSchedule(@PathVariable Long tripId) {
         Trip tripWithSchedule = tripService.getTripWithSchedule(tripId);
 
-        TripSearchResponse tripSearchResponse = modelMapper.map(tripWithSchedule, TripSearchResponse.class);
+        TripSearchResponse tripSearchResponse = TripSearchResponse.toResponse(tripWithSchedule);
 
         return tripSearchResponse;
     }

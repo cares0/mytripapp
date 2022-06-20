@@ -77,6 +77,7 @@ public class BudgetConverter {
                 budget.getOrder(),
                 budget.getPaymentPlan().getKorName(),
                 budget.getTripCategory().getKorName(),
-                budget.getContent());
+                budget.getContent(),
+                null);
     }
 }

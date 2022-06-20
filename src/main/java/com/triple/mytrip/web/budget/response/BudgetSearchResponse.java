@@ -1,11 +1,14 @@
 package com.triple.mytrip.web.budget.response;
 
+import com.triple.mytrip.domain.budget.Budget;
 import com.triple.mytrip.web.budget.budgetfile.response.BudgetFileSearchResponse;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter @Setter
 public class BudgetSearchResponse {
@@ -21,7 +24,8 @@ public class BudgetSearchResponse {
     private String tripCategory;
     private String content;
 
-    public BudgetSearchResponse(Long id, Integer price, String place, LocalDate date, Integer order, String paymentPlan, String tripCategory, String content) {
+    @Builder
+    public BudgetSearchResponse(Long id, Integer price, String place, LocalDate date, Integer order, String paymentPlan, String tripCategory, String content, List<BudgetFileSearchResponse> budgetFiles) {
         this.id = id;
         this.price = price;
         this.place = place;
@@ -30,11 +34,26 @@ public class BudgetSearchResponse {
         this.paymentPlan = paymentPlan;
         this.tripCategory = tripCategory;
         this.content = content;
+        this.budgetFiles = budgetFiles;
     }
 
     private List<BudgetFileSearchResponse> budgetFiles;
 
     public void setBudgetFiles(List<BudgetFileSearchResponse> budgetFiles) {
         this.budgetFiles = budgetFiles;
+    }
+
+    public static BudgetSearchResponse toResponse(Budget budget) {
+        return BudgetSearchResponse.builder()
+                .id(budget.getId())
+                .price(budget.getPrice())
+                .place(budget.getPlace())
+                .date(budget.getDate())
+                .order(budget.getOrder())
+                .paymentPlan(budget.getPaymentPlan().getKorName())
+                .tripCategory(budget.getTripCategory().getKorName())
+                .content(budget.getContent())
+                .budgetFiles(budget.getBudgetFiles().stream().map(budgetFile -> BudgetFileSearchResponse.toResponse(budgetFile)).collect(Collectors.toList()))
+                .build();
     }
 }
