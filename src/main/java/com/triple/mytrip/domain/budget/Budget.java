@@ -1,12 +1,8 @@
 package com.triple.mytrip.domain.budget;
 
 import com.triple.mytrip.domain.budget.budgetfile.BudgetFile;
-import com.triple.mytrip.domain.common.TripCategory;
 import com.triple.mytrip.domain.trip.Trip;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -16,7 +12,6 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString(of = {"id", "price"})
 public class Budget {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,7 +22,7 @@ public class Budget {
     @JoinColumn(name = "trip_id")
     private Trip trip;
 
-    @OneToMany(mappedBy = "budget", cascade = CascadeType.REMOVE, orphanRemoval = true )
+    @OneToMany(mappedBy = "budget", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<BudgetFile> budgetFiles = new ArrayList<>();
 
     @Enumerated(value = EnumType.STRING)
@@ -47,8 +42,8 @@ public class Budget {
 
     private String content;
 
-    public Budget(TripCategory tripCategory, Integer price, LocalDate date,
-                  PaymentPlan paymentPlan, Integer order, String place, String content) {
+    @Builder
+    private Budget(TripCategory tripCategory, Integer price, LocalDate date, PaymentPlan paymentPlan, Integer order, String place, String content) {
         this.tripCategory = tripCategory;
         this.price = price;
         this.date = date;

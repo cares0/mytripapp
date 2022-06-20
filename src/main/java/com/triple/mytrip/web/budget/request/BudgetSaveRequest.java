@@ -1,7 +1,7 @@
 package com.triple.mytrip.web.budget.request;
 
 import com.triple.mytrip.domain.budget.PaymentPlan;
-import com.triple.mytrip.domain.common.TripCategory;
+import com.triple.mytrip.domain.budget.TripCategory;
 import lombok.Getter;
 import lombok.Setter;
 

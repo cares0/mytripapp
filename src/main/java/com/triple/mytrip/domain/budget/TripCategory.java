@@ -1,4 +1,4 @@
-package com.triple.mytrip.domain.common;
+package com.triple.mytrip.domain.budget;
 
 public enum TripCategory {
 

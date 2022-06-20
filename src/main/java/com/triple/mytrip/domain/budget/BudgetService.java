@@ -1,8 +1,6 @@
 package com.triple.mytrip.domain.budget;
 
 import com.triple.mytrip.domain.budget.budgetfile.BudgetFile;
-import com.triple.mytrip.domain.budget.budgetfile.BudgetFileRepository;
-import com.triple.mytrip.domain.common.TripCategory;
 import com.triple.mytrip.domain.exception.EntityNotFoundException;
 import com.triple.mytrip.domain.trip.Trip;
 import com.triple.mytrip.domain.trip.TripRepository;
@@ -17,54 +15,45 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Service
-@Transactional(readOnly = true)
+@Transactional
 @RequiredArgsConstructor
 public class BudgetService {
 
     private final TripRepository tripRepository;
     private final BudgetRepository budgetRepository;
-    private final BudgetFileRepository budgetFileRepository;
 
     private final FileManager fileManager;
 
-    @Transactional
-    public Long save(Long tripId, Budget budget) {
+    public Long store(Long tripId, Budget budget) {
         Trip trip = findTrip(tripId);
-
         budget.addTrip(trip);
-
         return budgetRepository.save(budget).getId();
     }
 
-    public Budget getOne(Long id) {
-        return findBudgetWithBudgetFiles(id);
+    @Transactional(readOnly = true)
+    public Budget getOne(Long budgetId) {
+        return findBudgetWithBudgetFiles(budgetId);
     }
 
+    @Transactional(readOnly = true)
     public List<Budget> getList(Long tripId) {
-        // Trip trip = findTrip(tripId);
         return budgetRepository.findAllByTripId(tripId);
     }
 
-    @Transactional
     public Budget edit(Long budgetId, Budget modified) {
         Budget original = findBudget(budgetId);
-
-        update(original, modified);
-
+        modify(original, modified);
         return original;
     }
 
-    @Transactional
-    public void delete(Long id) {
-        Budget budget = findBudget(id);
-
-        List<BudgetFile> budgetFiles = budgetFileRepository.findAllByBudget(budget);
+    public void delete(Long budgetId) {
+        Budget budget = findBudgetWithBudgetFiles(budgetId);
 
         // 디스크에 저장된 파일 삭제
-        deleteFile(budgetFiles);
+        deleteFile(budget.getBudgetFiles());
 
-        // CASCADE로 같이 삭제됨
-        budgetRepository.deleteById(id);
+        // DB데이터는 CASCADE로 같이 삭제됨
+        budgetRepository.delete(budget);
     }
 
     private Budget findBudget(Long id) {
@@ -87,7 +76,7 @@ public class BudgetService {
                 fileManager.deleteFile(budgetFile.getFileName()));
     }
 
-    private void update(Budget original, Budget modified) {
+    private void modify(Budget original, Budget modified) {
         TripCategory tripCategory = modified.getTripCategory();
         if (Objects.nonNull(tripCategory)) {
             original.editTripCategory(tripCategory);

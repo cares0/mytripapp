@@ -1,15 +1,12 @@
 package com.triple.mytrip.domain.budget;
 
 import com.triple.mytrip.domain.budget.budgetfile.BudgetFile;
-import com.triple.mytrip.domain.common.TripCategory;
 import com.triple.mytrip.domain.exception.EntityNotFoundException;
 import com.triple.mytrip.domain.member.Member;
 import com.triple.mytrip.domain.trip.Trip;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
@@ -82,8 +79,16 @@ class BudgetServiceTest {
         em.flush();
         em.clear();
         // 기존 ID로 조회 후 변경 내용 확인
-        Budget modified = new Budget(TripCategory.ETC, 10000, LocalDate.of(2020, 12, 22),
-                PaymentPlan.CASH, 3, "수정장소", "수정컨텐츠");
+
+        Budget modified = Budget.builder()
+                .tripCategory(TripCategory.ETC)
+                .price(10000)
+                .date(LocalDate.of(2020, 12, 22))
+                .paymentPlan(PaymentPlan.CASH)
+                .order(3)
+                .place("수정장소")
+                .content("수정컨텐츠")
+                .build();
         modified = budgetService.edit(budget.getId(), modified);
 
         // then
@@ -105,16 +110,24 @@ class BudgetServiceTest {
 
         // when
         budgetService.delete(budget.getId());
-        Budget deletedBudget = budgetService.getOne(budget.getId());
+
 
         // then
-        assertThat(deletedBudget).isNull();
-
+        assertThatThrownBy(() -> budgetService.getOne(budget.getId()))
+                .isInstanceOf(EntityNotFoundException.class);
     }
 
     private Budget createBudget(Trip trip, int price, String place) {
-        Budget budget = new Budget(TripCategory.ACCOMMODATIONS, price, LocalDate.now(), PaymentPlan.CARD, 0, place, "content1");
-        budgetService.save(trip.getId(), budget);
+        Budget budget = Budget.builder()
+                .tripCategory(TripCategory.ACCOMMODATIONS)
+                .price(price)
+                .date(LocalDate.now())
+                .paymentPlan(PaymentPlan.CARD)
+                .order(0)
+                .place(place)
+                .content("content1")
+                .build();
+        budgetService.store(trip.getId(), budget);
         return budget;
     }
 

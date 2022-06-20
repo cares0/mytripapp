@@ -1,5 +1,6 @@
 package com.triple.mytrip.domain.trip;
 
+import com.triple.mytrip.domain.budget.Budget;
 import com.triple.mytrip.domain.member.Member;
 import com.triple.mytrip.domain.schedule.Schedule;
 import lombok.AccessLevel;
@@ -23,6 +24,9 @@ public class Trip {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
+
+    @OneToMany(mappedBy = "trip")
+    private List<Budget> budgets = new ArrayList<>();
 
     @OneToMany(mappedBy = "trip")
     private List<Schedule> schedules = new ArrayList<>();

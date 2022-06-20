@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class BudgetFileService {
 
@@ -22,8 +23,7 @@ public class BudgetFileService {
     private final BudgetRepository budgetRepository;
     private final FileManager fileManager;
 
-    @Transactional
-    public int save(Long budgetId, List<MultipartFile> multipartFiles) throws IOException {
+    public int store(Long budgetId, List<MultipartFile> multipartFiles) throws IOException {
         Budget budget = findBudget(budgetId);
 
         List<UploadFile> uploadFiles = fileManager.storeFiles(multipartFiles);
@@ -47,7 +47,6 @@ public class BudgetFileService {
                         (uploadFile) -> new BudgetFile(budget, uploadFile.getUploadFileName(), uploadFile.getStoreFileName()))
                 .collect(Collectors.toList());
     }
-
 
     private void saveFile(List<BudgetFile> budgetFiles) {
         budgetFiles.stream()

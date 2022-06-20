@@ -1,13 +1,17 @@
 package com.triple.mytrip.web.budget.response;
 
+import com.triple.mytrip.domain.budget.Budget;
 import com.triple.mytrip.web.budget.budgetfile.response.BudgetFileSearchResponse;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Getter @Setter
+@Builder
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class BudgetSearchResponse {
 
     private Long id;
@@ -21,20 +25,35 @@ public class BudgetSearchResponse {
     private String tripCategory;
     private String content;
 
-    public BudgetSearchResponse(Long id, Integer price, String place, LocalDate date, Integer order, String paymentPlan, String tripCategory, String content) {
-        this.id = id;
-        this.price = price;
-        this.place = place;
-        this.date = date;
-        this.order = order;
-        this.paymentPlan = paymentPlan;
-        this.tripCategory = tripCategory;
-        this.content = content;
-    }
-
     private List<BudgetFileSearchResponse> budgetFiles;
 
-    public void setBudgetFiles(List<BudgetFileSearchResponse> budgetFiles) {
-        this.budgetFiles = budgetFiles;
+    public static BudgetSearchResponse toResponse(Budget budget) {
+        if (Objects.isNull(budget)) {
+            return null;
+        }
+
+        String tripCategory = Objects.isNull(budget.getTripCategory()) ?
+                null : budget.getTripCategory().getKorName();
+
+        String paymentPlan = Objects.isNull(budget.getPaymentPlan()) ?
+                null : budget.getPaymentPlan().getKorName();
+
+        List<BudgetFileSearchResponse> budgetFileSearchResponses =
+                budget.getBudgetFiles().stream().map(budgetFile ->
+                                BudgetFileSearchResponse.toResponse(budgetFile))
+                        .collect(Collectors.toList());
+
+        return BudgetSearchResponse.builder()
+                .id(budget.getId())
+                .price(budget.getPrice())
+                .place(budget.getPlace())
+                .date(budget.getDate())
+                .order(budget.getOrder())
+                .paymentPlan(paymentPlan)
+                .tripCategory(tripCategory)
+                .content(budget.getContent())
+                .budgetFiles(budgetFileSearchResponses)
+                .build();
     }
+
 }
