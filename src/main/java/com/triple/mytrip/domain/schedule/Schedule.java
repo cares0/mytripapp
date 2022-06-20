@@ -1,7 +1,7 @@
 package com.triple.mytrip.domain.schedule;
 
 import com.triple.mytrip.domain.place.Place;
-import com.triple.mytrip.domain.schedule.flight.Flight;
+import com.triple.mytrip.domain.flight.Flight;
 import com.triple.mytrip.domain.trip.Trip;
 import lombok.AccessLevel;
 import lombok.Getter;

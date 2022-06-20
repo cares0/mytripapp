@@ -15,7 +15,7 @@ public class BudgetSaveRequest {
     private String content;
     private TripCategory tripCategory;
     private Integer price;
-    private Integer budgetOrder;
+    private Integer order;
     private String place;
 
 }

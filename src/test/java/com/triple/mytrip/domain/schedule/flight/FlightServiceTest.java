@@ -1,5 +1,7 @@
 package com.triple.mytrip.domain.schedule.flight;
 
+import com.triple.mytrip.domain.flight.Flight;
+import com.triple.mytrip.domain.flight.FlightService;
 import com.triple.mytrip.domain.member.Member;
 import com.triple.mytrip.domain.schedule.Schedule;
 import com.triple.mytrip.domain.trip.Trip;

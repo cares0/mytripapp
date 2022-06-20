@@ -1,6 +1,7 @@
 package com.triple.mytrip.web.schedule.response;
 
-import lombok.AllArgsConstructor;
+import com.triple.mytrip.web.flight.response.FlightSearchResponse;
+import com.triple.mytrip.web.place.response.PlaceSearchResponse;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,10 +18,8 @@ public class ScheduleSearchResponse {
     private LocalTime visitTime;
     private String memo;
 
-    private PlaceDto place;
-
-    private FlightDto flight;
-
+    private PlaceSearchResponse place;
+    private FlightSearchResponse flight;
 
     public ScheduleSearchResponse(Long id, LocalDate date, Integer visitOrder, Integer arrangeOrder, LocalTime visitTime, String memo) {
         this.id = id;

@@ -3,7 +3,7 @@ package com.triple.mytrip.domain.schedule;
 import com.triple.mytrip.domain.member.Member;
 import com.triple.mytrip.domain.place.Place;
 import com.triple.mytrip.domain.place.PlaceType;
-import com.triple.mytrip.domain.schedule.flight.Flight;
+import com.triple.mytrip.domain.flight.Flight;
 import com.triple.mytrip.domain.trip.Trip;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

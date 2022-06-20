@@ -4,8 +4,7 @@ import com.triple.mytrip.domain.member.Member;
 import com.triple.mytrip.domain.place.Place;
 import com.triple.mytrip.domain.place.PlaceType;
 import com.triple.mytrip.domain.schedule.Schedule;
-import com.triple.mytrip.domain.schedule.flight.Flight;
-import org.assertj.core.api.Assertions;
+import com.triple.mytrip.domain.flight.Flight;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,7 +17,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional

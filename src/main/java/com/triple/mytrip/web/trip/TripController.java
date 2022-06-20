@@ -2,40 +2,34 @@ package com.triple.mytrip.web.trip;
 
 import com.triple.mytrip.domain.budget.Budget;
 import com.triple.mytrip.domain.budget.BudgetService;
-import com.triple.mytrip.domain.checklist.category.ChecklistCategory;
-import com.triple.mytrip.domain.checklist.category.ChecklistCategoryService;
-import com.triple.mytrip.domain.place.Place;
+import com.triple.mytrip.domain.checklistcategory.ChecklistCategory;
+import com.triple.mytrip.domain.checklistcategory.ChecklistCategoryService;
 import com.triple.mytrip.domain.schedule.Schedule;
 import com.triple.mytrip.domain.schedule.ScheduleService;
-import com.triple.mytrip.domain.schedule.flight.Flight;
-import com.triple.mytrip.domain.schedule.flight.FlightService;
+import com.triple.mytrip.domain.flight.Flight;
+import com.triple.mytrip.domain.flight.FlightService;
 import com.triple.mytrip.domain.trip.Trip;
 import com.triple.mytrip.domain.trip.TripService;
 import com.triple.mytrip.web.budget.BudgetConverter;
 import com.triple.mytrip.web.budget.response.BudgetSearchResponse;
 import com.triple.mytrip.web.budget.request.BudgetSaveRequest;
-import com.triple.mytrip.web.checklist.ChecklistCategoryConverter;
-import com.triple.mytrip.web.checklist.response.ChecklistCategorySearchResponse;
-import com.triple.mytrip.web.checklist.request.ChecklistCategoryRequest;
+import com.triple.mytrip.web.checklistcategory.ChecklistCategoryConverter;
+import com.triple.mytrip.web.checklistcategory.response.ChecklistCategorySearchResponse;
+import com.triple.mytrip.web.checklistcategory.request.ChecklistCategorySaveRequest;
 import com.triple.mytrip.web.common.ListResult;
 import com.triple.mytrip.web.common.Result;
 import com.triple.mytrip.web.schedule.ScheduleConverter;
-import com.triple.mytrip.web.schedule.flight.FlightConverter;
-import com.triple.mytrip.web.schedule.flight.request.FlightSaveRequest;
+import com.triple.mytrip.web.flight.FlightConverter;
+import com.triple.mytrip.web.flight.request.FlightSaveRequest;
 import com.triple.mytrip.web.schedule.request.ScheduleSaveRequest;
 import com.triple.mytrip.web.trip.request.TripEditRequest;
 import com.triple.mytrip.web.trip.response.TripEditResponse;
-import com.triple.mytrip.web.trip.response.TripWithScheduleResponse;
-import com.triple.mytrip.web.trip.response.schdule.FlightResponse;
-import com.triple.mytrip.web.trip.response.schdule.PlaceResponse;
-import com.triple.mytrip.web.trip.response.schdule.ScheduleResponse;
+import com.triple.mytrip.web.trip.response.TripSearchResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 
 @RestController
@@ -81,15 +75,15 @@ public class TripController {
     }
 
     @GetMapping("/trips/{tripId}/schedules")
-    public TripWithScheduleResponse searchWithSchedule(@PathVariable Long tripId) {
+    public TripSearchResponse searchWithSchedule(@PathVariable Long tripId) {
         Trip tripWithSchedule = tripService.getTripWithSchedule(tripId);
-        TripWithScheduleResponse tripWithScheduleResponse = TripConverter.entityToResponse(tripWithSchedule);
-        return tripWithScheduleResponse;
+
+        return null;
     }
 
     // ======= checklistCategory ======= //
     @PostMapping("/trips/{tripId}/checklist-categories")
-    public Result<Long> saveCategory(@PathVariable Long tripId, @RequestBody ChecklistCategoryRequest categoryRequest) {
+    public Result<Long> saveCategory(@PathVariable Long tripId, @RequestBody ChecklistCategorySaveRequest categoryRequest) {
         ChecklistCategory category = ChecklistCategoryConverter.saveRequestToEntity(categoryRequest);
         Long savedId = checklistCategoryService.save(tripId, category);
         return new Result<>(savedId);

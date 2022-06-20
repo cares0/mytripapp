@@ -1,7 +1,9 @@
 package com.triple.mytrip.domain.checklist.category;
 
-import com.triple.mytrip.domain.checklist.Checklist;
-import com.triple.mytrip.domain.checklist.ChecklistService;
+import com.triple.mytrip.domain.checklistcategory.checklist.Checklist;
+import com.triple.mytrip.domain.checklistcategory.checklist.ChecklistService;
+import com.triple.mytrip.domain.checklistcategory.ChecklistCategory;
+import com.triple.mytrip.domain.checklistcategory.ChecklistCategoryService;
 import com.triple.mytrip.domain.member.Member;
 import com.triple.mytrip.domain.trip.Trip;
 import org.junit.jupiter.api.Test;
@@ -13,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 
 import java.util.List;
-import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.*;
 
