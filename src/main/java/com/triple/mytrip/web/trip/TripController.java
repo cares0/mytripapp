@@ -8,6 +8,8 @@ import com.triple.mytrip.domain.schedule.Schedule;
 import com.triple.mytrip.domain.schedule.ScheduleService;
 import com.triple.mytrip.domain.schedule.flight.Flight;
 import com.triple.mytrip.domain.schedule.flight.FlightService;
+import com.triple.mytrip.domain.trip.Trip;
+import com.triple.mytrip.domain.trip.TripService;
 import com.triple.mytrip.web.budget.BudgetConverter;
 import com.triple.mytrip.web.budget.response.BudgetSearchResponse;
 import com.triple.mytrip.web.budget.request.BudgetSaveRequest;
@@ -21,6 +23,8 @@ import com.triple.mytrip.web.schedule.flight.FlightConverter;
 import com.triple.mytrip.web.schedule.flight.request.FlightSaveRequest;
 import com.triple.mytrip.web.schedule.request.ScheduleSaveRequest;
 import com.triple.mytrip.web.schedule.response.ScheduleSearchResponse;
+import com.triple.mytrip.web.trip.request.TripEditRequest;
+import com.triple.mytrip.web.trip.response.TripEditResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,10 +36,21 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class TripController {
 
+    private final TripService tripService;
     private final BudgetService budgetService;
     private final ChecklistCategoryService checklistCategoryService;
     private final ScheduleService scheduleService;
     private final FlightService flightService;
+
+    // ======= trip ======= //
+    @PatchMapping("/trip/{tripId}")
+    public TripEditResponse editTrip(@PathVariable Long tripId, @RequestBody TripEditRequest tripEditRequest) {
+        Trip trip = TripConverter.editRequestToEntity(tripEditRequest);
+        Trip modified = tripService.edit(tripId, trip);
+        TripEditResponse tripEditResponse = TripConverter.entityToEditResponse(modified);
+        return tripEditResponse;
+    }
+
 
     // ======= schedule ======= //
     // flight

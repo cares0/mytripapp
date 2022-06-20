@@ -21,6 +21,12 @@ public class Trip {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    @Column(nullable = false)
+    private String city;
+
+    @Column(nullable = false)
+    private String title;
+
     private LocalDate arrivalDate;
 
     private LocalDate departureDate;
@@ -31,12 +37,6 @@ public class Trip {
     @Enumerated(value = EnumType.STRING)
     private TripStyle tripStyle;
 
-    @Column(nullable = false)
-    private String city;
-
-    @Column(nullable = false)
-    private String title;
-
     /**
      * 조회용
      */
@@ -44,31 +44,52 @@ public class Trip {
         this.id = id;
     }
 
+    /**
+     * 저장용
+     */
     public Trip(String city) {
         this.city = city;
         this.title = city + " 여행";
+    }
+
+    /**
+     * 수정용
+     */
+    public Trip(String city, String title, LocalDate arrivalDate,
+                LocalDate departureDate, Partner partner, TripStyle tripStyle) {
+        this.city = city;
+        this.title = title;
+        this.arrivalDate = arrivalDate;
+        this.departureDate = departureDate;
+        this.partner = partner;
+        this.tripStyle = tripStyle;
     }
 
     public void addMember(Member member) {
         this.member = member;
     }
 
+    public void editCity(String city) {
+        this.city = city;
+    }
+
     public void editTitle(String title) {
         this.title = title;
     }
 
-    public void editDate(LocalDate arrivalDate, LocalDate departureDate) {
+    public void editArrivalDate(LocalDate arrivalDate) {
         this.arrivalDate = arrivalDate;
+    }
+
+    public void editDepartureDate(LocalDate departureDate) {
         this.departureDate = departureDate;
     }
 
-    public void editTripStyle(String city, TripStyle tripStyle, Partner partner) {
-        this.city = city;
-        this.tripStyle = tripStyle;
+    public void editPartner(Partner partner) {
         this.partner = partner;
     }
 
-    public void editCity(String city) {
-        this.city = city;
+    public void editTripStyle(TripStyle tripStyle) {
+        this.tripStyle = tripStyle;
     }
 }
