@@ -4,6 +4,7 @@ import com.triple.mytrip.domain.checklistcategory.checklist.Checklist;
 import com.triple.mytrip.domain.exception.NonEditableEntityException;
 import com.triple.mytrip.domain.trip.Trip;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -33,13 +34,15 @@ public class ChecklistCategory {
     private Boolean basicOfferStatus;
     private String name;
 
-    public ChecklistCategory(String name) {
-        this.basicOfferStatus = false;
+    @Builder
+    private ChecklistCategory(String name, Boolean basicOfferStatus) {
+        this.basicOfferStatus = basicOfferStatus;
         this.name = name;
     }
 
     public void addTrip(Trip trip) {
         this.trip = trip;
+        trip.getChecklistCategories().add(this);
     }
 
     public void editName(String name) {

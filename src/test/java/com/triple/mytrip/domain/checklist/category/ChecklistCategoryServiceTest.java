@@ -57,7 +57,8 @@ class ChecklistCategoryServiceTest {
         em.clear();
 
         // when
-        checklistCategoryService.editName(category.getId(), "변경");
+        ChecklistCategory modified = ChecklistCategory.builder().name("변경").build();
+        checklistCategoryService.modify(category.getId(), modified);
 
         // then
         ChecklistCategory modifiedCategory = em.find(ChecklistCategory.class, category.getId());
@@ -90,8 +91,8 @@ class ChecklistCategoryServiceTest {
     }
 
     private Checklist createChecklist(Long categoryId, String name) {
-        Checklist checklist = new Checklist(name);
-        checklistService.save(categoryId, checklist);
+        Checklist checklist = Checklist.builder().name(name).build();
+        checklistService.add(categoryId, checklist);
         return checklist;
     }
 
@@ -109,8 +110,8 @@ class ChecklistCategoryServiceTest {
     }
 
     private ChecklistCategory createCategory(Long tripId, String name) {
-        ChecklistCategory category = new ChecklistCategory(name);
-        checklistCategoryService.save(tripId, category);
+        ChecklistCategory category = ChecklistCategory.builder().basicOfferStatus(false).name(name).build();
+        checklistCategoryService.add(tripId, category);
         return category;
     }
 

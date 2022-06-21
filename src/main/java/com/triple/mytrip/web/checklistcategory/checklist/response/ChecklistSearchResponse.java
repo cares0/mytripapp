@@ -1,11 +1,13 @@
 package com.triple.mytrip.web.checklistcategory.checklist.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import com.triple.mytrip.domain.checklistcategory.checklist.Checklist;
+import lombok.*;
+
+import static lombok.AccessLevel.*;
 
 @Getter @Setter
-@AllArgsConstructor
+@Builder
+@AllArgsConstructor(access = PRIVATE)
 public class ChecklistSearchResponse {
 
     private Long id;
@@ -14,4 +16,15 @@ public class ChecklistSearchResponse {
     private String name;
     private String memo;
     private String instruction;
+
+    public static ChecklistSearchResponse toResponse(Checklist checklist) {
+        return ChecklistSearchResponse.builder()
+                .id(checklist.getId())
+                .checkStatus(checklist.getCheckStatus())
+                .basicOfferStatus(checklist.getBasicOfferStatus())
+                .name(checklist.getName())
+                .memo(checklist.getMemo())
+                .instruction(checklist.getInstruction())
+                .build();
+    }
 }

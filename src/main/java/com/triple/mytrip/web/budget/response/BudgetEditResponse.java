@@ -6,9 +6,11 @@ import lombok.*;
 import java.time.LocalDate;
 import java.util.Objects;
 
+import static lombok.AccessLevel.*;
+
 @Setter @Getter
 @Builder
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = PRIVATE)
 public class BudgetEditResponse {
 
     private Long id;

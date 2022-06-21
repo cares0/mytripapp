@@ -10,37 +10,31 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Objects;
 
 @Service
-@Transactional(readOnly = true)
+@Transactional
 @RequiredArgsConstructor
 public class ChecklistService {
 
     private final ChecklistRepository checklistRepository;
     private final ChecklistCategoryRepository categoryRepository;
 
-    @Transactional
-    public Long save(Long categoryId, Checklist checklist) {
+    public Long add(Long categoryId, Checklist checklist) {
         ChecklistCategory category = findCategory(categoryId);
-
         checklist.addCategory(category);
-
         return checklistRepository.save(checklist).getId();
     }
 
+    @Transactional(readOnly = true)
     public Checklist getOne(Long checklistId) {
         return findChecklist(checklistId);
     }
 
-    @Transactional
-    public Checklist edit(Long checklistId, Checklist modifiedChecklist) {
+    public Checklist modify(Long checklistId, Checklist modified) {
         Checklist original = findChecklist(checklistId);
-
-        update(original, modifiedChecklist);
-
+        update(original, modified);
         return original;
     }
 
-    @Transactional
-    public void delete(Long checklistId) {
+    public void remove(Long checklistId) {
         checklistRepository.deleteById(checklistId);
     }
 
@@ -54,16 +48,16 @@ public class ChecklistService {
                 new EntityNotFoundException("해당 ID와 일치하는 체크리스트 카테고리를 찾을 수 없음"));
     }
 
-    private void update(Checklist original, Checklist modifiedChecklist) {
-        String name = modifiedChecklist.getName();
+    private void update(Checklist original, Checklist modified) {
+        String name = modified.getName();
         if (Objects.nonNull(name)) {
             original.editName(name);
         }
-        String memo = modifiedChecklist.getMemo();
+        String memo = modified.getMemo();
         if (Objects.nonNull(memo)) {
             original.editMemo(memo);
         }
-        Boolean checkStatus = modifiedChecklist.getCheckStatus();
+        Boolean checkStatus = modified.getCheckStatus();
         if (Objects.nonNull(checkStatus)) {
             original.editCheckStatus(checkStatus);
         }

@@ -12,29 +12,14 @@ import java.util.stream.Collectors;
 public class ChecklistCategoryConverter {
 
     public static ChecklistCategory saveRequestToEntity(ChecklistCategorySaveRequest checklistCategorySaveRequest) {
-        return new ChecklistCategory(checklistCategorySaveRequest.getName());
+        return null;
     }
 
     public static ChecklistCategoryEditResponse entityToEditResponse(ChecklistCategory modifiedCategory) {
-        return new ChecklistCategoryEditResponse(modifiedCategory.getId(), modifiedCategory.getName());
+        return null;
     }
 
     public static List<ChecklistCategorySearchResponse> entityListToDtoList(List<ChecklistCategory> result) {
-        return result.stream().map((category) -> {
-            List<ChecklistSearchResponse> checklistSearchResponses = category.getChecklists().stream().map((checklist) -> new ChecklistSearchResponse(
-                    checklist.getId(),
-                    checklist.getCheckStatus(),
-                    checklist.getBasicOfferStatus(),
-                    checklist.getName(),
-                    checklist.getMemo(),
-                    checklist.getInstruction())).collect(Collectors.toList());
-            return new ChecklistCategorySearchResponse(
-                    category.getId(),
-                    category.getTrip().getId(),
-                    checklistSearchResponses,
-                    category.getBasicOfferStatus(),
-                    category.getName()
-            );
-        }).collect(Collectors.toList());
+        return null;
     }
 }

@@ -1,6 +1,7 @@
 package com.triple.mytrip.domain.trip;
 
 import com.triple.mytrip.domain.budget.Budget;
+import com.triple.mytrip.domain.checklistcategory.ChecklistCategory;
 import com.triple.mytrip.domain.member.Member;
 import com.triple.mytrip.domain.schedule.Schedule;
 import lombok.AccessLevel;
@@ -12,23 +13,31 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import static javax.persistence.CascadeType.*;
+import static javax.persistence.FetchType.*;
+import static javax.persistence.GenerationType.*;
+import static lombok.AccessLevel.*;
+
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = PROTECTED)
 public class Trip {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = IDENTITY)
     @Column(name = "trip_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @OneToMany(mappedBy = "trip")
+    @OneToMany(mappedBy = "trip", cascade = REMOVE, orphanRemoval = true)
     private List<Budget> budgets = new ArrayList<>();
 
-    @OneToMany(mappedBy = "trip")
+    @OneToMany(mappedBy = "trip", cascade = REMOVE, orphanRemoval = true)
+    private List<ChecklistCategory> checklistCategories = new ArrayList<>();
+
+    @OneToMany(mappedBy = "trip", cascade = REMOVE, orphanRemoval = true)
     private List<Schedule> schedules = new ArrayList<>();
 
     @Column(nullable = false)

@@ -81,7 +81,7 @@ class BudgetServiceTest {
         // 기존 ID로 조회 후 변경 내용 확인
 
         Budget modified = Budget.builder()
-                .tripCategory(BudgetCategory.ETC)
+                .budgetCategory(BudgetCategory.ETC)
                 .price(10000)
                 .date(LocalDate.of(2020, 12, 22))
                 .paymentPlan(PaymentPlan.CASH)
@@ -119,7 +119,7 @@ class BudgetServiceTest {
 
     private Budget createBudget(Trip trip, int price, String place) {
         Budget budget = Budget.builder()
-                .tripCategory(BudgetCategory.ACCOMMODATIONS)
+                .budgetCategory(BudgetCategory.ACCOMMODATIONS)
                 .price(price)
                 .date(LocalDate.now())
                 .paymentPlan(PaymentPlan.CARD)

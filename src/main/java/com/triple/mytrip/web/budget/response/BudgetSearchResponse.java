@@ -9,9 +9,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static lombok.AccessLevel.*;
+
 @Getter @Setter
 @Builder
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = PRIVATE)
 public class BudgetSearchResponse {
 
     private Long id;

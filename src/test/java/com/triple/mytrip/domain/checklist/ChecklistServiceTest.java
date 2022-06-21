@@ -31,10 +31,10 @@ class ChecklistServiceTest {
         Member member = createMember("email1", "1234");
         Trip trip = createTrip(member, "제주");
         ChecklistCategory category = createCategory(trip, "카테고리1");
-        Checklist checklist = new Checklist("체크리스트1");
+        Checklist checklist = Checklist.builder().name("체크리스트1").build();
 
         // when
-        Long savedId = checklistService.save(category.getId(), checklist);
+        Long savedId = checklistService.add(category.getId(), checklist);
         Checklist findChecklist = em.find(Checklist.class, savedId);
 
         // then
@@ -47,14 +47,14 @@ class ChecklistServiceTest {
         Member member = createMember("email1", "1234");
         Trip trip = createTrip(member, "제주");
         ChecklistCategory category = createCategory(trip, "카테고리1");
-        Checklist checklist = new Checklist("체크리스트1");
-        Long savedId = checklistService.save(category.getId(), checklist);
+        Checklist checklist = Checklist.builder().name("체크리스트1").basicOfferStatus(false).build();
+        Long savedId = checklistService.add(category.getId(), checklist);
 
         em.flush();
         em.clear();
         // when
-        Checklist modified = new Checklist("이름수정", "메모수정", true);
-        modified = checklistService.edit(checklist.getId(), modified);
+        Checklist modified = Checklist.builder().name("이름수정").memo("메모수정").checkStatus(true).build();
+        modified = checklistService.modify(checklist.getId(), modified);
 
         // then
         assertThat(modified.getCheckStatus()).isTrue();
@@ -68,13 +68,13 @@ class ChecklistServiceTest {
         Member member = createMember("email1", "1234");
         Trip trip = createTrip(member, "제주");
         ChecklistCategory category = createCategory(trip, "카테고리1");
-        Checklist checklist = new Checklist("체크리스트1");
-        Long savedId = checklistService.save(category.getId(), checklist);
+        Checklist checklist = Checklist.builder().name("체크리스트1").build();
+        Long savedId = checklistService.add(category.getId(), checklist);
         em.flush();
         em.clear();
 
         // when
-        checklistService.delete(savedId);
+        checklistService.remove(savedId);
 
         // then
         assertThatThrownBy(() -> checklistService.getOne(savedId))
@@ -95,7 +95,7 @@ class ChecklistServiceTest {
     }
 
     private ChecklistCategory createCategory(Trip trip, String name) {
-        ChecklistCategory category = new ChecklistCategory(name);
+        ChecklistCategory category = ChecklistCategory.builder().name(name).build();
         category.addTrip(trip);
         em.persist(category);
         return category;

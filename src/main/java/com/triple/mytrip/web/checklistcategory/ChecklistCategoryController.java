@@ -4,14 +4,12 @@ import com.triple.mytrip.domain.checklistcategory.checklist.Checklist;
 import com.triple.mytrip.domain.checklistcategory.checklist.ChecklistService;
 import com.triple.mytrip.domain.checklistcategory.ChecklistCategory;
 import com.triple.mytrip.domain.checklistcategory.ChecklistCategoryService;
-import com.triple.mytrip.web.checklistcategory.request.ChecklistCategorySaveRequest;
+import com.triple.mytrip.web.checklistcategory.request.ChecklistCategoryEditRequest;
 import com.triple.mytrip.web.checklistcategory.checklist.request.ChecklistSaveRequest;
 import com.triple.mytrip.web.checklistcategory.response.ChecklistCategoryEditResponse;
 import com.triple.mytrip.web.common.Result;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
-import static com.triple.mytrip.web.checklistcategory.ChecklistCategoryConverter.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,22 +19,22 @@ public class ChecklistCategoryController {
     private final ChecklistService checklistService;
 
     @PostMapping("/checklist-categories/{categoryId}/checklist")
-    public Result<Long> saveChecklist(@PathVariable Long categoryId, @RequestBody ChecklistSaveRequest checklistSaveRequest) {
-        Checklist checklist = new Checklist(checklistSaveRequest.getName());
-        Long savedId = checklistService.save(categoryId, checklist);
+    public Result<Long> checklistAdd(@PathVariable Long categoryId, @RequestBody ChecklistSaveRequest checklistSaveRequest) {
+        Checklist checklist = checklistSaveRequest.toEntity();
+        Long savedId = checklistService.add(categoryId, checklist);
         return new Result<>(savedId);
     }
 
     @PatchMapping("/checklist-categories/{categoryId}")
-    public Result<ChecklistCategoryEditResponse> edit(@PathVariable Long categoryId, @RequestBody ChecklistCategorySaveRequest checklistCategorySaveRequest) {
-        ChecklistCategory modifiedCategory = categoryService.editName(categoryId, checklistCategorySaveRequest.getName());
-        ChecklistCategoryEditResponse checklistCategoryEditResponse = entityToEditResponse(modifiedCategory);
-        return new Result<>(checklistCategoryEditResponse);
+    public ChecklistCategoryEditResponse checklistCategoryModify(@PathVariable Long categoryId, @RequestBody ChecklistCategoryEditRequest checklistCategoryEditRequest) {
+        ChecklistCategory modified = checklistCategoryEditRequest.toEntity();
+        modified = categoryService.modify(categoryId, modified);
+        return ChecklistCategoryEditResponse.toResponse(modified);
     }
 
     @DeleteMapping("/checklist-categories/{categoryId}")
-    public Result<String> delete(@PathVariable Long categoryId) {
-        categoryService.delete(categoryId);
+    public Result<String> checklistCategoryRemove(@PathVariable Long categoryId) {
+        categoryService.remove(categoryId);
         return new Result<>("Success");
     }
 }

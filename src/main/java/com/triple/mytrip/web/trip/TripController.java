@@ -85,7 +85,7 @@ public class TripController {
     @PostMapping("/trips/{tripId}/checklist-categories")
     public Result<Long> saveCategory(@PathVariable Long tripId, @RequestBody ChecklistCategorySaveRequest categoryRequest) {
         ChecklistCategory category = ChecklistCategoryConverter.saveRequestToEntity(categoryRequest);
-        Long savedId = checklistCategoryService.save(tripId, category);
+        Long savedId = checklistCategoryService.add(tripId, category);
         return new Result<>(savedId);
     }
 

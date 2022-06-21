@@ -11,36 +11,31 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Transactional
 public class ChecklistCategoryService {
 
     private final ChecklistCategoryRepository checklistCategoryRepository;
     private final TripRepository tripRepository;
 
-    @Transactional
-    public Long save(Long tripId, ChecklistCategory checklistCategory) {
+    public Long add(Long tripId, ChecklistCategory checklistCategory) {
         Trip trip = findTrip(tripId);
-
         checklistCategory.addTrip(trip);
-
         ChecklistCategory saved = checklistCategoryRepository.save(checklistCategory);
-
         return saved.getId();
     }
 
+    @Transactional(readOnly = true)
     public List<ChecklistCategory> getListWithChecklist(Long tripId) {
         return checklistCategoryRepository.findAllByTripIdWithChecklist(tripId);
     }
 
-    @Transactional
-    public ChecklistCategory editName(Long categoryId, String name) {
-        ChecklistCategory category = findCategory(categoryId);
-        category.editName(name);
-        return category;
+    public ChecklistCategory modify(Long categoryId, ChecklistCategory modified) {
+        ChecklistCategory original = findCategory(categoryId);
+        original.editName(modified.getName());
+        return original;
     }
 
-    @Transactional
-    public void delete(Long categoryId) {
+    public void remove(Long categoryId) {
         checklistCategoryRepository.deleteById(categoryId);
     }
 

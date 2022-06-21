@@ -10,30 +10,36 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import static javax.persistence.CascadeType.*;
+import static javax.persistence.EnumType.*;
+import static javax.persistence.FetchType.*;
+import static javax.persistence.GenerationType.*;
+import static lombok.AccessLevel.*;
+
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = PROTECTED)
 public class Budget extends BaseEntity {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = IDENTITY)
     @Column(name = "budget_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "trip_id")
     private Trip trip;
 
-    @OneToMany(mappedBy = "budget", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "budget", cascade = REMOVE, orphanRemoval = true)
     private List<BudgetFile> budgetFiles = new ArrayList<>();
 
-    @Enumerated(value = EnumType.STRING)
+    @Enumerated(value = STRING)
     private BudgetCategory budgetCategory;
 
     private Integer price;
 
     private LocalDate date;
 
-    @Enumerated(value = EnumType.STRING)
+    @Enumerated(value = STRING)
     private PaymentPlan paymentPlan;
 
     @Column(name = "budget_order")
