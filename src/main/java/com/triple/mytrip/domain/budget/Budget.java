@@ -1,6 +1,7 @@
 package com.triple.mytrip.domain.budget;
 
 import com.triple.mytrip.domain.budget.budgetfile.BudgetFile;
+import com.triple.mytrip.domain.common.BaseEntity;
 import com.triple.mytrip.domain.trip.Trip;
 import lombok.*;
 
@@ -12,7 +13,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Budget {
+public class Budget extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "budget_id")

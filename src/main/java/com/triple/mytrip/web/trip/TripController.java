@@ -99,7 +99,7 @@ public class TripController {
     // ======= budgets ======= //
     @PostMapping("/trips/{tripId}/budgets")
     public Result<Long> saveBudget(@PathVariable Long tripId, @RequestBody BudgetSaveRequest budgetSaveRequest) {
-        Budget budget = BudgetConverter.saveRequestToEntity(budgetSaveRequest);
+        Budget budget = budgetSaveRequest.toEntity();
         Long save = budgetService.add(tripId, budget);
         return new Result<>(save);
     }
