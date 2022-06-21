@@ -22,27 +22,27 @@ public class BudgetController {
     private final BudgetFileService budgetFileService;
 
     @PostMapping("/budgets/{budgetId}/budget-files")
-    public Result<Integer> registerFile(@PathVariable Long budgetId, List<MultipartFile> files) throws IOException {
-        int count = budgetFileService.store(budgetId, files);
+    public Result<Integer> budgetFileAdd(@PathVariable Long budgetId, List<MultipartFile> files) throws IOException {
+        int count = budgetFileService.add(budgetId, files);
         return new Result<>(count);
     }
 
     @GetMapping("/budgets/{budgetId}")
-    public BudgetSearchResponse searchOne(@PathVariable Long budgetId) {
+    public BudgetSearchResponse budgetDetail(@PathVariable Long budgetId) {
         Budget budget = budgetService.getOne(budgetId);
         return BudgetSearchResponse.toResponse(budget);
     }
 
     @PatchMapping(value = "/budgets/{budgetId}")
-    public BudgetEditResponse update(@PathVariable Long budgetId, @RequestBody BudgetEditRequest budgetEditRequest) {
+    public BudgetEditResponse budgetModify(@PathVariable Long budgetId, @RequestBody BudgetEditRequest budgetEditRequest) {
         Budget modified = budgetEditRequest.toEntity();
-        modified = budgetService.edit(budgetId, modified);
+        modified = budgetService.modify(budgetId, modified);
         return BudgetEditResponse.toResponse(modified);
     }
 
     @DeleteMapping("/budgets/{budgetId}")
-    public Result<Long> delete(@PathVariable Long budgetId) {
-        budgetService.delete(budgetId);
+    public Result<Long> budgetRemove(@PathVariable Long budgetId) {
+        budgetService.remove(budgetId);
         return new Result<>(budgetId);
     }
 

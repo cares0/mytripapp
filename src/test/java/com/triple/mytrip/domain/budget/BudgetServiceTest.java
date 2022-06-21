@@ -81,7 +81,7 @@ class BudgetServiceTest {
         // 기존 ID로 조회 후 변경 내용 확인
 
         Budget modified = Budget.builder()
-                .tripCategory(TripCategory.ETC)
+                .tripCategory(BudgetCategory.ETC)
                 .price(10000)
                 .date(LocalDate.of(2020, 12, 22))
                 .paymentPlan(PaymentPlan.CASH)
@@ -89,13 +89,13 @@ class BudgetServiceTest {
                 .place("수정장소")
                 .content("수정컨텐츠")
                 .build();
-        modified = budgetService.edit(budget.getId(), modified);
+        modified = budgetService.modify(budget.getId(), modified);
 
         // then
         assertThat(modified.getPrice()).isEqualTo(10000); // 이것만 동일
         assertThat(modified.getPlace()).isEqualTo("수정장소");
         assertThat(modified.getContent()).isEqualTo("수정컨텐츠");
-        assertThat(modified.getTripCategory()).isEqualTo(TripCategory.ETC);
+        assertThat(modified.getBudgetCategory()).isEqualTo(BudgetCategory.ETC);
         assertThat(modified.getPaymentPlan()).isEqualTo(PaymentPlan.CASH);
     }
 
@@ -109,7 +109,7 @@ class BudgetServiceTest {
         em.clear();
 
         // when
-        budgetService.delete(budget.getId());
+        budgetService.remove(budget.getId());
 
 
         // then
@@ -119,7 +119,7 @@ class BudgetServiceTest {
 
     private Budget createBudget(Trip trip, int price, String place) {
         Budget budget = Budget.builder()
-                .tripCategory(TripCategory.ACCOMMODATIONS)
+                .tripCategory(BudgetCategory.ACCOMMODATIONS)
                 .price(price)
                 .date(LocalDate.now())
                 .paymentPlan(PaymentPlan.CARD)
@@ -127,7 +127,7 @@ class BudgetServiceTest {
                 .place(place)
                 .content("content1")
                 .build();
-        budgetService.store(trip.getId(), budget);
+        budgetService.add(trip.getId(), budget);
         return budget;
     }
 

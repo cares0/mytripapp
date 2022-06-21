@@ -26,7 +26,7 @@ public class Budget {
     private List<BudgetFile> budgetFiles = new ArrayList<>();
 
     @Enumerated(value = EnumType.STRING)
-    private TripCategory tripCategory;
+    private BudgetCategory budgetCategory;
 
     private Integer price;
 
@@ -43,8 +43,8 @@ public class Budget {
     private String content;
 
     @Builder
-    private Budget(TripCategory tripCategory, Integer price, LocalDate date, PaymentPlan paymentPlan, Integer order, String place, String content) {
-        this.tripCategory = tripCategory;
+    private Budget(BudgetCategory budgetCategory, Integer price, LocalDate date, PaymentPlan paymentPlan, Integer order, String place, String content) {
+        this.budgetCategory = budgetCategory;
         this.price = price;
         this.date = date;
         this.paymentPlan = paymentPlan;
@@ -57,8 +57,8 @@ public class Budget {
         this.trip = trip;
     }
 
-    public void editTripCategory(TripCategory tripCategory) {
-        this.tripCategory = tripCategory;
+    public void editBudgetCategory(BudgetCategory budgetCategory) {
+        this.budgetCategory = budgetCategory;
     }
 
     public void editPrice(Integer price) {

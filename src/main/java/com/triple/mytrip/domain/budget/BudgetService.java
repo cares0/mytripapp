@@ -24,7 +24,7 @@ public class BudgetService {
 
     private final FileManager fileManager;
 
-    public Long store(Long tripId, Budget budget) {
+    public Long add(Long tripId, Budget budget) {
         Trip trip = findTrip(tripId);
         budget.addTrip(trip);
         return budgetRepository.save(budget).getId();
@@ -40,17 +40,17 @@ public class BudgetService {
         return budgetRepository.findAllByTripId(tripId);
     }
 
-    public Budget edit(Long budgetId, Budget modified) {
+    public Budget modify(Long budgetId, Budget modified) {
         Budget original = findBudget(budgetId);
-        modify(original, modified);
+        update(original, modified);
         return original;
     }
 
-    public void delete(Long budgetId) {
+    public void remove(Long budgetId) {
         Budget budget = findBudgetWithBudgetFiles(budgetId);
 
         // 디스크에 저장된 파일 삭제
-        deleteFile(budget.getBudgetFiles());
+        removeFile(budget.getBudgetFiles());
 
         // DB데이터는 CASCADE로 같이 삭제됨
         budgetRepository.delete(budget);
@@ -71,15 +71,15 @@ public class BudgetService {
                 new EntityNotFoundException("해당 ID와 일치하는 여행을 찾을 수 없음"));
     }
 
-    private void deleteFile(List<BudgetFile> budgetFiles) {
+    private void removeFile(List<BudgetFile> budgetFiles) {
         budgetFiles.stream().forEach((budgetFile) ->
-                fileManager.deleteFile(budgetFile.getFileName()));
+                fileManager.removeFile(budgetFile.getFileName()));
     }
 
-    private void modify(Budget original, Budget modified) {
-        TripCategory tripCategory = modified.getTripCategory();
-        if (Objects.nonNull(tripCategory)) {
-            original.editTripCategory(tripCategory);
+    private void update(Budget original, Budget modified) {
+        BudgetCategory budgetCategory = modified.getBudgetCategory();
+        if (Objects.nonNull(budgetCategory)) {
+            original.editBudgetCategory(budgetCategory);
         }
         Integer price = modified.getPrice();
         if (Objects.nonNull(price)) {

@@ -12,7 +12,7 @@ import java.util.Objects;
 public class BudgetEditResponse {
 
     private Long id;
-    private String tripCategory;
+    private String budgetCategory;
     private Integer price;
     private LocalDate date;
     private String paymentPlan;
@@ -24,15 +24,15 @@ public class BudgetEditResponse {
         String paymentPlan = Objects.isNull(budget.getPaymentPlan()) ?
                 null : budget.getPaymentPlan().getKorName();
 
-        String tripCategory = Objects.isNull(budget.getTripCategory()) ?
-                null : budget.getTripCategory().getKorName();
+        String budgetCategory = Objects.isNull(budget.getBudgetCategory()) ?
+                null : budget.getBudgetCategory().getKorName();
 
         return BudgetEditResponse.builder()
                .id(budget.getId())
-               .tripCategory(paymentPlan)
+               .budgetCategory(budgetCategory)
                .price(budget.getPrice())
                .date(budget.getDate())
-               .paymentPlan(tripCategory)
+               .paymentPlan(paymentPlan)
                .order(budget.getOrder())
                .place(budget.getPlace())
                .content(budget.getContent())

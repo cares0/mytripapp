@@ -23,7 +23,7 @@ public class BudgetFileService {
     private final BudgetRepository budgetRepository;
     private final FileManager fileManager;
 
-    public int store(Long budgetId, List<MultipartFile> multipartFiles) throws IOException {
+    public int add(Long budgetId, List<MultipartFile> multipartFiles) throws IOException {
         Budget budget = findBudget(budgetId);
 
         List<UploadFile> uploadFiles = fileManager.storeFiles(multipartFiles);
@@ -34,12 +34,12 @@ public class BudgetFileService {
         return budgetFiles.size();
     }
 
-    public void delete(Long id) {
+    public void remove(Long id) {
         BudgetFile budgetFile = budgetFileRepository.findById(id).orElseThrow(() ->
                 new EntityNotFoundException("해당 ID와 일치하는 파일을 찾을 수 없음"));
 
         budgetFileRepository.deleteById(id);
-        fileManager.deleteFile(budgetFile.getFileName());
+        fileManager.removeFile(budgetFile.getFileName());
     }
 
     private List<BudgetFile> uploadFilesToBudgetFiles(Budget budget, List<UploadFile> uploadFiles) {

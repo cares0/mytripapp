@@ -1,6 +1,6 @@
 package com.triple.mytrip.domain.budget;
 
-public enum TripCategory {
+public enum BudgetCategory {
 
     ACCOMMODATIONS("숙박"),
     FLIGHT("항공"),
@@ -12,7 +12,7 @@ public enum TripCategory {
 
     private final String korName;
 
-    TripCategory(String korName) {
+    BudgetCategory(String korName) {
         this.korName = korName;
     }
 

@@ -45,7 +45,7 @@ public class FileManager {
         return storeFileResult;
     }
 
-    public boolean deleteFile(String fileName) {
+    public boolean removeFile(String fileName) {
         File file = new File(getFullPath(fileName));
         log.info("filePath = {}", file.getPath());
         return file.delete();

@@ -1,7 +1,7 @@
 package com.triple.mytrip.web.budget.request;
 
 import com.triple.mytrip.domain.budget.PaymentPlan;
-import com.triple.mytrip.domain.budget.TripCategory;
+import com.triple.mytrip.domain.budget.BudgetCategory;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,7 +13,7 @@ public class BudgetSaveRequest {
     private LocalDate date;
     private PaymentPlan paymentPlan;
     private String content;
-    private TripCategory tripCategory;
+    private BudgetCategory budgetCategory;
     private Integer price;
     private Integer order;
     private String place;

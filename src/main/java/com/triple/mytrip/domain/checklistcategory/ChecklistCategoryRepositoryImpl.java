@@ -1,12 +1,13 @@
 package com.triple.mytrip.domain.checklistcategory;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.triple.mytrip.domain.checklistcategory.checklist.QChecklist;
 
 import javax.persistence.EntityManager;
 import java.util.List;
 
-import static com.triple.mytrip.domain.checklist.QChecklist.*;
-import static com.triple.mytrip.domain.checklist.category.QChecklistCategory.*;
+import static com.triple.mytrip.domain.checklistcategory.QChecklistCategory.*;
+import static com.triple.mytrip.domain.checklistcategory.checklist.QChecklist.*;
 
 public class ChecklistCategoryRepositoryImpl implements ChecklistCategoryRepositoryCustom {
 

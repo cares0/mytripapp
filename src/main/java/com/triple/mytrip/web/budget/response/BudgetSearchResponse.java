@@ -22,7 +22,7 @@ public class BudgetSearchResponse {
     private Integer order;
 
     private String paymentPlan;
-    private String tripCategory;
+    private String budgetCategory;
     private String content;
 
     private List<BudgetFileSearchResponse> budgetFiles;
@@ -32,8 +32,8 @@ public class BudgetSearchResponse {
             return null;
         }
 
-        String tripCategory = Objects.isNull(budget.getTripCategory()) ?
-                null : budget.getTripCategory().getKorName();
+        String budgetCategory = Objects.isNull(budget.getBudgetCategory()) ?
+                null : budget.getBudgetCategory().getKorName();
 
         String paymentPlan = Objects.isNull(budget.getPaymentPlan()) ?
                 null : budget.getPaymentPlan().getKorName();
@@ -50,7 +50,7 @@ public class BudgetSearchResponse {
                 .date(budget.getDate())
                 .order(budget.getOrder())
                 .paymentPlan(paymentPlan)
-                .tripCategory(tripCategory)
+                .budgetCategory(budgetCategory)
                 .content(budget.getContent())
                 .budgetFiles(budgetFileSearchResponses)
                 .build();

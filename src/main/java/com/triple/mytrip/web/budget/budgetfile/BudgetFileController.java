@@ -15,7 +15,7 @@ public class BudgetFileController {
 
     @DeleteMapping("/budget-files/{budgetFileId}")
     public Result<String> delete(@PathVariable Long budgetFileId) {
-        budgetFileService.delete(budgetFileId);
+        budgetFileService.remove(budgetFileId);
         return new Result<>("Success");
     }
 }
