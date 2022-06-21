@@ -1,6 +1,7 @@
 package com.triple.mytrip.domain.checklistcategory.checklist;
 
 import com.triple.mytrip.domain.checklistcategory.ChecklistCategory;
+import com.triple.mytrip.domain.common.BaseEntity;
 import com.triple.mytrip.domain.exception.NonEditableEntityException;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -12,11 +13,12 @@ import javax.persistence.*;
 import java.util.Objects;
 
 import static javax.persistence.FetchType.*;
+import static lombok.AccessLevel.*;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Checklist {
+@NoArgsConstructor(access = PROTECTED)
+public class Checklist extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "checklist_id")

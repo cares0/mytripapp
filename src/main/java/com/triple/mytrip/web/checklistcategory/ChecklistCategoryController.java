@@ -33,8 +33,8 @@ public class ChecklistCategoryController {
     }
 
     @DeleteMapping("/checklist-categories/{categoryId}")
-    public Result<String> checklistCategoryRemove(@PathVariable Long categoryId) {
+    public Result<Long> checklistCategoryRemove(@PathVariable Long categoryId) {
         categoryService.remove(categoryId);
-        return new Result<>("Success");
+        return new Result<>(categoryId);
     }
 }

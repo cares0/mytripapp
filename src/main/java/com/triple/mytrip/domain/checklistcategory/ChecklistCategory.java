@@ -1,6 +1,7 @@
 package com.triple.mytrip.domain.checklistcategory;
 
 import com.triple.mytrip.domain.checklistcategory.checklist.Checklist;
+import com.triple.mytrip.domain.common.BaseEntity;
 import com.triple.mytrip.domain.exception.NonEditableEntityException;
 import com.triple.mytrip.domain.trip.Trip;
 import lombok.AccessLevel;
@@ -13,14 +14,17 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static javax.persistence.CascadeType.*;
 import static javax.persistence.FetchType.*;
+import static javax.persistence.GenerationType.*;
+import static lombok.AccessLevel.*;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ChecklistCategory {
+@NoArgsConstructor(access = PROTECTED)
+public class ChecklistCategory extends BaseEntity {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = IDENTITY)
     @Column(name = "checklist_category_id")
     private Long id;
 
@@ -28,7 +32,7 @@ public class ChecklistCategory {
     @JoinColumn(name = "trip_id")
     private Trip trip;
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "category", cascade = REMOVE, orphanRemoval = true)
     private List<Checklist> checklists = new ArrayList<>();
 
     private Boolean basicOfferStatus;
