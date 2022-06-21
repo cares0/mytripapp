@@ -10,8 +10,6 @@ import java.time.LocalDate;
 import static lombok.AccessLevel.*;
 
 @Getter @Setter
-@Builder
-@AllArgsConstructor(access = PRIVATE)
 @NoArgsConstructor(access = PRIVATE)
 public class BudgetEditRequest {
 

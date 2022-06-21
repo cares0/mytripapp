@@ -1,6 +1,7 @@
 package com.triple.mytrip.domain.flight;
 
-import lombok.AccessLevel;
+import com.triple.mytrip.domain.common.BaseEntity;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -9,11 +10,12 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 import static javax.persistence.GenerationType.*;
+import static lombok.AccessLevel.*;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Flight {
+@NoArgsConstructor(access = PROTECTED)
+public class Flight extends BaseEntity {
 
     @Id @GeneratedValue(strategy = IDENTITY)
     private Long id;
@@ -29,12 +31,8 @@ public class Flight {
     private String departureAirport;
     private String arrivalAirport;
 
-    /**
-     * 등록, 수정 겸용 (등록되어야 할 데이터와 수정되어야 할 데이터가 같음)
-     */
-    public Flight(String flightNumber, String airline, LocalDate departureDate,
-                  LocalTime departureTime, LocalTime arrivalTime,
-                  String departureAirport, String arrivalAirport) {
+    @Builder
+    private Flight(String flightNumber, String airline, LocalDate departureDate, LocalTime departureTime, LocalTime arrivalTime, String departureAirport, String arrivalAirport) {
         this.flightNumber = flightNumber;
         this.airline = airline;
         this.departureDate = departureDate;
@@ -42,10 +40,6 @@ public class Flight {
         this.arrivalTime = arrivalTime;
         this.departureAirport = departureAirport;
         this.arrivalAirport = arrivalAirport;
-    }
-
-    private static String createName(LocalTime departureTime, LocalTime arrivalTime, String departureAirport, String arrivalAirport) {
-        return departureAirport + departureTime + " - " + arrivalAirport + arrivalTime;
     }
 
     public void editFlightNumber(String flightNumber) {

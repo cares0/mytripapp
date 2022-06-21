@@ -1,5 +1,6 @@
 package com.triple.mytrip.domain.schedule.flight;
 
+import com.triple.mytrip.domain.exception.EntityNotFoundException;
 import com.triple.mytrip.domain.flight.Flight;
 import com.triple.mytrip.domain.flight.FlightService;
 import com.triple.mytrip.domain.member.Member;
@@ -16,6 +17,7 @@ import java.time.LocalTime;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @Transactional
@@ -28,33 +30,23 @@ class FlightServiceTest {
     FlightService flightService;
 
     @Test
-    public void 항공_저장() throws Exception {
+    public void 항공_조회() throws Exception {
         // given
-        Member member = createMember("email1", "1234");
-        Trip trip = createTrip(member, "제주");
-        Flight flight = new Flight("number1", "대한항공", LocalDate.of(2022, 06, 19),
-                LocalTime.of(10, 10), LocalTime.of(12, 10), "인천공항", "제주공항");
+        Flight flight = createFlight("number1", "대한항공",
+                LocalDate.of(2022, 06, 19), LocalTime.of(10, 10),
+                LocalTime.of(12, 10), "인천공항", "제주공항");
 
         // when
-        Map<String, Long> idMap = flightService.save(trip.getId(), flight);
-        em.flush();
-        em.clear();
-
-        Schedule findSchedule = em.find(Schedule.class, idMap.get("scheduleId"));
+        Flight findFlight = flightService.getOne(flight.getId());
 
         // then
-        assertThat(findSchedule.getDate()).isEqualTo(LocalDate.of(2022, 06, 19));
-        assertThat(findSchedule.getArrangeOrder()).isEqualTo(0);
-        assertThat(findSchedule.getFlight().getAirline()).isEqualTo("대한항공");
-        assertThat(findSchedule.getFlight().getFlightNumber()).isEqualTo("number1");
+        assertThat(findFlight).isEqualTo(flight);
     }
 
     @Test
     public void 항공_수정() throws Exception {
         // given
-        Member member = createMember("email1", "1234");
-        Trip trip = createTrip(member, "제주");
-        Flight flight = createFlight(trip, "number1", "대한항공",
+        Flight flight = createFlight("number1", "대한항공",
                 LocalDate.of(2022, 06, 19), LocalTime.of(10, 10),
                 LocalTime.of(12, 10), "인천공항", "제주공항");
 
@@ -62,16 +54,22 @@ class FlightServiceTest {
         em.clear();
 
         // when
-        Flight modified = new Flight("number2", "수정항공",
-                LocalDate.of(2022, 05, 19), LocalTime.of(10, 10),
-                LocalTime.of(12, 10), "수정공항", "수정공항");
+        Flight modified = Flight.builder()
+                .flightNumber("number2")
+                .airline("수정항공")
+                .departureDate(LocalDate.of(2022, 05, 19))
+                .departureTime(LocalTime.of(10, 10))
+                .arrivalTime(LocalTime.of(12, 10))
+                .departureAirport("수정공항")
+                .arrivalAirport("수정공항")
+                .build();
 
-        flightService.edit(flight.getId(), modified);
+        flightService.modify(flight.getId(), modified);
 
         em.flush();
         em.clear();
 
-        modified = em.find(Flight.class, flight.getId());
+        modified = flightService.getOne(flight.getId());
 
         // then
         assertThat(modified.getFlightNumber()).isEqualTo("number2");
@@ -83,23 +81,33 @@ class FlightServiceTest {
         assertThat(modified.getArrivalAirport()).isEqualTo("수정공항");
     }
 
-    private Flight createFlight(Trip trip, String flightNumber, String airline, LocalDate departureDate, LocalTime departureTime, LocalTime arrivalTime, String departureAirport, String arrivalAirport) {
-        Flight flight = new Flight(flightNumber, airline, departureDate, departureTime, arrivalTime, departureAirport, arrivalAirport);
-        flightService.save(trip.getId(), flight);
+    @Test
+    public void 항공_삭제() throws Exception {
+        // given
+        Flight flight = createFlight("number1", "대한항공",
+                LocalDate.of(2022, 06, 19), LocalTime.of(10, 10),
+                LocalTime.of(12, 10), "인천공항", "제주공항");
+
+        // when
+        flightService.remove(flight.getId());
+
+        // then
+        assertThatThrownBy(() -> flightService.getOne(flight.getId()))
+                .isInstanceOf(EntityNotFoundException.class);
+    }
+
+    private Flight createFlight(String flightNumber, String airline, LocalDate departureDate, LocalTime departureTime, LocalTime arrivalTime, String departureAirport, String arrivalAirport) {
+        Flight flight = Flight.builder()
+                .flightNumber(flightNumber)
+                .airline(airline)
+                .departureDate(departureDate)
+                .departureTime(departureTime)
+                .arrivalTime(arrivalTime)
+                .departureAirport(departureAirport)
+                .arrivalAirport(arrivalAirport)
+                .build();
+        em.persist(flight);
         return flight;
-    }
-
-    private Trip createTrip(Member member, String city) {
-        Trip trip = new Trip(city);
-        trip.addMember(member);
-        em.persist(trip);
-        return trip;
-    }
-
-    private Member createMember(String email, String password) {
-        Member member = new Member(email, password);
-        em.persist(member);
-        return member;
     }
 
 }

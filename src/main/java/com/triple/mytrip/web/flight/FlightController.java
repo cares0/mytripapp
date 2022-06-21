@@ -18,22 +18,22 @@ public class FlightController {
     private final FlightService flightService;
 
     @GetMapping("/flights/{flightId}")
-    public FlightSearchResponse searchOne(@PathVariable Long flightId) {
+    public FlightSearchResponse flightDetail(@PathVariable Long flightId) {
         Flight flight = flightService.getOne(flightId);
-        return FlightConverter.entityToSearchResponse(flight);
+        return FlightSearchResponse.toResponse(flight);
     }
 
     @PatchMapping("/flights/{flightId}")
-    public FlightEditResponse edit(@PathVariable Long flightId, @RequestBody FlightEditRequest flightEditRequest) {
-        Flight flight = FlightConverter.editRequestToEntity(flightEditRequest);
-        Flight modified = flightService.edit(flightId, flight);
-        return FlightConverter.entityToEditResponse(modified);
+    public FlightEditResponse flightModify(@PathVariable Long flightId, @RequestBody FlightEditRequest flightEditRequest) {
+        Flight modified = flightEditRequest.toEntity();
+        modified = flightService.modify(flightId, modified);
+        return FlightEditResponse.toResponse(modified);
     }
 
     @DeleteMapping("/flights/{flightId}")
-    public Result<String> delete(@PathVariable Long flightId) {
-        flightService.delete(flightId);
-        return new Result<>("success");
+    public Result<Long> delete(@PathVariable Long flightId) {
+        flightService.remove(flightId);
+        return new Result<>(flightId);
     }
 
 }

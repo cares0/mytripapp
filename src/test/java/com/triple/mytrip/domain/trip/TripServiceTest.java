@@ -116,8 +116,21 @@ class TripServiceTest {
     }
 
     private Flight createFlight(Trip trip, String flightNumber, String airline, LocalDate departureDate, LocalTime departureTime, LocalTime arrivalTime, String departureAirport, String arrivalAirport) {
-        Flight flight = new Flight(flightNumber, airline, departureDate, departureTime, arrivalTime, departureAirport, arrivalAirport);
-        Schedule schedule = new Schedule(flight.getDepartureDate(), null, 0);
+        Flight flight = Flight.builder()
+                .flightNumber(flightNumber)
+                .airline(airline)
+                .departureDate(departureDate)
+                .departureTime(departureTime)
+                .arrivalTime(arrivalTime)
+                .departureAirport(departureAirport)
+                .arrivalAirport(arrivalAirport)
+                .build();
+
+        Schedule schedule = Schedule.builder()
+                .date(flight.getDepartureDate())
+                .visitOrder(null)
+                .arrangeOrder(0)
+                .build();
         em.persist(flight);
         schedule.addTrip(trip);
         schedule.addFlight(flight);
@@ -126,7 +139,11 @@ class TripServiceTest {
     }
 
     private Schedule createSchedule(Trip trip, Place place, LocalDate date, Integer visitOrder, Integer arrangeOrder) {
-        Schedule schedule = new Schedule(date, visitOrder, arrangeOrder);
+        Schedule schedule = Schedule.builder()
+                .date(date)
+                .visitOrder(visitOrder)
+                .arrangeOrder(arrangeOrder)
+                .build();
         schedule.addTrip(trip);
         schedule.addPlace(place);
         em.persist(schedule);
@@ -134,7 +151,11 @@ class TripServiceTest {
     }
 
     private Place createPlace(String name, String location, PlaceType placeType) {
-        Place place = new Place(name, location, placeType);
+        Place place = Place.builder()
+                .name(name)
+                .location(location)
+                .placeType(placeType)
+                .build();
         em.persist(place);
         return place;
     }

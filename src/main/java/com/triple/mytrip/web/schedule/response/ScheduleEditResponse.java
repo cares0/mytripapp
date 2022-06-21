@@ -1,14 +1,16 @@
 package com.triple.mytrip.web.schedule.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import com.triple.mytrip.domain.schedule.Schedule;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+import static lombok.AccessLevel.*;
+
 @Getter @Setter
-@AllArgsConstructor
+@Builder
+@AllArgsConstructor(access = PRIVATE)
 public class ScheduleEditResponse {
 
     private Long id;
@@ -17,5 +19,16 @@ public class ScheduleEditResponse {
     private LocalDate date;
     private Integer visitOrder;
     private Integer arrangeOrder;
+
+    public static ScheduleEditResponse toResponse(Schedule schedule) {
+        return ScheduleEditResponse.builder()
+                .id(schedule.getId())
+                .visitTime(schedule.getVisitTime())
+                .memo(schedule.getMemo())
+                .date(schedule.getDate())
+                .visitOrder(schedule.getVisitOrder())
+                .arrangeOrder(schedule.getArrangeOrder())
+                .build();
+    }
 
 }

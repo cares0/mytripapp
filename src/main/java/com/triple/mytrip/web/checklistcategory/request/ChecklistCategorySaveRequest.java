@@ -6,8 +6,7 @@ import lombok.*;
 import static lombok.AccessLevel.*;
 
 @Getter @Setter
-@Builder
-@AllArgsConstructor(access = PRIVATE)
+@NoArgsConstructor(access = PRIVATE)
 public class ChecklistCategorySaveRequest {
 
     private String name;

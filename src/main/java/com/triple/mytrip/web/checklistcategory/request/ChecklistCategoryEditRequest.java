@@ -7,7 +7,6 @@ import static lombok.AccessLevel.*;
 
 @Getter @Setter
 @NoArgsConstructor(access = PRIVATE)
-@AllArgsConstructor(access = PRIVATE)
 public class ChecklistCategoryEditRequest {
 
     private String name;

@@ -18,14 +18,6 @@ public class ChecklistCategoryService {
 
     private final ChecklistCategoryRepository checklistCategoryRepository;
     private final ChecklistRepository checklistRepository;
-    private final TripRepository tripRepository;
-
-    public Long add(Long tripId, ChecklistCategory checklistCategory) {
-        Trip trip = findTrip(tripId);
-        checklistCategory.addTrip(trip);
-        ChecklistCategory saved = checklistCategoryRepository.save(checklistCategory);
-        return saved.getId();
-    }
 
     public Long addChecklist(Long categoryId, Checklist checklist) {
         ChecklistCategory category = findCategory(categoryId);
@@ -33,7 +25,7 @@ public class ChecklistCategoryService {
         return checklistRepository.save(checklist).getId();
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true) // 나중에 Trip으로 옮길것
     public List<ChecklistCategory> getListWithChecklist(Long tripId) {
         return checklistCategoryRepository.findAllByTripIdWithChecklist(tripId);
     }
@@ -51,10 +43,5 @@ public class ChecklistCategoryService {
     private ChecklistCategory findCategory(Long categoryId) {
         return checklistCategoryRepository.findById(categoryId).orElseThrow(() ->
                 new EntityNotFoundException("해당 ID와 일치하는 체크리스트 카테고리를 찾을 수 없음"));
-    }
-
-    private Trip findTrip(Long tripId) {
-        return tripRepository.findById(tripId).orElseThrow(() ->
-                new EntityNotFoundException("해당 ID와 일치하는 여행을 찾을 수 없음"));
     }
 }

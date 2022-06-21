@@ -40,7 +40,6 @@ public class TripController {
     private final BudgetService budgetService;
     private final ChecklistCategoryService checklistCategoryService;
     private final ScheduleService scheduleService;
-    private final FlightService flightService;
 
     // ======= trip ======= //
     @PatchMapping("/trips/{tripId}")
@@ -57,35 +56,32 @@ public class TripController {
         return new Result<>("success");
     }
 
-
     // ======= schedule ======= //
-    // flight
-    @PostMapping("/trips/{tripId}/schedules/flights")
-    public Result<Map<String, Long>> saveFlight(@PathVariable Long tripId, @RequestBody FlightSaveRequest flightSaveRequest) {
-        Flight flight = FlightConverter.saveRequestToEntity(flightSaveRequest);
-        Map<String, Long> savedIdMap = flightService.save(tripId, flight);
+    @PostMapping("/trips/{tripId}/schedules/flights") // 완
+    public Result<Map<String, Long>> flightScheduleAdd(@PathVariable Long tripId, @RequestBody FlightSaveRequest flightSaveRequest) {
+        Flight flight = flightSaveRequest.toEntity();
+        Map<String, Long> savedIdMap = tripService.addFlightSchedule(tripId, flight);
         return new Result<>(savedIdMap);
     }
 
-    @PostMapping("/trips/{tripId}/schedules/place/{placeId}")
+    @PostMapping("/trips/{tripId}/schedules/place/{placeId}") //완
     public Result<Long> saveSchedule(@PathVariable Long tripId, @PathVariable Long placeId, @RequestBody ScheduleSaveRequest scheduleSaveRequest) {
-        Schedule schedule = ScheduleConverter.saveRequestToEntity(scheduleSaveRequest);
-        Long savedId = scheduleService.save(tripId, placeId, schedule);
+        Schedule schedule = scheduleSaveRequest.toEntity();
+        Long savedId = tripService.addPlaceSchedule(tripId, placeId, schedule);
         return new Result<>(savedId);
     }
 
     @GetMapping("/trips/{tripId}/schedules")
     public TripSearchResponse searchWithSchedule(@PathVariable Long tripId) {
         Trip tripWithSchedule = tripService.getTripWithSchedule(tripId);
-
         return null;
     }
 
     // ======= checklistCategory ======= //
     @PostMapping("/trips/{tripId}/checklist-categories")
     public Result<Long> saveCategory(@PathVariable Long tripId, @RequestBody ChecklistCategorySaveRequest categoryRequest) {
-        ChecklistCategory category = ChecklistCategoryConverter.saveRequestToEntity(categoryRequest);
-        Long savedId = checklistCategoryService.add(tripId, category);
+        ChecklistCategory checklistCategory = categoryRequest.toEntity();
+        Long savedId = tripService.addChecklistCategory(tripId, checklistCategory);
         return new Result<>(savedId);
     }
 

@@ -1,4 +1,4 @@
-package com.triple.mytrip.domain.checklist.category;
+package com.triple.mytrip.domain.checklistcategory;
 
 import com.triple.mytrip.domain.checklistcategory.checklist.Checklist;
 import com.triple.mytrip.domain.checklistcategory.checklist.ChecklistService;
@@ -29,29 +29,28 @@ class ChecklistCategoryServiceTest {
     @Autowired
     private ChecklistCategoryService checklistCategoryService;
 
-    @Autowired
-    private ChecklistService checklistService;
-
     @Test
-    public void 카테고리_저장() throws Exception {
+    public void 체크리스트_저장() throws Exception {
         // given
         Member member = createMember("email1", "1234");
         Trip trip = createTrip(member, "제주");
+        ChecklistCategory category = createCategory(trip, "카테고리1");
+        Checklist checklist = Checklist.builder().name("체크리스트1").build();
 
         // when
-        ChecklistCategory category = createCategory(trip.getId(), "카테고리1");
-        ChecklistCategory findCategory = em.find(ChecklistCategory.class, category.getId());
+        Long savedId = checklistCategoryService.addChecklist(category.getId(), checklist);
+        Checklist savedChecklist = em.find(Checklist.class, savedId);
 
         // then
-        assertThat(findCategory).isEqualTo(category);
+        assertThat(savedChecklist).isEqualTo(checklist);
     }
 
     @Test
-    public void 카테고리_이름수정() throws Exception {
+    public void 카테고리_수정() throws Exception {
         // given
         Member member = createMember("email1", "1234");
         Trip trip = createTrip(member, "제주");
-        ChecklistCategory category = createCategory(trip.getId(), "카테고리1");
+        ChecklistCategory category = createCategory(trip, "카테고리1");
 
         em.flush();
         em.clear();
@@ -60,40 +59,26 @@ class ChecklistCategoryServiceTest {
         ChecklistCategory modified = ChecklistCategory.builder().name("변경").build();
         checklistCategoryService.modify(category.getId(), modified);
 
-        // then
+        em.flush();
+        em.clear();
         ChecklistCategory modifiedCategory = em.find(ChecklistCategory.class, category.getId());
+
+        // then
         assertThat(modifiedCategory.getName()).isEqualTo("변경");
     }
 
     @Test
-    public void 전체조회_체크리스트포함() throws Exception {
+    public void 카테고리_삭제() throws Exception {
         // given
         Member member = createMember("email1", "1234");
         Trip trip = createTrip(member, "제주");
-        ChecklistCategory category1 = createCategory(trip.getId(), "카테고리1");
-        ChecklistCategory category2 = createCategory(trip.getId(), "카테고리2");
-        Checklist checklist1 = createChecklist(category1.getId(), "체크리스트1");
-        Checklist checklist2 = createChecklist(category1.getId(), "체크리스트2");
-        Checklist checklist3 = createChecklist(category2.getId(), "체크리스트3");
-        Checklist checklist4 = createChecklist(category2.getId(), "체크리스트4");
+        ChecklistCategory category = createCategory(trip, "카테고리1");
 
-        em.flush();
-        em.clear();
         // when
-        List<ChecklistCategory> results = checklistCategoryService.getListWithChecklist(trip.getId());
+        checklistCategoryService.remove(category.getId());
 
         // then
-        assertThat(results).extracting("name").containsExactly("카테고리1", "카테고리2");
-        assertThat(results.get(0).getChecklists()).extracting("name")
-                .containsExactly("체크리스트1", "체크리스트2");
-        assertThat(results.get(1).getChecklists()).extracting("name")
-                .containsExactly("체크리스트3", "체크리스트4");
-    }
-
-    private Checklist createChecklist(Long categoryId, String name) {
-        Checklist checklist = Checklist.builder().name(name).build();
-        checklistService.add(categoryId, checklist);
-        return checklist;
+        assertThat(em.find(ChecklistCategory.class, category.getId())).isNull();
     }
 
     private Trip createTrip(Member member, String city) {
@@ -109,9 +94,13 @@ class ChecklistCategoryServiceTest {
         return member;
     }
 
-    private ChecklistCategory createCategory(Long tripId, String name) {
-        ChecklistCategory category = ChecklistCategory.builder().basicOfferStatus(false).name(name).build();
-        checklistCategoryService.add(tripId, category);
+    private ChecklistCategory createCategory(Trip trip, String name) {
+        ChecklistCategory category = ChecklistCategory.builder()
+                .basicOfferStatus(false)
+                .name(name)
+                .build();
+        category.addTrip(trip);
+        em.persist(category);
         return category;
     }
 

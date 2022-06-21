@@ -1,4 +1,4 @@
-package com.triple.mytrip.domain.checklist;
+package com.triple.mytrip.domain.checklistcategory.checklist;
 
 import com.triple.mytrip.domain.checklistcategory.ChecklistCategory;
 import com.triple.mytrip.domain.checklistcategory.checklist.Checklist;
@@ -26,19 +26,17 @@ class ChecklistServiceTest {
     ChecklistService checklistService;
 
     @Test
-    public void 체크리스트_등록() throws Exception {
+    public void 체크리스트_조회() throws Exception {
         // given
         Member member = createMember("email1", "1234");
         Trip trip = createTrip(member, "제주");
         ChecklistCategory category = createCategory(trip, "카테고리1");
-        Checklist checklist = Checklist.builder().name("체크리스트1").build();
-
+        Checklist checklist = createChecklist(category, "체크리스트1");
         // when
-        Long savedId = checklistService.add(category.getId(), checklist);
-        Checklist findChecklist = em.find(Checklist.class, savedId);
+        Checklist findChecklist = checklistService.getOne(checklist.getId());
 
         // then
-        assertThat(findChecklist.getId()).isEqualTo(savedId);
+        assertThat(findChecklist).isEqualTo(checklist);
     }
 
     @Test
@@ -47,13 +45,15 @@ class ChecklistServiceTest {
         Member member = createMember("email1", "1234");
         Trip trip = createTrip(member, "제주");
         ChecklistCategory category = createCategory(trip, "카테고리1");
-        Checklist checklist = Checklist.builder().name("체크리스트1").basicOfferStatus(false).build();
-        Long savedId = checklistService.add(category.getId(), checklist);
+        Checklist checklist = createChecklist(category, "체크리스트1");
 
         em.flush();
         em.clear();
         // when
-        Checklist modified = Checklist.builder().name("이름수정").memo("메모수정").checkStatus(true).build();
+        Checklist modified = Checklist.builder()
+                .name("이름수정")
+                .memo("메모수정")
+                .checkStatus(true).build();
         modified = checklistService.modify(checklist.getId(), modified);
 
         // then
@@ -68,17 +68,27 @@ class ChecklistServiceTest {
         Member member = createMember("email1", "1234");
         Trip trip = createTrip(member, "제주");
         ChecklistCategory category = createCategory(trip, "카테고리1");
-        Checklist checklist = Checklist.builder().name("체크리스트1").build();
-        Long savedId = checklistService.add(category.getId(), checklist);
+        Checklist checklist = createChecklist(category, "체크리스트1");
         em.flush();
         em.clear();
 
         // when
-        checklistService.remove(savedId);
+        checklistService.remove(checklist.getId());
 
         // then
-        assertThatThrownBy(() -> checklistService.getOne(savedId))
+        assertThatThrownBy(() -> checklistService.getOne(checklist.getId()))
                 .isInstanceOf(EntityNotFoundException.class);
+    }
+
+    private Checklist createChecklist(ChecklistCategory checklistCategory, String name) {
+        Checklist checklist = Checklist.builder()
+                .name(name)
+                .basicOfferStatus(false)
+                .checkStatus(false)
+                .build();
+        checklist.addCategory(checklistCategory);
+        em.persist(checklist);
+        return checklist;
     }
 
     private Trip createTrip(Member member, String city) {

@@ -28,55 +28,25 @@ class ScheduleServiceTest {
     ScheduleService scheduleService;
 
     @Test
-    public void 일정_저장() throws Exception {
+    public void 일정_조회_연관포함() throws Exception {
         // given
         Member member = createMember("email1", "1234");
         Trip trip = createTrip(member, "제주");
         Place place = createPlace("장소1", "위치1", PlaceType.SHOP);
-
-        Schedule schedule = new Schedule(LocalDate.of(2022, 06, 19), 0, 0);
-        // when
-        Long savedId = scheduleService.save(trip.getId(), place.getId(), schedule);
-
-        em.flush();
-        em.clear();
-
-        Schedule findSchedule = em.find(Schedule.class, savedId);
-        // then
-        assertThat(findSchedule.getArrangeOrder()).isEqualTo(0);
-        assertThat(findSchedule.getPlace().getLocation()).isEqualTo("위치1");
-        assertThat(findSchedule.getTrip().getCity()).isEqualTo("제주");
-    }
-    
-    @Test
-    public void 일정_전체조회() throws Exception {
-        // given
-        Member member = createMember("email1", "1234");
-        Trip trip = createTrip(member, "제주");
-        
-        Place place1 = createPlace("장소1", "위치1", PlaceType.SHOP);
-        Schedule schedule1 = createSchedule(trip, place1, LocalDate.of(2022, 06, 20), 1, 1);
-        Schedule schedule2 = createSchedule(trip, place1, LocalDate.of(2022, 06, 20), 2, 2);
-
-        Place place2 = createPlace("장소2", "위치2", PlaceType.RESTAURANT);
-        Schedule schedule3 = createSchedule(trip, place2, LocalDate.of(2022, 06, 19), 2, 2);
-        Schedule schedule4 = createSchedule(trip, place1, LocalDate.of(2022, 06, 19), 1, 1);
-        Schedule schedule5 = createSchedule(trip, place1, LocalDate.of(2022, 06, 19), 3, 3);
-
-        Flight flight = createFlight(trip, "number1", "대한항공",
-                LocalDate.of(2022, 06, 20), LocalTime.of(10, 10),
+        Flight flight = createFlight("number1", "대한항공",
+                LocalDate.of(2022, 06, 19), LocalTime.of(10, 10),
                 LocalTime.of(12, 10), "인천공항", "제주공항");
-
+        Schedule schedule1 = createSchedule(trip, place, null, LocalDate.of(2022, 06, 19), 0, 0);
+        Schedule schedule2 = createSchedule(trip, null, flight, LocalDate.of(2022, 06, 19), 0, 0);
         // when
-        List<Schedule> result = scheduleService.getList(trip.getId());
+        Schedule findSchedule1 = scheduleService.getOneWithAll(schedule1.getId());
+        Schedule findSchedule2 = scheduleService.getOneWithAll(schedule2.getId());
 
         // then
-        assertThat(result.get(0)).isEqualTo(schedule4);
-        assertThat(result.get(1)).isEqualTo(schedule3);
-        assertThat(result.get(2)).isEqualTo(schedule5);
-        assertThat(result.get(3).getFlight()).isEqualTo(flight);
-        assertThat(result.get(4)).isEqualTo(schedule1);
-        assertThat(result.get(5)).isEqualTo(schedule2);
+        assertThat(findSchedule1).isEqualTo(schedule1);
+        assertThat(findSchedule2).isEqualTo(schedule2);
+        assertThat(findSchedule1.getPlace()).isEqualTo(place);
+        assertThat(findSchedule2.getFlight()).isEqualTo(flight);
     }
 
     @Test
@@ -85,16 +55,21 @@ class ScheduleServiceTest {
         Member member = createMember("email1", "1234");
         Trip trip = createTrip(member, "제주");
         Place place = createPlace("장소1", "위치1", PlaceType.SHOP);
-        Schedule schedule = createSchedule(trip, place, LocalDate.of(2022, 06, 19), 0, 0);
+        Schedule schedule = createSchedule(trip, place, null, LocalDate.of(2022, 06, 19), 0, 0);
 
         em.flush();
         em.clear();
 
-        Schedule modified = new Schedule(LocalDate.of(2022, 07, 19), 2, 0,
-                LocalTime.of(10, 10), "메모변경");
+        Schedule modified = Schedule.builder()
+                .date(LocalDate.of(2022, 07, 19))
+                .visitOrder(2)
+                .arrangeOrder(0)
+                .visitTime(LocalTime.of(10, 10))
+                .memo("메모변경")
+                .build();
 
         // when
-        scheduleService.edit(schedule.getId(), modified);
+        scheduleService.modify(schedule.getId(), modified);
 
         em.flush();
         em.clear();
@@ -109,24 +84,55 @@ class ScheduleServiceTest {
         assertThat(modified.getMemo()).isEqualTo("메모변경");
     }
 
-    private Flight createFlight(Trip trip, String flightNumber, String airline, LocalDate departureDate, LocalTime departureTime, LocalTime arrivalTime, String departureAirport, String arrivalAirport) {
-        Flight flight = new Flight(flightNumber, airline, departureDate, departureTime, arrivalTime, departureAirport, arrivalAirport);
-        Schedule schedule = new Schedule(flight.getDepartureDate(), null, 0);
+    @Test
+    public void 일정_삭제() throws Exception {
+        // given
+        Member member = createMember("email1", "1234");
+        Trip trip = createTrip(member, "제주");
+        Place place = createPlace("장소1", "위치1", PlaceType.SHOP);
+        Schedule schedule = createSchedule(trip, place, null, LocalDate.of(2022, 06, 19), 0, 0);
+
+        // when
+        scheduleService.remove(schedule.getId());
+
+        // then
+        assertThat(em.find(Schedule.class, schedule.getId())).isNull();
+    }
+
+    private Flight createFlight(String flightNumber, String airline, LocalDate departureDate, LocalTime departureTime, LocalTime arrivalTime, String departureAirport, String arrivalAirport) {
+        Flight flight = Flight.builder()
+                .flightNumber(flightNumber)
+                .airline(airline)
+                .departureDate(departureDate)
+                .departureTime(departureTime)
+                .arrivalTime(arrivalTime)
+                .departureAirport(departureAirport)
+                .arrivalAirport(arrivalAirport)
+                .build();
         em.persist(flight);
+        return flight;
+    }
+
+    private Schedule createSchedule(Trip trip, Place place, Flight flight, LocalDate date, Integer visitOrder, Integer arrangeOrder) {
+        Schedule schedule = Schedule.builder()
+                .date(date)
+                .visitOrder(visitOrder)
+                .arrangeOrder(arrangeOrder)
+                .build();
+
+        schedule.addPlace(place);
         schedule.addTrip(trip);
         schedule.addFlight(flight);
         em.persist(schedule);
-        return flight;
-    }
-    
-    private Schedule createSchedule(Trip trip, Place place, LocalDate date, Integer visitOrder, Integer arrangeOrder) {
-        Schedule schedule = new Schedule(date, visitOrder, arrangeOrder);
-        Long savedId = scheduleService.save(trip.getId(), place.getId(), schedule);
         return schedule;
     }
 
     private Place createPlace(String name, String location, PlaceType placeType) {
-        Place place = new Place(name, location, placeType);
+        Place place = Place.builder()
+                .name(name)
+                .location(location)
+                .placeType(placeType)
+                .build();
         em.persist(place);
         return place;
     }

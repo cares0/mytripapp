@@ -1,9 +1,11 @@
 package com.triple.mytrip.domain.schedule;
 
+import com.triple.mytrip.domain.common.BaseEntity;
 import com.triple.mytrip.domain.place.Place;
 import com.triple.mytrip.domain.flight.Flight;
 import com.triple.mytrip.domain.trip.Trip;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -12,14 +14,17 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+import static javax.persistence.CascadeType.*;
 import static javax.persistence.FetchType.*;
+import static javax.persistence.GenerationType.*;
+import static lombok.AccessLevel.*;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Schedule {
+@NoArgsConstructor(access = PROTECTED)
+public class Schedule extends BaseEntity {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = IDENTITY)
     @Column(name = "schedule_id")
     private Long id;
 
@@ -27,7 +32,7 @@ public class Schedule {
     @JoinColumn(name = "trip_id")
     private Trip trip;
 
-    @OneToOne(fetch = LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToOne(fetch = LAZY, cascade = REMOVE, orphanRemoval = true)
     @JoinColumn(name = "flight_id")
     private Flight flight;
 
@@ -42,19 +47,8 @@ public class Schedule {
     private LocalTime visitTime;
     private String memo;
 
-    /**
-     * 저장 전용
-     */
-    public Schedule(LocalDate date, Integer visitOrder, Integer arrangeOrder) {
-        this.date = date;
-        this.visitOrder = visitOrder;
-        this.arrangeOrder = arrangeOrder;
-    }
-
-    /**
-     * 수정 전용
-     */
-    public Schedule(LocalDate date, Integer visitOrder, Integer arrangeOrder, LocalTime visitTime, String memo) {
+    @Builder
+    private Schedule(LocalDate date, Integer visitOrder, Integer arrangeOrder, LocalTime visitTime, String memo) {
         this.date = date;
         this.visitOrder = visitOrder;
         this.arrangeOrder = arrangeOrder;

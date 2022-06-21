@@ -5,6 +5,7 @@ import com.triple.mytrip.domain.schedule.ScheduleService;
 import com.triple.mytrip.web.common.Result;
 import com.triple.mytrip.web.schedule.request.ScheduleEditRequest;
 import com.triple.mytrip.web.schedule.response.ScheduleEditResponse;
+import com.triple.mytrip.web.schedule.response.ScheduleSearchResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,18 +15,23 @@ public class ScheduleController {
 
     private final ScheduleService scheduleService;
 
+    @GetMapping("/schedules/{scheduleId}")
+    public ScheduleSearchResponse scheduleDetailsWithAll(@PathVariable Long scheduleId) {
+        Schedule schedule = scheduleService.getOneWithAll(scheduleId);
+        return ScheduleSearchResponse.toResponse(schedule);
+    }
+
     @PatchMapping("/schedules/{scheduleId}")
-    public ScheduleEditResponse edit(@PathVariable Long scheduleId, @RequestBody ScheduleEditRequest scheduleEditRequest) {
-        Schedule schedule = ScheduleConverter.editRequestToEntity(scheduleEditRequest);
-        Schedule modified = scheduleService.edit(scheduleId, schedule);
-        ScheduleEditResponse result = ScheduleConverter.entityToEditResponse(modified);
-        return result;
+    public ScheduleEditResponse scheduleModify(@PathVariable Long scheduleId, @RequestBody ScheduleEditRequest scheduleEditRequest) {
+        Schedule modified = scheduleEditRequest.toEntity();
+        modified = scheduleService.modify(scheduleId, modified);
+        return ScheduleEditResponse.toResponse(modified);
     }
 
     @DeleteMapping("/schedules/{scheduleId}")
-    public Result<String> delete(@PathVariable Long scheduleId) {
-        scheduleService.delete(scheduleId);
-        return new Result<>("success");
+    public Result<Long> scheduleRemove(@PathVariable Long scheduleId) {
+        scheduleService.remove(scheduleId);
+        return new Result<>(scheduleId);
     }
 
 }
