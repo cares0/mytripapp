@@ -1,7 +1,6 @@
 package com.triple.mytrip.web.checklistcategory;
 
 import com.triple.mytrip.domain.checklistcategory.checklist.Checklist;
-import com.triple.mytrip.domain.checklistcategory.checklist.ChecklistService;
 import com.triple.mytrip.domain.checklistcategory.ChecklistCategory;
 import com.triple.mytrip.domain.checklistcategory.ChecklistCategoryService;
 import com.triple.mytrip.web.checklistcategory.request.ChecklistCategoryEditRequest;
@@ -16,12 +15,11 @@ import org.springframework.web.bind.annotation.*;
 public class ChecklistCategoryController {
 
     private final ChecklistCategoryService categoryService;
-    private final ChecklistService checklistService;
 
     @PostMapping("/checklist-categories/{categoryId}/checklist")
     public Result<Long> checklistAdd(@PathVariable Long categoryId, @RequestBody ChecklistSaveRequest checklistSaveRequest) {
         Checklist checklist = checklistSaveRequest.toEntity();
-        Long savedId = checklistService.add(categoryId, checklist);
+        Long savedId = categoryService.addChecklist(categoryId, checklist);
         return new Result<>(savedId);
     }
 

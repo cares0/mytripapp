@@ -1,5 +1,7 @@
 package com.triple.mytrip.domain.checklistcategory;
 
+import com.triple.mytrip.domain.checklistcategory.checklist.Checklist;
+import com.triple.mytrip.domain.checklistcategory.checklist.ChecklistRepository;
 import com.triple.mytrip.domain.exception.EntityNotFoundException;
 import com.triple.mytrip.domain.trip.Trip;
 import com.triple.mytrip.domain.trip.TripRepository;
@@ -15,6 +17,7 @@ import java.util.List;
 public class ChecklistCategoryService {
 
     private final ChecklistCategoryRepository checklistCategoryRepository;
+    private final ChecklistRepository checklistRepository;
     private final TripRepository tripRepository;
 
     public Long add(Long tripId, ChecklistCategory checklistCategory) {
@@ -22,6 +25,12 @@ public class ChecklistCategoryService {
         checklistCategory.addTrip(trip);
         ChecklistCategory saved = checklistCategoryRepository.save(checklistCategory);
         return saved.getId();
+    }
+
+    public Long addChecklist(Long categoryId, Checklist checklist) {
+        ChecklistCategory category = findCategory(categoryId);
+        checklist.addCategory(category);
+        return checklistRepository.save(checklist).getId();
     }
 
     @Transactional(readOnly = true)

@@ -2,7 +2,6 @@ package com.triple.mytrip.web.budget;
 
 import com.triple.mytrip.domain.budget.Budget;
 import com.triple.mytrip.domain.budget.BudgetService;
-import com.triple.mytrip.domain.budget.budgetfile.BudgetFileService;
 import com.triple.mytrip.web.budget.response.BudgetSearchResponse;
 import com.triple.mytrip.web.budget.response.BudgetEditResponse;
 import com.triple.mytrip.web.budget.request.BudgetEditRequest;
@@ -19,11 +18,10 @@ import java.util.List;
 public class BudgetController {
 
     private final BudgetService budgetService;
-    private final BudgetFileService budgetFileService;
 
     @PostMapping("/budgets/{budgetId}/budget-files")
     public Result<Integer> budgetFileAdd(@PathVariable Long budgetId, List<MultipartFile> files) throws IOException {
-        int count = budgetFileService.add(budgetId, files);
+        int count = budgetService.addFile(budgetId, files);
         return new Result<>(count);
     }
 

@@ -20,41 +20,18 @@ import java.util.stream.Collectors;
 public class BudgetFileService {
 
     private final BudgetFileRepository budgetFileRepository;
-    private final BudgetRepository budgetRepository;
+
     private final FileManager fileManager;
 
-    public int add(Long budgetId, List<MultipartFile> multipartFiles) throws IOException {
-        Budget budget = findBudget(budgetId);
-
-        List<UploadFile> uploadFiles = fileManager.storeFiles(multipartFiles);
-        List<BudgetFile> budgetFiles = uploadFilesToBudgetFiles(budget, uploadFiles);
-
-        saveFile(budgetFiles);
-
-        return budgetFiles.size();
-    }
-
     public void remove(Long id) {
-        BudgetFile budgetFile = budgetFileRepository.findById(id).orElseThrow(() ->
-                new EntityNotFoundException("해당 ID와 일치하는 파일을 찾을 수 없음"));
+        BudgetFile budgetFile = findBudgetFile(id);
+        budgetFileRepository.delete(budgetFile);
 
-        budgetFileRepository.deleteById(id);
         fileManager.removeFile(budgetFile.getFileName());
     }
 
-    private List<BudgetFile> uploadFilesToBudgetFiles(Budget budget, List<UploadFile> uploadFiles) {
-        return uploadFiles.stream().map(
-                        (uploadFile) -> new BudgetFile(budget, uploadFile.getUploadFileName(), uploadFile.getStoreFileName()))
-                .collect(Collectors.toList());
-    }
-
-    private void saveFile(List<BudgetFile> budgetFiles) {
-        budgetFiles.stream()
-                .forEach((budgetFile) -> budgetFileRepository.save(budgetFile));
-    }
-
-    private Budget findBudget(Long id) {
-        return budgetRepository.findById(id).orElseThrow(() ->
-                new EntityNotFoundException("해당 ID와 일치하는 가계부를 찾을 수 없음"));
+    private BudgetFile findBudgetFile(Long id) {
+        return budgetFileRepository.findById(id).orElseThrow(() ->
+                new EntityNotFoundException("해당 ID와 일치하는 파일을 찾을 수 없음"));
     }
 }

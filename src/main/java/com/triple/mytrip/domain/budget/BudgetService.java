@@ -1,18 +1,23 @@
 package com.triple.mytrip.domain.budget;
 
 import com.triple.mytrip.domain.budget.budgetfile.BudgetFile;
+import com.triple.mytrip.domain.budget.budgetfile.BudgetFileRepository;
 import com.triple.mytrip.domain.exception.EntityNotFoundException;
 import com.triple.mytrip.domain.trip.Trip;
 import com.triple.mytrip.domain.trip.TripRepository;
 import com.triple.mytrip.domain.util.FileManager;
+import com.triple.mytrip.domain.util.UploadFile;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -21,6 +26,7 @@ public class BudgetService {
 
     private final TripRepository tripRepository;
     private final BudgetRepository budgetRepository;
+    private final BudgetFileRepository budgetFileRepository;
 
     private final FileManager fileManager;
 
@@ -28,6 +34,17 @@ public class BudgetService {
         Trip trip = findTrip(tripId);
         budget.addTrip(trip);
         return budgetRepository.save(budget).getId();
+    }
+
+    public int addFile(Long budgetId, List<MultipartFile> multipartFiles) throws IOException {
+        Budget budget = findBudget(budgetId);
+
+        List<UploadFile> uploadFiles = fileManager.storeFiles(multipartFiles);
+        List<BudgetFile> budgetFiles = uploadFilesToBudgetFiles(budget, uploadFiles);
+
+        saveFile(budgetFiles);
+
+        return budgetFiles.size();
     }
 
     @Transactional(readOnly = true)
@@ -59,6 +76,17 @@ public class BudgetService {
     private Budget findBudget(Long id) {
         return budgetRepository.findById(id).orElseThrow(() ->
                 new EntityNotFoundException("해당 ID와 일치하는 가계부를 찾을 수 없음"));
+    }
+
+    private List<BudgetFile> uploadFilesToBudgetFiles(Budget budget, List<UploadFile> uploadFiles) {
+        return uploadFiles.stream().map(
+                        (uploadFile) -> new BudgetFile(budget, uploadFile.getUploadFileName(), uploadFile.getStoreFileName()))
+                .collect(Collectors.toList());
+    }
+
+    private void saveFile(List<BudgetFile> budgetFiles) {
+        budgetFiles.stream()
+                .forEach((budgetFile) -> budgetFileRepository.save(budgetFile));
     }
 
     private Budget findBudgetWithBudgetFiles(Long id) {

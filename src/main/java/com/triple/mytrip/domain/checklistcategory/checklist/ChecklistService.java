@@ -15,13 +15,6 @@ import java.util.Objects;
 public class ChecklistService {
 
     private final ChecklistRepository checklistRepository;
-    private final ChecklistCategoryRepository categoryRepository;
-
-    public Long add(Long categoryId, Checklist checklist) {
-        ChecklistCategory category = findCategory(categoryId);
-        checklist.addCategory(category);
-        return checklistRepository.save(checklist).getId();
-    }
 
     @Transactional(readOnly = true)
     public Checklist getOne(Long checklistId) {
@@ -41,11 +34,6 @@ public class ChecklistService {
     private Checklist findChecklist(Long checklistId) {
         return checklistRepository.findById(checklistId).orElseThrow(() ->
                 new EntityNotFoundException("해당 ID와 일치하는 체크리스트를 찾을 수 없음"));
-    }
-
-    private ChecklistCategory findCategory(Long categoryId) {
-        return categoryRepository.findById(categoryId).orElseThrow(() ->
-                new EntityNotFoundException("해당 ID와 일치하는 체크리스트 카테고리를 찾을 수 없음"));
     }
 
     private void update(Checklist original, Checklist modified) {
