@@ -1,5 +1,6 @@
 package com.triple.mytrip.domain.schedule;
 
+import com.triple.mytrip.domain.checklistcategory.ChecklistCategory;
 import com.triple.mytrip.domain.member.Member;
 import com.triple.mytrip.domain.place.Place;
 import com.triple.mytrip.domain.place.PlaceType;
@@ -127,6 +128,16 @@ class ScheduleServiceTest {
         return schedule;
     }
 
+    private ChecklistCategory createCategory(Trip trip, String name) {
+        ChecklistCategory category = ChecklistCategory.builder()
+                .basicOfferStatus(false)
+                .name(name)
+                .build();
+        category.addTrip(trip);
+        em.persist(category);
+        return category;
+    }
+
     private Place createPlace(String name, String location, PlaceType placeType) {
         Place place = Place.builder()
                 .name(name)
@@ -138,7 +149,7 @@ class ScheduleServiceTest {
     }
 
     private Trip createTrip(Member member, String city) {
-        Trip trip = new Trip(city);
+        Trip trip = Trip.builder().city(city).title(city + " 여행").build();
         trip.addMember(member);
         em.persist(trip);
         return trip;

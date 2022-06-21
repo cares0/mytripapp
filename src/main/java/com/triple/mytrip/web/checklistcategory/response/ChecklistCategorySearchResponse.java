@@ -3,6 +3,7 @@ package com.triple.mytrip.web.checklistcategory.response;
 import com.triple.mytrip.domain.checklistcategory.ChecklistCategory;
 import com.triple.mytrip.web.checklistcategory.checklist.response.ChecklistSearchResponse;
 import lombok.*;
+import org.hibernate.LazyInitializationException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,8 +20,7 @@ public class ChecklistCategorySearchResponse {
 
     public static ChecklistCategorySearchResponse toResponse(ChecklistCategory checklistCategory) {
         List<ChecklistSearchResponse> checklistSearchResponses =
-                checklistCategory.getChecklists().stream().map((checklist ->
-                        ChecklistSearchResponse.toResponse(checklist))).collect(Collectors.toList());
+                getChecklistSearchResponses(checklistCategory);
 
         return ChecklistCategorySearchResponse.builder()
                 .id(checklistCategory.getId())
@@ -28,6 +28,15 @@ public class ChecklistCategorySearchResponse {
                 .name(checklistCategory.getName())
                 .checklists(checklistSearchResponses)
                 .build();
+    }
+
+    private static List<ChecklistSearchResponse> getChecklistSearchResponses(ChecklistCategory checklistCategory) {
+        try {
+            return checklistCategory.getChecklists().stream().map((checklist ->
+                    ChecklistSearchResponse.toResponse(checklist))).collect(Collectors.toList());
+        } catch (LazyInitializationException e) {
+            return null;
+        }
     }
 
 }

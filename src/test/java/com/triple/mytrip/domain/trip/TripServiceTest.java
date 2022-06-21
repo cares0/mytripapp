@@ -1,10 +1,17 @@
 package com.triple.mytrip.domain.trip;
 
+import com.triple.mytrip.domain.budget.Budget;
+import com.triple.mytrip.domain.budget.BudgetCategory;
+import com.triple.mytrip.domain.budget.PaymentPlan;
+import com.triple.mytrip.domain.budget.budgetfile.BudgetFile;
+import com.triple.mytrip.domain.checklistcategory.ChecklistCategory;
+import com.triple.mytrip.domain.checklistcategory.checklist.Checklist;
 import com.triple.mytrip.domain.member.Member;
 import com.triple.mytrip.domain.place.Place;
 import com.triple.mytrip.domain.place.PlaceType;
 import com.triple.mytrip.domain.schedule.Schedule;
 import com.triple.mytrip.domain.flight.Flight;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,6 +22,8 @@ import javax.persistence.EntityManager;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -29,45 +38,169 @@ class TripServiceTest {
     TripService tripService;
 
     @Test
-    public void 여행_저장() throws Exception {
-        // given
-        Member member = createMember("email1", "1234");
-        Trip trip = new Trip("제주");
-
-        // when
-        Long savedId = tripService.save(member.getId(), trip);
-
-        // then
-        assertThat(trip).isEqualTo(em.find(Trip.class, savedId));
-        assertThat(trip.getTitle()).isEqualTo("제주 여행");
-    }
-
-    @Test
-    @Rollback(value = false)
-    public void 여행_조회() throws Exception {
+    public void 가계부_저장() throws Exception {
         // given
         Member member = createMember("email1", "1234");
         Trip trip = createTrip(member, "제주");
+        Budget budget = Budget.builder()
+                .budgetCategory(BudgetCategory.ACCOMMODATIONS)
+                .price(10000)
+                .date(LocalDate.now())
+                .paymentPlan(PaymentPlan.CARD)
+                .order(0)
+                .place("숙소")
+                .content("content1")
+                .build();
 
+        // when
+        Long savedId = tripService.addBudget(trip.getId(), budget);
+
+        // then
+        assertThat(em.find(Budget.class, savedId)).isEqualTo(budget);
+    }
+
+    @Test
+    public void 카테고리_저장() throws Exception {
+        // given
+        Member member = createMember("email1", "1234");
+        Trip trip = createTrip(member, "제주");
+        ChecklistCategory category = ChecklistCategory.builder().name("카테고리1").build();
+
+        // when
+        Long savedId = tripService.addChecklistCategory(trip.getId(), category);
+
+        // then
+        assertThat(em.find(ChecklistCategory.class, savedId)).isEqualTo(category);
+    }
+    
+    @Test
+    public void 항공일정_저장() throws Exception {
+        // given
+        Member member = createMember("email1", "1234");
+        Trip trip = createTrip(member, "제주");
+        Flight flight = Flight.builder()
+                .flightNumber("number1")
+                .airline("대한항공")
+                .departureDate(LocalDate.of(2022, 12, 10))
+                .departureTime(LocalTime.of(10, 10))
+                .arrivalTime(LocalTime.of(12, 10))
+                .departureAirport("제주공항")
+                .arrivalAirport("인천공항")
+                .build();
+
+        // when
+        Map<String, Long> idMap = tripService.addFlightSchedule(trip.getId(), flight);
+
+        // then
+        Long flightId = idMap.get("flightId");
+        Long scheduleId = idMap.get("scheduleId");
+        assertThat(em.find(Schedule.class, scheduleId).getFlight()).isEqualTo(flight);
+        assertThat(em.find(Flight.class, flightId)).isEqualTo(flight);
+
+    }
+
+    @Test
+    public void 장소일정_저장() throws Exception {
+        // given
+        Member member = createMember("email1", "1234");
+        Trip trip = createTrip(member, "제주");
+        Place place = createPlace("장소1", "위치1", PlaceType.RESTAURANT);
+        Schedule schedule = Schedule.builder()
+                .date(LocalDate.of(2022, 10, 10))
+                .visitOrder(1)
+                .arrangeOrder(1)
+                .build();
+
+        // when
+        Long savedId = tripService.addPlaceSchedule(trip.getId(), place.getId(), schedule);
+
+        // then
+        Schedule findSchedule = em.find(Schedule.class, savedId);
+        assertThat(findSchedule).isEqualTo(schedule);
+        assertThat(findSchedule.getPlace()).isEqualTo(place);
+    }
+
+    @Test
+    public void 여행_조회_단건() throws Exception {
+        // given
+        Member member = createMember("email1", "1234");
+
+        // when
+        Trip trip = createTrip(member, "제주");
+        Trip findTrip = tripService.getOne(trip.getId());
+
+        // then
+        assertThat(trip).isEqualTo(findTrip);
+        assertThat(findTrip.getTitle()).isEqualTo("제주 여행");
+    }
+
+    @Test
+    public void 여행_조회_일정() throws Exception {
+        //given
+        Member member = createMember("email1", "1234");
+        Trip trip = createTrip(member, "제주");
         Place place1 = createPlace("장소1", "위치1", PlaceType.SHOP);
-        Schedule schedule1 = createSchedule(trip, place1, LocalDate.of(2022, 06, 20), 1, 1);
-        Schedule schedule2 = createSchedule(trip, place1, LocalDate.of(2022, 06, 20), 2, 2);
-
-        Place place2 = createPlace("장소2", "위치2", PlaceType.RESTAURANT);
-        Schedule schedule3 = createSchedule(trip, place2, LocalDate.of(2022, 06, 19), 2, 2);
-        Schedule schedule4 = createSchedule(trip, place1, LocalDate.of(2022, 06, 19), 1, 1);
-        Schedule schedule5 = createSchedule(trip, place1, LocalDate.of(2022, 06, 19), 3, 3);
-
+        Schedule schedule1 = createSchedule(trip, place1, null, LocalDate.of(2022, 06, 19), 1, 2);
+        Schedule schedule2 = createSchedule(trip, place1, null, LocalDate.of(2022, 06, 20), 2, 1);
         Flight flight = createFlight(trip, "number1", "대한항공",
-                LocalDate.of(2022, 06, 20), LocalTime.of(10, 10),
+                LocalDate.of(2022, 06, 19), LocalTime.of(10, 10),
                 LocalTime.of(12, 10), "인천공항", "제주공항");
+        Schedule schedule3 = createSchedule(trip, null, flight, LocalDate.of(2022, 06, 19), 0, 1);
+
         // when
         em.flush();
         em.clear();
-
-        Trip find = tripService.getTripWithSchedule(trip.getId());
+        Trip findTrip = tripService.getOneWithSchedule(trip.getId());
 
         // then
+        List<Schedule> schedules = findTrip.getSchedules();
+        assertThat(schedules.size()).isEqualTo(3);
+        assertThat(schedules.get(0).getFlight().getFlightNumber()).isEqualTo("number1");
+        assertThat(schedules.get(1).getPlace().getName()).isEqualTo("장소1");
+        assertThat(schedules.get(2).getPlace().getName()).isEqualTo("장소1");
+    }
+
+    @Test
+    public void 여행_조회_가계부() throws Exception {
+        //given
+        Member member = createMember("email1", "1234");
+        Trip trip = createTrip(member, "제주");
+        Budget budget1 = createBudget(trip, 10000, "숙소");
+        Budget budget2 = createBudget(trip, 20000, "음식점");
+
+        // when
+        em.flush();
+        em.clear();
+        Trip findTrip = tripService.getOneWithBudget(trip.getId());
+
+        // then
+        List<Budget> budgets = findTrip.getBudgets();
+        assertThat(budgets.size()).isEqualTo(2);
+    }
+
+    @Test
+    public void 여행_조회_체크리스트() throws Exception {
+        // given
+        Member member = createMember("email1", "1234");
+        Trip trip = createTrip(member, "제주");
+        ChecklistCategory category1 = createCategory(trip, "카테고리1");
+        ChecklistCategory category2 = createCategory(trip, "카테고리2");
+        Checklist checklist1 = createChecklist(category1, "체크리스트1");
+        Checklist checklist2 = createChecklist(category1, "체크리스트2");
+        em.flush();
+        em.clear();
+
+        // when
+        Trip findTrip = tripService.getOneWithChecklistCategory(trip.getId());
+
+        // then
+        List<ChecklistCategory> checklistCategories = trip.getChecklistCategories();
+        for (ChecklistCategory checklistCategory : checklistCategories) {
+            System.out.println("checklistCategory.getName() = " + checklistCategory.getName());
+        }
+        assertThat(checklistCategories.size()).isEqualTo(2);
+        assertThat(checklistCategories.get(0).getChecklists().size()).isEqualTo(2);
+        assertThat(checklistCategories.get(1).getChecklists().size()).isEqualTo(0);
     }
 
     @Test
@@ -83,7 +216,7 @@ class TripServiceTest {
         Trip modified = new Trip("제주", "제목수정", LocalDate.of(2022, 01, 02),
                 LocalDate.of(2022, 02, 01), Partner.CHILD, null);
 
-        tripService.edit(trip.getId(), modified);
+        tripService.modify(trip.getId(), modified);
         em.flush();
         em.clear();
 
@@ -106,7 +239,7 @@ class TripServiceTest {
         em.flush();
         em.clear();
         // when
-        tripService.delete(trip.getId());
+        tripService.remove(trip.getId());
         em.flush();
         em.clear();
         Trip deletedTrip = em.find(Trip.class, trip.getId());
@@ -125,29 +258,48 @@ class TripServiceTest {
                 .departureAirport(departureAirport)
                 .arrivalAirport(arrivalAirport)
                 .build();
-
-        Schedule schedule = Schedule.builder()
-                .date(flight.getDepartureDate())
-                .visitOrder(null)
-                .arrangeOrder(0)
-                .build();
         em.persist(flight);
-        schedule.addTrip(trip);
-        schedule.addFlight(flight);
-        em.persist(schedule);
         return flight;
     }
 
-    private Schedule createSchedule(Trip trip, Place place, LocalDate date, Integer visitOrder, Integer arrangeOrder) {
+    private Schedule createSchedule(Trip trip, Place place, Flight flight, LocalDate date, Integer visitOrder, Integer arrangeOrder) {
         Schedule schedule = Schedule.builder()
                 .date(date)
                 .visitOrder(visitOrder)
                 .arrangeOrder(arrangeOrder)
                 .build();
-        schedule.addTrip(trip);
+
         schedule.addPlace(place);
+        schedule.addTrip(trip);
+        schedule.addFlight(flight);
         em.persist(schedule);
         return schedule;
+    }
+
+    private Budget createBudget(Trip trip, int price, String place) {
+        Budget budget = Budget.builder()
+                .budgetCategory(BudgetCategory.ACCOMMODATIONS)
+                .price(price)
+                .date(LocalDate.now())
+                .paymentPlan(PaymentPlan.CARD)
+                .order(0)
+                .place(place)
+                .content("content1")
+                .build();
+        budget.addTrip(trip);
+        em.persist(budget);
+        return budget;
+    }
+
+    private Checklist createChecklist(ChecklistCategory checklistCategory, String name) {
+        Checklist checklist = Checklist.builder()
+                .name(name)
+                .basicOfferStatus(false)
+                .checkStatus(false)
+                .build();
+        checklist.addCategory(checklistCategory);
+        em.persist(checklist);
+        return checklist;
     }
 
     private Place createPlace(String name, String location, PlaceType placeType) {
@@ -161,7 +313,7 @@ class TripServiceTest {
     }
 
     private Trip createTrip(Member member, String city) {
-        Trip trip = new Trip(city);
+        Trip trip = Trip.builder().city(city).title(city + " 여행").build();
         trip.addMember(member);
         em.persist(trip);
         return trip;
@@ -171,6 +323,13 @@ class TripServiceTest {
         Member member = new Member(email, password);
         em.persist(member);
         return member;
+    }
+
+    private ChecklistCategory createCategory(Trip trip, String name) {
+        ChecklistCategory category = ChecklistCategory.builder().name(name).build();
+        category.addTrip(trip);
+        em.persist(category);
+        return category;
     }
 
 }

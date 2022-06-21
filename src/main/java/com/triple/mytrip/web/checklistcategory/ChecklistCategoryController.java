@@ -16,7 +16,7 @@ public class ChecklistCategoryController {
 
     private final ChecklistCategoryService categoryService;
 
-    @PostMapping("/checklist-categories/{categoryId}/checklist")
+    @PostMapping("/checklist-categories/{categoryId}/checklists")
     public Result<Long> checklistAdd(@PathVariable Long categoryId, @RequestBody ChecklistSaveRequest checklistSaveRequest) {
         Checklist checklist = checklistSaveRequest.toEntity();
         Long savedId = categoryService.addChecklist(categoryId, checklist);

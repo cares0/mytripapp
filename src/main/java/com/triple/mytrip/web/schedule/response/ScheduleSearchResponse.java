@@ -27,10 +27,10 @@ public class ScheduleSearchResponse {
     private FlightSearchResponse flight;
 
     public static ScheduleSearchResponse toResponse(Schedule schedule) {
-        PlaceSearchResponse placeSearchResponse = Objects.isNull(schedule.getPlace()) ?
+        PlaceSearchResponse place = Objects.isNull(schedule.getPlace()) ?
                 null : PlaceSearchResponse.toResponse(schedule.getPlace());
 
-        FlightSearchResponse flightSearchResponse = Objects.isNull(schedule.getFlight()) ?
+        FlightSearchResponse flight = Objects.isNull(schedule.getFlight()) ?
                 null : FlightSearchResponse.toResponse(schedule.getFlight());
 
         return ScheduleSearchResponse.builder()
@@ -40,8 +40,8 @@ public class ScheduleSearchResponse {
                 .arrangeOrder(schedule.getArrangeOrder())
                 .visitTime(schedule.getVisitTime())
                 .memo(schedule.getMemo())
-                .place(placeSearchResponse)
-                .flight(flightSearchResponse)
+                .place(place)
+                .flight(flight)
                 .build();
     }
 

@@ -1,8 +1,11 @@
 package com.triple.mytrip.web.budget.response;
 
 import com.triple.mytrip.domain.budget.Budget;
+import com.triple.mytrip.domain.budget.budgetfile.BudgetFile;
 import com.triple.mytrip.web.budget.budgetfile.response.BudgetFileSearchResponse;
 import lombok.*;
+import org.hibernate.LazyInitializationException;
+import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -30,9 +33,6 @@ public class BudgetSearchResponse {
     private List<BudgetFileSearchResponse> budgetFiles;
 
     public static BudgetSearchResponse toResponse(Budget budget) {
-        if (Objects.isNull(budget)) {
-            return null;
-        }
 
         String budgetCategory = Objects.isNull(budget.getBudgetCategory()) ?
                 null : budget.getBudgetCategory().getKorName();
@@ -40,10 +40,8 @@ public class BudgetSearchResponse {
         String paymentPlan = Objects.isNull(budget.getPaymentPlan()) ?
                 null : budget.getPaymentPlan().getKorName();
 
-        List<BudgetFileSearchResponse> budgetFileSearchResponses =
-                budget.getBudgetFiles().stream().map(budgetFile ->
-                                BudgetFileSearchResponse.toResponse(budgetFile))
-                        .collect(Collectors.toList());
+        List<BudgetFileSearchResponse> budgetFiles =
+                getBudgetFileSearchResponses(budget.getBudgetFiles());
 
         return BudgetSearchResponse.builder()
                 .id(budget.getId())
@@ -54,8 +52,18 @@ public class BudgetSearchResponse {
                 .paymentPlan(paymentPlan)
                 .budgetCategory(budgetCategory)
                 .content(budget.getContent())
-                .budgetFiles(budgetFileSearchResponses)
+                .budgetFiles(budgetFiles)
                 .build();
+    }
+
+    private static List<BudgetFileSearchResponse> getBudgetFileSearchResponses(List<BudgetFile> budgetFiles) {
+        try {
+            return budgetFiles.stream().map(budgetFile ->
+                            BudgetFileSearchResponse.toResponse(budgetFile))
+                    .collect(Collectors.toList());
+        } catch (LazyInitializationException e) {
+            return null;
+        }
     }
 
 }

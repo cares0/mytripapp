@@ -3,8 +3,6 @@ package com.triple.mytrip.domain.budget;
 import com.triple.mytrip.domain.budget.budgetfile.BudgetFile;
 import com.triple.mytrip.domain.budget.budgetfile.BudgetFileRepository;
 import com.triple.mytrip.domain.exception.EntityNotFoundException;
-import com.triple.mytrip.domain.trip.Trip;
-import com.triple.mytrip.domain.trip.TripRepository;
 import com.triple.mytrip.domain.util.FileManager;
 import com.triple.mytrip.domain.util.UploadFile;
 import lombok.RequiredArgsConstructor;
@@ -24,17 +22,10 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class BudgetService {
 
-    private final TripRepository tripRepository;
     private final BudgetRepository budgetRepository;
     private final BudgetFileRepository budgetFileRepository;
 
     private final FileManager fileManager;
-
-    public Long add(Long tripId, Budget budget) {
-        Trip trip = findTrip(tripId);
-        budget.addTrip(trip);
-        return budgetRepository.save(budget).getId();
-    }
 
     public int addFile(Long budgetId, List<MultipartFile> multipartFiles) throws IOException {
         Budget budget = findBudget(budgetId);
@@ -48,13 +39,8 @@ public class BudgetService {
     }
 
     @Transactional(readOnly = true)
-    public Budget getOne(Long budgetId) {
+    public Budget getOneWithBudgetFile(Long budgetId) {
         return findBudgetWithBudgetFiles(budgetId);
-    }
-
-    @Transactional(readOnly = true)
-    public List<Budget> getList(Long tripId) {
-        return budgetRepository.findAllByTripId(tripId);
     }
 
     public Budget modify(Long budgetId, Budget modified) {
@@ -92,11 +78,6 @@ public class BudgetService {
     private Budget findBudgetWithBudgetFiles(Long id) {
         return Optional.ofNullable(budgetRepository.findByIdWithBudgetFiles(id)).orElseThrow(() ->
                 new EntityNotFoundException("해당 ID와 일치하는 가계부를 찾을 수 없음"));
-    }
-
-    private Trip findTrip(Long tripId) {
-        return tripRepository.findById(tripId).orElseThrow(() ->
-                new EntityNotFoundException("해당 ID와 일치하는 여행을 찾을 수 없음"));
     }
 
     private void removeFile(List<BudgetFile> budgetFiles) {

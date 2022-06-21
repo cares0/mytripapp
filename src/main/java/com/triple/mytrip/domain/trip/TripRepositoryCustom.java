@@ -7,4 +7,8 @@ import java.util.List;
 public interface TripRepositoryCustom {
 
     Trip findAllByIdWithSchedule(Long tripId);
+
+    Trip findAllByIdWithChecklistCategory(Long tripId);
+
+    Trip findAllByIdWithBudget(Long tripId);
 }

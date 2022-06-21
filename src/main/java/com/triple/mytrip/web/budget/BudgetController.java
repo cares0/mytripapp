@@ -27,7 +27,7 @@ public class BudgetController {
 
     @GetMapping("/budgets/{budgetId}")
     public BudgetSearchResponse budgetDetail(@PathVariable Long budgetId) {
-        Budget budget = budgetService.getOne(budgetId);
+        Budget budget = budgetService.getOneWithBudgetFile(budgetId);
         return BudgetSearchResponse.toResponse(budget);
     }
 

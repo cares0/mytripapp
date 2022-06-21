@@ -5,6 +5,7 @@ import com.triple.mytrip.domain.checklistcategory.ChecklistCategory;
 import com.triple.mytrip.domain.member.Member;
 import com.triple.mytrip.domain.schedule.Schedule;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static javax.persistence.CascadeType.*;
+import static javax.persistence.EnumType.*;
 import static javax.persistence.FetchType.*;
 import static javax.persistence.GenerationType.*;
 import static lombok.AccessLevel.*;
@@ -50,32 +52,14 @@ public class Trip {
 
     private LocalDate departureDate;
 
-    @Enumerated(value = EnumType.STRING)
+    @Enumerated(value = STRING)
     private Partner partner;
 
-    @Enumerated(value = EnumType.STRING)
+    @Enumerated(value = STRING)
     private TripStyle tripStyle;
 
-    /**
-     * 조회용
-     */
-    public Trip(Long id) {
-        this.id = id;
-    }
-
-    /**
-     * 저장용
-     */
-    public Trip(String city) {
-        this.city = city;
-        this.title = city + " 여행";
-    }
-
-    /**
-     * 수정용
-     */
-    public Trip(String city, String title, LocalDate arrivalDate,
-                LocalDate departureDate, Partner partner, TripStyle tripStyle) {
+    @Builder
+    public Trip(String city, String title, LocalDate arrivalDate, LocalDate departureDate, Partner partner, TripStyle tripStyle) {
         this.city = city;
         this.title = title;
         this.arrivalDate = arrivalDate;

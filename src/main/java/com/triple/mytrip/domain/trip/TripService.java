@@ -1,12 +1,12 @@
 package com.triple.mytrip.domain.trip;
 
+import com.triple.mytrip.domain.budget.Budget;
+import com.triple.mytrip.domain.budget.BudgetRepository;
 import com.triple.mytrip.domain.checklistcategory.ChecklistCategory;
 import com.triple.mytrip.domain.checklistcategory.ChecklistCategoryRepository;
 import com.triple.mytrip.domain.exception.EntityNotFoundException;
 import com.triple.mytrip.domain.flight.Flight;
 import com.triple.mytrip.domain.flight.FlightRepository;
-import com.triple.mytrip.domain.member.Member;
-import com.triple.mytrip.domain.member.MemberRepository;
 import com.triple.mytrip.domain.place.Place;
 import com.triple.mytrip.domain.place.PlaceRepository;
 import com.triple.mytrip.domain.schedule.Schedule;
@@ -14,6 +14,7 @@ import com.triple.mytrip.domain.schedule.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -25,20 +26,17 @@ import java.util.Objects;
 @Transactional
 public class TripService {
 
-    private final MemberRepository memberRepository;
     private final TripRepository tripRepository;
+    private final BudgetRepository budgetRepository;
     private final ScheduleRepository scheduleRepository;
     private final FlightRepository flightRepository;
     private final PlaceRepository placeRepository;
     private final ChecklistCategoryRepository checklistCategoryRepository;
 
-    public Long save(Long memberId, Trip trip) {
-        Member member = memberRepository.findById(memberId).orElseThrow(() ->
-                new EntityNotFoundException("해당 ID와 일치하는 회원을 찾을 수 없음"));
-
-        trip.addMember(member);
-        Trip saved = tripRepository.save(trip);
-        return saved.getId();
+    public Long addBudget(Long tripId, Budget budget) {
+        Trip trip = findTrip(tripId);
+        budget.addTrip(trip);
+        return budgetRepository.save(budget).getId();
     }
 
     public Long addChecklistCategory(Long tripId, ChecklistCategory checklistCategory) {
@@ -67,20 +65,35 @@ public class TripService {
     }
 
     @Transactional(readOnly = true)
-    public Trip getTripWithSchedule(Long tripId) {
-        Trip trip = tripRepository.findAllByIdWithSchedule(tripId);
+    public Trip getOne(Long tripId) {
+        return findTrip(tripId);
+    }
+
+    @Transactional(readOnly = true)
+    public Trip getOneWithSchedule(Long tripId) {
+        return tripRepository.findAllByIdWithSchedule(tripId);
+    }
+
+    @Transactional(readOnly = true)
+    public Trip getOneWithChecklistCategory(Long tripId) {
+        Trip trip = tripRepository.findAllByIdWithChecklistCategory(tripId);
+        initChecklist(trip);
         return trip;
     }
 
-    public Trip edit(Long tripId, Trip modified) {
-        Trip original = tripRepository.findById(tripId).orElseThrow(() ->
-                new EntityNotFoundException("해당 ID와 일치하는 여행을 찾을 수 없음"));
+    @Transactional(readOnly = true)
+    public Trip getOneWithBudget(Long tripId) {
+        return tripRepository.findAllByIdWithBudget(tripId);
+    }
+
+    public Trip modify(Long tripId, Trip modified) {
+        Trip original = findTrip(tripId);
 
         update(original, modified);
         return original;
     }
 
-    public void delete(Long tripId) {
+    public void remove(Long tripId) {
         tripRepository.deleteById(tripId);
     }
 
@@ -140,5 +153,13 @@ public class TripService {
         }
     }
 
+    /**
+     * 컬렉션 페치 조인 1번 이상 불가, 강제 지연로딩 초기화(batch-size로 N+1 해결)
+     */
+    private void initChecklist(Trip trip) {
+        if (!CollectionUtils.isEmpty(trip.getChecklistCategories())) {
+            trip.getChecklistCategories().get(0).getChecklists().size();
+        }
+    }
 
 }

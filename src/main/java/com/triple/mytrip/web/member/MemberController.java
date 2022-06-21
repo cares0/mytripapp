@@ -1,5 +1,6 @@
 package com.triple.mytrip.web.member;
 
+import com.triple.mytrip.domain.member.MemberService;
 import com.triple.mytrip.domain.trip.Trip;
 import com.triple.mytrip.domain.trip.TripService;
 import com.triple.mytrip.web.common.Result;
@@ -11,12 +12,12 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class MemberController {
 
-    private final TripService tripService;
+    private final MemberService memberService;
 
     @PostMapping("/members/{memberId}/trips")
     public Result<Long> save(@PathVariable Long memberId, @RequestBody TripSaveRequest tripSaveRequest) {
-        Trip trip = new Trip(tripSaveRequest.getCity());
-        Long savedId = tripService.save(memberId, trip);
+        Trip trip = tripSaveRequest.toEntity();
+        Long savedId = memberService.addTrip(memberId, trip);
         return new Result<>(savedId);
     }
 

@@ -25,11 +25,6 @@ public class ChecklistCategoryService {
         return checklistRepository.save(checklist).getId();
     }
 
-    @Transactional(readOnly = true) // 나중에 Trip으로 옮길것
-    public List<ChecklistCategory> getListWithChecklist(Long tripId) {
-        return checklistCategoryRepository.findAllByTripIdWithChecklist(tripId);
-    }
-
     public ChecklistCategory modify(Long categoryId, ChecklistCategory modified) {
         ChecklistCategory original = findCategory(categoryId);
         original.editName(modified.getName());

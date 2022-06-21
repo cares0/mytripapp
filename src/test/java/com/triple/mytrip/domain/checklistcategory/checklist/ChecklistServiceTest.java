@@ -92,7 +92,7 @@ class ChecklistServiceTest {
     }
 
     private Trip createTrip(Member member, String city) {
-        Trip trip = new Trip(city);
+        Trip trip = Trip.builder().city(city).title(city + " 여행").build();
         trip.addMember(member);
         em.persist(trip);
         return trip;

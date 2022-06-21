@@ -40,33 +40,13 @@ class BudgetServiceTest {
         em.flush();
         em.clear();
         // when
-        Budget findBudget = budgetService.getOne(budget.getId());
+        Budget findBudget = budgetService.getOneWithBudgetFile(budget.getId());
         System.out.println("findBudget.getBudgetFiles().size() = " + findBudget.getBudgetFiles().size());
         // then
         assertThat(findBudget.getId()).isEqualTo(budget.getId());
         assertThat(findBudget.getBudgetFiles()).extracting("oriName").containsExactly("oriName1", "oriName2");
         assertThat(findBudget.getBudgetFiles()).extracting("fileName").containsExactly("fileName1", "fileName2");
 
-    }
-
-    @Test
-    public void 가계부_전체조회() throws Exception {
-        // given
-        Member member = createMember("email1", "1234");
-        Trip trip1 = createTrip(member, "제주");
-        Trip trip2 = createTrip(member, "경기");
-        Budget budget1 = createBudget(trip1, 10000, "숙소");
-        Budget budget2 = createBudget(trip2, 20000, "숙소");
-        Budget budget3 = createBudget(trip1, 30000, "음식점");
-        Budget budget4 = createBudget(trip2, 40000, "음식점");
-
-        // when
-        List<Budget> result = budgetService.getList(trip1.getId());
-
-        // then
-        assertThat(result.size()).isEqualTo(2);
-        assertThat(result).contains(budget1, budget3);
-        assertThat(result).extracting("price").containsExactly(10000, 30000);
     }
 
     @Test
@@ -113,7 +93,7 @@ class BudgetServiceTest {
 
 
         // then
-        assertThatThrownBy(() -> budgetService.getOne(budget.getId()))
+        assertThatThrownBy(() -> budgetService.getOneWithBudgetFile(budget.getId()))
                 .isInstanceOf(EntityNotFoundException.class);
     }
 
@@ -127,12 +107,13 @@ class BudgetServiceTest {
                 .place(place)
                 .content("content1")
                 .build();
-        budgetService.add(trip.getId(), budget);
+        budget.addTrip(trip);
+        em.persist(budget);
         return budget;
     }
 
     private Trip createTrip(Member member, String city) {
-        Trip trip = new Trip(city);
+        Trip trip = Trip.builder().city(city).title(city + " 여행").build();
         trip.addMember(member);
         em.persist(trip);
         return trip;
