@@ -7,8 +7,13 @@ import com.triple.mytrip.web.checklistcategory.request.ChecklistCategoryEditRequ
 import com.triple.mytrip.web.checklistcategory.checklist.request.ChecklistSaveRequest;
 import com.triple.mytrip.web.checklistcategory.response.ChecklistCategoryEditResponse;
 import com.triple.mytrip.web.common.Result;
+import com.triple.mytrip.web.util.ValidationUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import static com.triple.mytrip.web.util.ValidationUtils.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,7 +22,9 @@ public class ChecklistCategoryController {
     private final ChecklistCategoryService categoryService;
 
     @PostMapping("/checklist-categories/{categoryId}/checklists")
-    public Result<Long> checklistAdd(@PathVariable Long categoryId, @RequestBody ChecklistSaveRequest checklistSaveRequest) {
+    public Result<Long> checklistAdd(@PathVariable Long categoryId, @Validated @RequestBody ChecklistSaveRequest checklistSaveRequest, BindingResult bindingResult) {
+        validate(bindingResult);
+
         Checklist checklist = checklistSaveRequest.toEntity();
         Long savedId = categoryService.addChecklist(categoryId, checklist);
         return new Result<>(savedId);

@@ -9,7 +9,7 @@ import com.triple.mytrip.domain.trip.TripService;
 import com.triple.mytrip.web.budget.request.BudgetSaveRequest;
 import com.triple.mytrip.web.checklistcategory.request.ChecklistCategorySaveRequest;
 import com.triple.mytrip.web.common.Result;
-import com.triple.mytrip.web.exception.ValidationFailException;
+import com.triple.mytrip.web.util.ValidationUtils;
 import com.triple.mytrip.web.flight.request.FlightSaveRequest;
 import com.triple.mytrip.web.schedule.request.ScheduleSaveRequest;
 import com.triple.mytrip.web.trip.request.TripEditRequest;
@@ -17,13 +17,12 @@ import com.triple.mytrip.web.trip.response.TripEditResponse;
 import com.triple.mytrip.web.trip.response.TripSearchResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.Map;
+
+import static com.triple.mytrip.web.util.ValidationUtils.*;
 
 
 @RestController
@@ -75,7 +74,9 @@ public class TripController {
 
     // ======= checklistCategory ======= //
     @PostMapping("/trips/{tripId}/checklist-categories")
-    public Result<Long> checklistCategoryAdd(@PathVariable Long tripId, @RequestBody ChecklistCategorySaveRequest categoryRequest) {
+    public Result<Long> checklistCategoryAdd(@PathVariable Long tripId, @Validated @RequestBody ChecklistCategorySaveRequest categoryRequest, BindingResult bindingResult) {
+        validate(bindingResult);
+
         ChecklistCategory checklistCategory = categoryRequest.toEntity();
         Long savedId = tripService.addChecklistCategory(tripId, checklistCategory);
         return new Result<>(savedId);
@@ -103,16 +104,4 @@ public class TripController {
         return TripSearchResponse.toResponse(trip);
     }
 
-    private void validate(BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            Map<String, String> map = new HashMap<>();
-            for (ObjectError objectError : bindingResult.getAllErrors()) {
-                String defaultMessage = objectError.getDefaultMessage();
-                FieldError fieldError = (FieldError) objectError;
-                String fieldName = fieldError.getField();
-                map.put(fieldName, defaultMessage);
-            }
-            throw new ValidationFailException(map.toString());
-        }
-    }
 }
