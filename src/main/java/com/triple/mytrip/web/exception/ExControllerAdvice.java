@@ -1,7 +1,6 @@
-package com.triple.mytrip.web.common;
+package com.triple.mytrip.web.exception;
 
 import com.triple.mytrip.domain.exception.EntityNotFoundException;
-import com.triple.mytrip.web.exception.NoModifiedDataException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
@@ -29,13 +28,6 @@ public class ExControllerAdvice {
     public ErrorResult HttpMessageNotReadableExHandler(HttpMessageNotReadableException e) {
         log.error("[HttpMessageNotReadableException]", e);
         return new ErrorResult(LocalTime.now(), "WrongMessage", e.getMessage());
-    }
-
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler
-    public ErrorResult NoModifiedDataExHandler(NoModifiedDataException e) {
-        log.error("[NoModifiedDataException]", e);
-        return new ErrorResult(LocalTime.now(), "NoData", e.getMessage());
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)

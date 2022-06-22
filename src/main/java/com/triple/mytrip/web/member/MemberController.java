@@ -15,7 +15,7 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping("/members/{memberId}/trips")
-    public Result<Long> save(@PathVariable Long memberId, @RequestBody TripSaveRequest tripSaveRequest) {
+    public Result<Long> tripAdd(@PathVariable Long memberId, @RequestBody TripSaveRequest tripSaveRequest) {
         Trip trip = tripSaveRequest.toEntity();
         Long savedId = memberService.addTrip(memberId, trip);
         return new Result<>(savedId);
