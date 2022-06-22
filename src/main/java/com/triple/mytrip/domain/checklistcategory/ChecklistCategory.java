@@ -35,7 +35,10 @@ public class ChecklistCategory extends BaseEntity {
     @OneToMany(mappedBy = "category", cascade = REMOVE, orphanRemoval = true)
     private List<Checklist> checklists = new ArrayList<>();
 
+    @Column(nullable = false)
     private Boolean basicOfferStatus;
+
+    @Column(nullable = false)
     private String name;
 
     @Builder

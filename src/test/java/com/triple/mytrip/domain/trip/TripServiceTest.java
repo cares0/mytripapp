@@ -83,7 +83,7 @@ class TripServiceTest {
         // given
         Member member = createMember("email1", "1234");
         Trip trip = createTrip(member, "제주");
-        ChecklistCategory category = ChecklistCategory.builder().name("카테고리1").build();
+        ChecklistCategory category = ChecklistCategory.builder().name("카테고리1").basicOfferStatus(false).build();
 
         // when
         Long savedId = tripService.addChecklistCategory(trip.getId(), category);
@@ -348,7 +348,7 @@ class TripServiceTest {
     }
 
     private ChecklistCategory createCategory(Trip trip, String name) {
-        ChecklistCategory category = ChecklistCategory.builder().name(name).build();
+        ChecklistCategory category = ChecklistCategory.builder().name(name).basicOfferStatus(false).build();
         category.addTrip(trip);
         em.persist(category);
         return category;

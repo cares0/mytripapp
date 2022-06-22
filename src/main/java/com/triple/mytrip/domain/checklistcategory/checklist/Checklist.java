@@ -28,9 +28,15 @@ public class Checklist extends BaseEntity {
     @JoinColumn(name = "checklist_category_id")
     private ChecklistCategory category;
 
+    @Column(nullable = false)
     private Boolean checkStatus;
+
+    @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false)
     private Boolean basicOfferStatus;
+
     private String memo;
     private String instruction;
 

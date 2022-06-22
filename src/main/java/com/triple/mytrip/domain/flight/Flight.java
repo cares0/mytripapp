@@ -20,15 +20,25 @@ public class Flight extends BaseEntity {
     @Id @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String flightNumber;
+
+    @Column(nullable = false)
     private String airline;
 
+    @Column(nullable = false)
     private LocalDate departureDate;
 
+    @Column(nullable = false)
     private LocalTime departureTime;
+
+    @Column(nullable = false)
     private LocalTime arrivalTime;
 
+    @Column(nullable = false)
     private String departureAirport;
+
+    @Column(nullable = false)
     private String arrivalAirport;
 
     @Builder

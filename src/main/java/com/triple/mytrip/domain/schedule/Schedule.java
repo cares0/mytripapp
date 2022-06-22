@@ -40,8 +40,12 @@ public class Schedule extends BaseEntity {
     @JoinColumn(name = "place_id")
     private Place place;
 
+    @Column(nullable = false)
     private LocalDate date;
+
     private Integer visitOrder;
+
+    @Column(nullable = false)
     private Integer arrangeOrder;
 
     private LocalTime visitTime;

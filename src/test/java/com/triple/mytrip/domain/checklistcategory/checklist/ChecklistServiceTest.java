@@ -105,7 +105,7 @@ class ChecklistServiceTest {
     }
 
     private ChecklistCategory createCategory(Trip trip, String name) {
-        ChecklistCategory category = ChecklistCategory.builder().name(name).build();
+        ChecklistCategory category = ChecklistCategory.builder().name(name).basicOfferStatus(false).build();
         category.addTrip(trip);
         em.persist(category);
         return category;

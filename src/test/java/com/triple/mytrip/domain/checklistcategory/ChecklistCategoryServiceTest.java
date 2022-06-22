@@ -35,7 +35,7 @@ class ChecklistCategoryServiceTest {
         Member member = createMember("email1", "1234");
         Trip trip = createTrip(member, "제주");
         ChecklistCategory category = createCategory(trip, "카테고리1");
-        Checklist checklist = Checklist.builder().name("체크리스트1").build();
+        Checklist checklist = Checklist.builder().name("체크리스트1").basicOfferStatus(false).checkStatus(false).build();
 
         // when
         Long savedId = checklistCategoryService.addChecklist(category.getId(), checklist);
