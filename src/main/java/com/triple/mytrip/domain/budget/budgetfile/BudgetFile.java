@@ -2,6 +2,7 @@ package com.triple.mytrip.domain.budget.budgetfile;
 
 import com.triple.mytrip.domain.budget.Budget;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -23,17 +24,19 @@ public class BudgetFile {
     @JoinColumn(name = "budget_id")
     private Budget budget;
 
+    @Column(nullable = false)
     private String oriName;
 
+    @Column(nullable = false)
     private String fileName;
 
-    public BudgetFile(Budget budget, String oriName, String fileName) {
-        addBudget(budget);
+    @Builder
+    private BudgetFile(String oriName, String fileName) {
         this.oriName = oriName;
         this.fileName = fileName;
     }
 
-    private void addBudget(Budget budget) {
+    public void addBudget(Budget budget) {
         this.budget = budget;
         budget.getBudgetFiles().add(this);
     }

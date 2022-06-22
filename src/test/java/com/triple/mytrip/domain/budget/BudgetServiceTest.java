@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 
 import java.time.LocalDate;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -32,10 +31,8 @@ class BudgetServiceTest {
         Member member = createMember("email1", "1234");
         Trip trip = createTrip(member, "제주");
         Budget budget = createBudget(trip, 10000, "숙소");
-        BudgetFile budgetFile1 = new BudgetFile(budget, "oriName1", "fileName1");
-        BudgetFile budgetFile2 = new BudgetFile(budget, "oriName2", "fileName2");
-        em.persist(budgetFile1);
-        em.persist(budgetFile2);
+        BudgetFile budgetFile1 = createBudgetFile(budget, "fileName1", "oriName1");
+        BudgetFile budgetFile2 = createBudgetFile(budget, "fileName2", "oriName2");
 
         em.flush();
         em.clear();
@@ -47,6 +44,13 @@ class BudgetServiceTest {
         assertThat(findBudget.getBudgetFiles()).extracting("oriName").containsExactly("oriName1", "oriName2");
         assertThat(findBudget.getBudgetFiles()).extracting("fileName").containsExactly("fileName1", "fileName2");
 
+    }
+
+    private BudgetFile createBudgetFile(Budget budget, String fileName, String oriName) {
+        BudgetFile budgetFile = BudgetFile.builder().fileName(fileName).oriName(oriName).build();
+        budgetFile.addBudget(budget);
+        em.persist(budgetFile);
+        return budgetFile;
     }
 
     @Test

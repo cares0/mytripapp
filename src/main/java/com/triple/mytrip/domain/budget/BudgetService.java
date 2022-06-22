@@ -31,7 +31,8 @@ public class BudgetService {
         Budget budget = findBudget(budgetId);
 
         List<UploadFile> uploadFiles = fileManager.storeFiles(multipartFiles);
-        List<BudgetFile> budgetFiles = uploadFilesToBudgetFiles(budget, uploadFiles);
+        List<BudgetFile> budgetFiles = uploadFilesToBudgetFiles(uploadFiles);
+        addBudgetInBudgetFile(budget, budgetFiles);
 
         saveFile(budgetFiles);
 
@@ -59,15 +60,21 @@ public class BudgetService {
         budgetRepository.delete(budget);
     }
 
-    private Budget findBudget(Long id) {
-        return budgetRepository.findById(id).orElseThrow(() ->
+    private Budget findBudget(Long budgetId) {
+        return budgetRepository.findById(budgetId).orElseThrow(() ->
                 new EntityNotFoundException("해당 ID와 일치하는 가계부를 찾을 수 없음"));
     }
 
-    private List<BudgetFile> uploadFilesToBudgetFiles(Budget budget, List<UploadFile> uploadFiles) {
+    private List<BudgetFile> uploadFilesToBudgetFiles(List<UploadFile> uploadFiles) {
         return uploadFiles.stream().map(
-                        (uploadFile) -> new BudgetFile(budget, uploadFile.getUploadFileName(), uploadFile.getStoreFileName()))
+                        (uploadFile) -> BudgetFile.builder()
+                                .oriName(uploadFile.getUploadFileName())
+                                .fileName(uploadFile.getStoreFileName()).build())
                 .collect(Collectors.toList());
+    }
+
+    private void addBudgetInBudgetFile(Budget budget, List<BudgetFile> budgetFiles) {
+        budgetFiles.stream().forEach((budgetFile -> budgetFile.addBudget(budget)));
     }
 
     private void saveFile(List<BudgetFile> budgetFiles) {
@@ -75,8 +82,8 @@ public class BudgetService {
                 .forEach((budgetFile) -> budgetFileRepository.save(budgetFile));
     }
 
-    private Budget findBudgetWithBudgetFiles(Long id) {
-        return Optional.ofNullable(budgetRepository.findByIdWithBudgetFiles(id)).orElseThrow(() ->
+    private Budget findBudgetWithBudgetFiles(Long budgetFileId) {
+        return Optional.ofNullable(budgetRepository.findByIdWithBudgetFiles(budgetFileId)).orElseThrow(() ->
                 new EntityNotFoundException("해당 ID와 일치하는 가계부를 찾을 수 없음"));
     }
 

@@ -23,15 +23,15 @@ public class BudgetFileService {
 
     private final FileManager fileManager;
 
-    public void remove(Long id) {
-        BudgetFile budgetFile = findBudgetFile(id);
+    public void remove(Long budgetFileId) {
+        BudgetFile budgetFile = findBudgetFile(budgetFileId);
         budgetFileRepository.delete(budgetFile);
 
         fileManager.removeFile(budgetFile.getFileName());
     }
 
-    private BudgetFile findBudgetFile(Long id) {
-        return budgetFileRepository.findById(id).orElseThrow(() ->
+    private BudgetFile findBudgetFile(Long budgetFileId) {
+        return budgetFileRepository.findById(budgetFileId).orElseThrow(() ->
                 new EntityNotFoundException("해당 ID와 일치하는 파일을 찾을 수 없음"));
     }
 }
