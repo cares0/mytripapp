@@ -6,12 +6,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.NotBlank;
+
 import static lombok.AccessLevel.*;
 
 @Getter @Setter
 @NoArgsConstructor(access = PRIVATE)
 public class TripSaveRequest {
 
+    @NotBlank
     private String city;
 
     public Trip toEntity() {
