@@ -34,8 +34,8 @@ public class TripEditResponse {
                 .id(trip.getId())
                 .city(trip.getCity())
                 .title(trip.getTitle())
-                .arrivalDate(trip.getArrivalDate())
-                .departureDate(trip.getDepartureDate())
+                .arrivalDate(trip.getPeriod().getArrivalDate())
+                .departureDate(trip.getPeriod().getDepartureDate())
                 .partner(partner)
                 .tripStyle(tripStyle)
                 .build();

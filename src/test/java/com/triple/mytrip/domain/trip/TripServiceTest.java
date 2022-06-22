@@ -6,6 +6,7 @@ import com.triple.mytrip.domain.budget.PaymentPlan;
 import com.triple.mytrip.domain.budget.budgetfile.BudgetFile;
 import com.triple.mytrip.domain.checklistcategory.ChecklistCategory;
 import com.triple.mytrip.domain.checklistcategory.checklist.Checklist;
+import com.triple.mytrip.domain.exception.EntityNotWithinPeriodException;
 import com.triple.mytrip.domain.member.Member;
 import com.triple.mytrip.domain.place.Place;
 import com.triple.mytrip.domain.place.PlaceType;
@@ -41,22 +42,40 @@ class TripServiceTest {
     public void 가계부_저장() throws Exception {
         // given
         Member member = createMember("email1", "1234");
-        Trip trip = createTrip(member, "제주");
-        Budget budget = Budget.builder()
+        Trip trip = Trip.builder()
+                .city("제주")
+                .arrivalDate(LocalDate.of(2022, 10, 10))
+                .departureDate(LocalDate.of(2022, 10, 05))
+                .title("제주 여행")
+                .build();
+        em.persist(trip);
+
+        Budget budget1 = Budget.builder()
                 .budgetCategory(BudgetCategory.ACCOMMODATIONS)
                 .price(10000)
-                .date(LocalDate.now())
+                .date(LocalDate.of(2022, 10, 10))
                 .paymentPlan(PaymentPlan.CARD)
                 .order(0)
-                .place("숙소")
+                .place("숙소1")
                 .content("content1")
                 .build();
 
+        Budget budget2 = Budget.builder()
+                .budgetCategory(BudgetCategory.ACCOMMODATIONS)
+                .price(20000)
+                .date(LocalDate.of(2022, 11, 11))
+                .paymentPlan(PaymentPlan.CARD)
+                .order(0)
+                .place("숙소2")
+                .content("content2")
+                .build();
         // when
-        Long savedId = tripService.addBudget(trip.getId(), budget);
+        Long savedId = tripService.addBudget(trip.getId(), budget1);
 
         // then
-        assertThat(em.find(Budget.class, savedId)).isEqualTo(budget);
+        assertThat(em.find(Budget.class, savedId)).isEqualTo(budget1);
+        assertThatThrownBy(() -> tripService.addBudget(trip.getId(), budget2))
+                .isInstanceOf(EntityNotWithinPeriodException.class);
     }
 
     @Test
@@ -81,7 +100,7 @@ class TripServiceTest {
         Flight flight = Flight.builder()
                 .flightNumber("number1")
                 .airline("대한항공")
-                .departureDate(LocalDate.of(2022, 12, 10))
+                .departureDate(LocalDate.of(2022, 10, 10))
                 .departureTime(LocalTime.of(10, 10))
                 .arrivalTime(LocalTime.of(12, 10))
                 .departureAirport("제주공항")
@@ -224,8 +243,8 @@ class TripServiceTest {
         // then
         assertThat(modified.getCity()).isEqualTo("제주");
         assertThat(modified.getTitle()).isEqualTo("제목수정");
-        assertThat(modified.getArrivalDate()).isEqualTo(LocalDate.of(2022, 01, 02));
-        assertThat(modified.getDepartureDate()).isEqualTo(LocalDate.of(2022, 02, 01));
+        assertThat(modified.getPeriod().getArrivalDate()).isEqualTo(LocalDate.of(2022, 01, 02));
+        assertThat(modified.getPeriod().getDepartureDate()).isEqualTo(LocalDate.of(2022, 02, 01));
         assertThat(modified.getPartner()).isEqualTo(Partner.CHILD);
         assertThat(modified.getTripStyle()).isEqualTo(null);
     }
@@ -313,7 +332,10 @@ class TripServiceTest {
     }
 
     private Trip createTrip(Member member, String city) {
-        Trip trip = Trip.builder().city(city).title(city + " 여행").build();
+        Trip trip = Trip.builder().city(city).title(city + " 여행")
+                .arrivalDate(LocalDate.of(2022, 10, 20))
+                .departureDate(LocalDate.of(2022, 10, 10))
+                .build();
         trip.addMember(member);
         em.persist(trip);
         return trip;

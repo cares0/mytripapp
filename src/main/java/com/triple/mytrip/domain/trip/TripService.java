@@ -4,7 +4,9 @@ import com.triple.mytrip.domain.budget.Budget;
 import com.triple.mytrip.domain.budget.BudgetRepository;
 import com.triple.mytrip.domain.checklistcategory.ChecklistCategory;
 import com.triple.mytrip.domain.checklistcategory.ChecklistCategoryRepository;
+import com.triple.mytrip.domain.common.Period;
 import com.triple.mytrip.domain.exception.EntityNotFoundException;
+import com.triple.mytrip.domain.exception.EntityNotWithinPeriodException;
 import com.triple.mytrip.domain.flight.Flight;
 import com.triple.mytrip.domain.flight.FlightRepository;
 import com.triple.mytrip.domain.place.Place;
@@ -35,6 +37,8 @@ public class TripService {
 
     public Long addBudget(Long tripId, Budget budget) {
         Trip trip = findTrip(tripId);
+        validateDate(trip, budget.getDate());
+
         budget.addTrip(trip);
         return budgetRepository.save(budget).getId();
     }
@@ -42,22 +46,23 @@ public class TripService {
     public Long addChecklistCategory(Long tripId, ChecklistCategory checklistCategory) {
         Trip trip = findTrip(tripId);
         checklistCategory.addTrip(trip);
-        ChecklistCategory saved = checklistCategoryRepository.save(checklistCategory);
-        return saved.getId();
+        return checklistCategoryRepository.save(checklistCategory).getId();
     }
 
     public Map<String, Long> addFlightSchedule(Long tripId, Flight flight) {
         Trip trip = findTrip(tripId);
-        Flight savedFlight = flightRepository.save(flight);
+        validateDate(trip, flight.getDepartureDate());
 
+        Flight savedFlight = flightRepository.save(flight);
         Schedule savedSchedule = saveSchedule(trip, flight);
         return makeIdMap(savedFlight, savedSchedule);
     }
 
     public Long addPlaceSchedule(Long tripId, Long placeId, Schedule schedule) {
         Trip trip = findTrip(tripId);
-        Place place = findPlace(placeId);
+        validateDate(trip, schedule.getDate());
 
+        Place place = findPlace(placeId);
         schedule.addTrip(trip);
         schedule.addPlace(place);
         Schedule saved = scheduleRepository.save(schedule);
@@ -71,7 +76,10 @@ public class TripService {
 
     @Transactional(readOnly = true)
     public Trip getOneWithSchedule(Long tripId) {
-        return tripRepository.findAllByIdWithSchedule(tripId);
+        Trip trip = tripRepository.findAllByIdWithSchedule(tripId);
+        Period tripPeriod = trip.getPeriod();
+        initTripPeriodIfNot(tripPeriod);
+        return trip;
     }
 
     @Transactional(readOnly = true)
@@ -95,6 +103,22 @@ public class TripService {
 
     public void remove(Long tripId) {
         tripRepository.deleteById(tripId);
+    }
+
+    private void validateDate(Trip trip, LocalDate date) {
+        if (!trip.getPeriod().isWithinPeriod(date)) {
+            String message = date + "는 "
+                    + trip.getPeriod().getDepartureDate() + "와 "
+                    + trip.getPeriod().getArrivalDate() + "사이에 속하지 않습니다.";
+            throw new EntityNotWithinPeriodException(message);
+        }
+    }
+
+    private void initTripPeriodIfNot(Period period) {
+        if (Objects.isNull(period.getArrivalDate()) || Objects.isNull(period.getDepartureDate())) {
+            period.editDepartureDate(LocalDate.now());
+            period.editArrivalDate(LocalDate.now().plusDays(3));
+        }
     }
 
     private Trip findTrip(Long tripId) {
@@ -135,11 +159,11 @@ public class TripService {
         if (Objects.nonNull(title)) {
             original.editTitle(title);
         }
-        LocalDate arrivalDate = modified.getArrivalDate();
+        LocalDate arrivalDate = modified.getPeriod().getArrivalDate();
         if (Objects.nonNull(arrivalDate)) {
             original.editArrivalDate(arrivalDate);
         }
-        LocalDate departureDate = modified.getDepartureDate();
+        LocalDate departureDate = modified.getPeriod().getDepartureDate();
         if (Objects.nonNull(departureDate)) {
             original.editDepartureDate(departureDate);
         }

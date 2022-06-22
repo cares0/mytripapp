@@ -2,6 +2,7 @@ package com.triple.mytrip.domain.trip;
 
 import com.triple.mytrip.domain.budget.Budget;
 import com.triple.mytrip.domain.checklistcategory.ChecklistCategory;
+import com.triple.mytrip.domain.common.Period;
 import com.triple.mytrip.domain.member.Member;
 import com.triple.mytrip.domain.schedule.Schedule;
 import lombok.AccessLevel;
@@ -48,9 +49,8 @@ public class Trip {
     @Column(nullable = false)
     private String title;
 
-    private LocalDate arrivalDate;
-
-    private LocalDate departureDate;
+    @Embedded
+    private Period period;
 
     @Enumerated(value = STRING)
     private Partner partner;
@@ -62,8 +62,7 @@ public class Trip {
     public Trip(String city, String title, LocalDate arrivalDate, LocalDate departureDate, Partner partner, TripStyle tripStyle) {
         this.city = city;
         this.title = title;
-        this.arrivalDate = arrivalDate;
-        this.departureDate = departureDate;
+        this.period = Period.builder().arrivalDate(arrivalDate).departureDate(departureDate).build();
         this.partner = partner;
         this.tripStyle = tripStyle;
     }
@@ -81,11 +80,11 @@ public class Trip {
     }
 
     public void editArrivalDate(LocalDate arrivalDate) {
-        this.arrivalDate = arrivalDate;
+        this.period.editArrivalDate(arrivalDate);
     }
 
     public void editDepartureDate(LocalDate departureDate) {
-        this.departureDate = departureDate;
+        this.period.editDepartureDate(departureDate);
     }
 
     public void editPartner(Partner partner) {

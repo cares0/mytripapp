@@ -33,20 +33,25 @@ public class Budget extends BaseEntity {
     private List<BudgetFile> budgetFiles = new ArrayList<>();
 
     @Enumerated(value = STRING)
+    @Column(nullable = false)
     private BudgetCategory budgetCategory;
 
+    @Column(nullable = false)
     private Integer price;
 
+    @Column(nullable = false)
     private LocalDate date;
 
     @Enumerated(value = STRING)
+    @Column(nullable = false)
     private PaymentPlan paymentPlan;
 
-    @Column(name = "budget_order")
+    @Column(name = "budget_order", nullable = false)
     private Integer order;
 
     private String place;
 
+    @Column(nullable = false)
     private String content;
 
     @Builder

@@ -1,7 +1,9 @@
 package com.triple.mytrip.web.exception;
 
 import com.triple.mytrip.domain.exception.EntityNotFoundException;
+import com.triple.mytrip.domain.exception.EntityNotWithinPeriodException;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -37,5 +39,25 @@ public class ExControllerAdvice {
         return new ErrorResult(LocalTime.now(), "EntityNotFound", "삭제하려는 데이터가 없습니다.");
     }
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler
+    public ErrorResult ConstraintViolationExHandler(ConstraintViolationException e) {
+        log.error("[ConstraintViolationException]", e);
+        return new ErrorResult(LocalTime.now(), "ConstraintViolation", e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler
+    public ErrorResult EntityNotWithinPeriodExHandler(EntityNotWithinPeriodException e) {
+        log.error("[EntityNotWithinPeriodException]", e);
+        return new ErrorResult(LocalTime.now(), "NotWithinTripDate", "[" + e.getMessage() + "]");
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler
+    public ErrorResult ValidationFailExHandler(ValidationFailException e) {
+        log.error("[ValidationFailException]", e);
+        return new ErrorResult(LocalTime.now(), "ValidationFail", e.getMessage());
+    }
 
 }
