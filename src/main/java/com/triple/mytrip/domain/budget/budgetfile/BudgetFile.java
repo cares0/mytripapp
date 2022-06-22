@@ -18,6 +18,7 @@ import static lombok.AccessLevel.*;
 public class BudgetFile {
 
     @Id @GeneratedValue(strategy = IDENTITY)
+    @Column(name = "budget_file_id")
     private Long id;
 
     @ManyToOne(fetch = LAZY)

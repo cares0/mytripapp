@@ -18,6 +18,7 @@ import static lombok.AccessLevel.*;
 public class Flight extends BaseEntity {
 
     @Id @GeneratedValue(strategy = IDENTITY)
+    @Column(name = "flight_id")
     private Long id;
 
     @Column(nullable = false)

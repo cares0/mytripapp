@@ -13,6 +13,7 @@ import javax.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static javax.persistence.CascadeType.*;
 import static javax.persistence.FetchType.*;
@@ -53,7 +54,7 @@ public class ChecklistCategory extends BaseEntity {
     }
 
     public void editName(String name) {
-        if (!this.basicOfferStatus) {
+        if (Objects.nonNull(basicOfferStatus) && !this.basicOfferStatus) {
             this.name = name;
         } else {
             throw new NonEditableEntityException("기본 제공 체크리스트는 이름 수정 불가능");
