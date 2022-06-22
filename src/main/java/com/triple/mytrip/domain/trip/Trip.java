@@ -71,6 +71,10 @@ public class Trip {
         this.member = member;
     }
 
+    public void addPeriod(Period period) {
+        this.period = period;
+    }
+
     public void editCity(String city) {
         this.city = city;
     }

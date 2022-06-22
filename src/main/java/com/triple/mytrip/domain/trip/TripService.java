@@ -77,8 +77,7 @@ public class TripService {
     @Transactional(readOnly = true)
     public Trip getOneWithSchedule(Long tripId) {
         Trip trip = tripRepository.findAllByIdWithSchedule(tripId);
-        Period tripPeriod = trip.getPeriod();
-        initTripPeriodIfNot(tripPeriod);
+        initTripPeriodIfNull(trip);
         return trip;
     }
 
@@ -106,6 +105,7 @@ public class TripService {
     }
 
     private void validateDate(Trip trip, LocalDate date) {
+        initTripPeriodIfNull(trip);
         if (!trip.getPeriod().isWithinPeriod(date)) {
             String message = date + "는 "
                     + trip.getPeriod().getDepartureDate() + "와 "
@@ -114,10 +114,12 @@ public class TripService {
         }
     }
 
-    private void initTripPeriodIfNot(Period period) {
-        if (Objects.isNull(period.getArrivalDate()) || Objects.isNull(period.getDepartureDate())) {
-            period.editDepartureDate(LocalDate.now());
-            period.editArrivalDate(LocalDate.now().plusDays(3));
+    private void initTripPeriodIfNull(Trip trip) {
+        if (Objects.isNull(trip.getPeriod())) {
+            trip.addPeriod(Period.builder()
+                    .departureDate(LocalDate.now())
+                    .arrivalDate(LocalDate.now().plusDays(3))
+                    .build());
         }
     }
 
