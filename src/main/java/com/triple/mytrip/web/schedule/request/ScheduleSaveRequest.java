@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 import static lombok.AccessLevel.PRIVATE;
@@ -14,8 +15,13 @@ import static lombok.AccessLevel.PRIVATE;
 @NoArgsConstructor(access = PRIVATE)
 public class ScheduleSaveRequest {
 
+    @NotNull
     private LocalDate date;
+
+    @NotNull
     private Integer visitOrder;
+
+    @NotNull
     private Integer arrangeOrder;
 
     public Schedule toEntity() {

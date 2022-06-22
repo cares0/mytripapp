@@ -1,7 +1,8 @@
-package com.triple.mytrip.web.exception;
+package com.triple.mytrip.web.common;
 
 import com.triple.mytrip.domain.exception.EntityNotFoundException;
 import com.triple.mytrip.domain.exception.EntityNotWithinPeriodException;
+import com.triple.mytrip.web.exception.ValidationFailException;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -50,7 +51,7 @@ public class ExControllerAdvice {
     @ExceptionHandler
     public ErrorResult EntityNotWithinPeriodExHandler(EntityNotWithinPeriodException e) {
         log.error("[EntityNotWithinPeriodException]", e);
-        return new ErrorResult(LocalTime.now(), "NotWithinTripDate", "[" + e.getMessage() + "]");
+        return new ErrorResult(LocalTime.now(), "NotWithinTripDate", e.getMessage());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

@@ -1,4 +1,4 @@
-package com.triple.mytrip.web.exception;
+package com.triple.mytrip.web.common;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

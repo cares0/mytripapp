@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -15,12 +17,25 @@ import static lombok.AccessLevel.*;
 @NoArgsConstructor(access = PRIVATE)
 public class FlightSaveRequest {
 
+    @NotBlank
     private String flightNumber;
+
+    @NotBlank
     private String airline;
+
+    @NotNull
     private LocalDate departureDate;
+
+    @NotNull
     private LocalTime departureTime;
+
+    @NotNull
     private LocalTime arrivalTime;
+
+    @NotBlank
     private String departureAirport;
+
+    @NotBlank
     private String arrivalAirport;
 
     public Flight toEntity() {

@@ -22,14 +22,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
-import static com.triple.mytrip.web.util.ValidationUtils.*;
-
 
 @RestController
 @RequiredArgsConstructor
 public class TripController {
 
     private final TripService tripService;
+    private final ValidationUtils validationUtils;
 
     // ======= trip ======= //
     @GetMapping("/trips/{tripId}")
@@ -53,14 +52,23 @@ public class TripController {
 
     // ======= schedule ======= //
     @PostMapping("/trips/{tripId}/schedules/flights")
-    public Result<Map<String, Long>> flightScheduleAdd(@PathVariable Long tripId, @RequestBody FlightSaveRequest flightSaveRequest) {
+    public Result<Map<String, Long>> flightScheduleAdd(@PathVariable Long tripId,
+                                                       @Validated @RequestBody FlightSaveRequest flightSaveRequest,
+                                                       BindingResult bindingResult) {
+        validationUtils.validate(bindingResult);
+
         Flight flight = flightSaveRequest.toEntity();
         Map<String, Long> savedIdMap = tripService.addFlightSchedule(tripId, flight);
         return new Result<>(savedIdMap);
     }
 
     @PostMapping("/trips/{tripId}/schedules/places/{placeId}")
-    public Result<Long> placeScheduleAdd(@PathVariable Long tripId, @PathVariable Long placeId, @RequestBody ScheduleSaveRequest scheduleSaveRequest) {
+    public Result<Long> placeScheduleAdd(@PathVariable Long tripId,
+                                         @PathVariable Long placeId,
+                                         @Validated @RequestBody ScheduleSaveRequest scheduleSaveRequest,
+                                         BindingResult bindingResult) {
+        validationUtils.validate(bindingResult);
+
         Schedule schedule = scheduleSaveRequest.toEntity();
         Long savedId = tripService.addPlaceSchedule(tripId, placeId, schedule);
         return new Result<>(savedId);
@@ -74,8 +82,10 @@ public class TripController {
 
     // ======= checklistCategory ======= //
     @PostMapping("/trips/{tripId}/checklist-categories")
-    public Result<Long> checklistCategoryAdd(@PathVariable Long tripId, @Validated @RequestBody ChecklistCategorySaveRequest categoryRequest, BindingResult bindingResult) {
-        validate(bindingResult);
+    public Result<Long> checklistCategoryAdd(@PathVariable Long tripId,
+                                             @Validated @RequestBody ChecklistCategorySaveRequest categoryRequest,
+                                             BindingResult bindingResult) {
+        validationUtils.validate(bindingResult);
 
         ChecklistCategory checklistCategory = categoryRequest.toEntity();
         Long savedId = tripService.addChecklistCategory(tripId, checklistCategory);
@@ -90,8 +100,10 @@ public class TripController {
 
     // ======= budgets ======= //
     @PostMapping("/trips/{tripId}/budgets")
-    public Result<Long> budgetAdd(@PathVariable Long tripId, @Validated @RequestBody BudgetSaveRequest budgetSaveRequest, BindingResult bindingResult) {
-        validate(bindingResult);
+    public Result<Long> budgetAdd(@PathVariable Long tripId,
+                                  @Validated @RequestBody BudgetSaveRequest budgetSaveRequest,
+                                  BindingResult bindingResult) {
+        validationUtils.validate(bindingResult);
 
         Budget budget = budgetSaveRequest.toEntity();
         Long save = tripService.addBudget(tripId, budget);

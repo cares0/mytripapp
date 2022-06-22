@@ -54,7 +54,7 @@ public class TripService {
         validateDate(trip, flight.getDepartureDate());
 
         Flight savedFlight = flightRepository.save(flight);
-        Schedule savedSchedule = saveSchedule(trip, flight);
+        Schedule savedSchedule = saveFilghtSchedule(trip, flight);
         return makeIdMap(savedFlight, savedSchedule);
     }
 
@@ -133,7 +133,7 @@ public class TripService {
                 new EntityNotFoundException("해당 ID와 일치하는 장소를 찾을 수 없음"));
     }
 
-    private Schedule saveSchedule(Trip trip, Flight flight) {
+    private Schedule saveFilghtSchedule(Trip trip, Flight flight) {
         Schedule schedule = Schedule.builder()
                 .date(flight.getDepartureDate())
                 .visitOrder(null)

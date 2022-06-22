@@ -13,17 +13,17 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import static com.triple.mytrip.web.util.ValidationUtils.*;
 
 @RestController
 @RequiredArgsConstructor
 public class ChecklistCategoryController {
 
     private final ChecklistCategoryService categoryService;
+    private final ValidationUtils validationUtils;
 
     @PostMapping("/checklist-categories/{categoryId}/checklists")
     public Result<Long> checklistAdd(@PathVariable Long categoryId, @Validated @RequestBody ChecklistSaveRequest checklistSaveRequest, BindingResult bindingResult) {
-        validate(bindingResult);
+        validationUtils.validate(bindingResult);
 
         Checklist checklist = checklistSaveRequest.toEntity();
         Long savedId = categoryService.addChecklist(categoryId, checklist);
