@@ -48,7 +48,7 @@ public class TripSearchResponse {
             arrivalDate = trip.getPeriod().getArrivalDate();
             departureDate = trip.getPeriod().getDepartureDate();
         }
-        
+
         List<BudgetSearchResponse> budgets =
                 getBudgetSearchResponses(trip.getBudgets());
 

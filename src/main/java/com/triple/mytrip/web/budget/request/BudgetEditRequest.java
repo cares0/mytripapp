@@ -5,6 +5,8 @@ import com.triple.mytrip.domain.budget.BudgetCategory;
 import com.triple.mytrip.domain.budget.PaymentPlan;
 import lombok.*;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import java.time.LocalDate;
 
 import static lombok.AccessLevel.*;
@@ -17,6 +19,9 @@ public class BudgetEditRequest {
     private PaymentPlan paymentPlan;
     private String content;
     private BudgetCategory budgetCategory;
+
+    @Max(value = 10000000)
+    @Min(value = 10)
     private Integer price;
     private String place;
     private Integer order;
