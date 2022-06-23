@@ -7,5 +7,4 @@ public interface ScheduleRepositoryCustom {
 
     Optional<Schedule> findByIdWithAll(Long scheduleId);
 
-    List<Schedule> findAllByTripIdWithAll(Long tripId);
 }

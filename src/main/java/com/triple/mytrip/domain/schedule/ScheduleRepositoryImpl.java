@@ -22,23 +22,12 @@ public class ScheduleRepositoryImpl implements ScheduleRepositoryCustom {
 
     @Override
     public Optional<Schedule> findByIdWithAll(Long scheduleId) {
-        Schedule schedule = queryFactory
+        return Optional.ofNullable(queryFactory
                 .selectFrom(QSchedule.schedule)
                 .leftJoin(QSchedule.schedule.place, place).fetchJoin()
                 .leftJoin(QSchedule.schedule.flight, flight).fetchJoin()
                 .where(QSchedule.schedule.id.eq(scheduleId))
-                .fetchOne();
-
-         return Optional.ofNullable(schedule);
+                .fetchOne());
     }
 
-    @Override
-    public List<Schedule> findAllByTripIdWithAll(Long tripId) {
-        return queryFactory
-                .selectFrom(schedule)
-                .leftJoin(schedule.flight, flight).fetchJoin()
-                .leftJoin(schedule.place, place).fetchJoin()
-                .orderBy(schedule.date.asc(), schedule.arrangeOrder.asc())
-                .fetch();
-    }
 }

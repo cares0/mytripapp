@@ -17,8 +17,7 @@ public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
 
     public Schedule getOneWithAll(Long scheduleId) {
-        return scheduleRepository.findByIdWithAll(scheduleId).orElseThrow(() ->
-                new EntityNotFoundException("해당 ID와 일치하는 일정을 찾을 수 없음"));
+        return findScheduleWithAll(scheduleId);
     }
 
     public Schedule modify(Long scheduleId, Schedule modified) {
@@ -29,6 +28,11 @@ public class ScheduleService {
 
     public void remove(Long scheduleId) {
         scheduleRepository.deleteById(scheduleId);
+    }
+
+    private Schedule findScheduleWithAll(Long scheduleId) {
+        return scheduleRepository.findByIdWithAll(scheduleId).orElseThrow(() ->
+                new EntityNotFoundException("해당 ID와 일치하는 일정을 찾을 수 없음"));
     }
 
     private Schedule findSchedule(Long scheduleId) {

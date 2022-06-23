@@ -1,14 +1,12 @@
 package com.triple.mytrip.domain.trip;
 
-import com.triple.mytrip.domain.schedule.Schedule;
-
-import java.util.List;
+import java.util.Optional;
 
 public interface TripRepositoryCustom {
 
-    Trip findAllByIdWithSchedule(Long tripId);
+    Optional<Trip> findByIdWithSchedule(Long tripId);
 
-    Trip findAllByIdWithChecklistCategory(Long tripId);
+    Optional<Trip> findByIdWithChecklistCategory(Long tripId);
 
-    Trip findAllByIdWithBudget(Long tripId);
+    Optional<Trip> findByIdWithBudget(Long tripId);
 }

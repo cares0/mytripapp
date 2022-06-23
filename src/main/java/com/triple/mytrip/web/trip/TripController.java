@@ -22,36 +22,36 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
-
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/trips")
 public class TripController {
 
     private final TripService tripService;
     private final ValidationUtils validationUtils;
 
     // ======= trip ======= //
-    @GetMapping("/trips/{tripId}")
+    @GetMapping("/{tripId}")
     public TripSearchResponse tripDetail(@PathVariable Long tripId) {
         Trip trip = tripService.getOne(tripId);
         return TripSearchResponse.toResponse(trip);
     }
 
-    @PatchMapping("/trips/{tripId}")
+    @PatchMapping("/{tripId}")
     public TripEditResponse tripModify(@PathVariable Long tripId, @RequestBody TripEditRequest tripEditRequest) {
         Trip modified = tripEditRequest.toEntity();
         modified = tripService.modify(tripId, modified);
         return TripEditResponse.toResponse(modified);
     }
 
-    @DeleteMapping("/trips/{tripId}")
+    @DeleteMapping("/{tripId}")
     public Result<Long> tripRemove(@PathVariable Long tripId) {
         tripService.remove(tripId);
         return new Result<>(tripId);
     }
 
     // ======= schedule ======= //
-    @PostMapping("/trips/{tripId}/schedules/flights")
+    @PostMapping("/{tripId}/schedules/flights")
     public Result<Map<String, Long>> flightScheduleAdd(@PathVariable Long tripId,
                                                        @Validated @RequestBody FlightSaveRequest flightSaveRequest,
                                                        BindingResult bindingResult) {
@@ -62,7 +62,7 @@ public class TripController {
         return new Result<>(savedIdMap);
     }
 
-    @PostMapping("/trips/{tripId}/schedules/places/{placeId}")
+    @PostMapping("/{tripId}/schedules/places/{placeId}")
     public Result<Long> placeScheduleAdd(@PathVariable Long tripId,
                                          @PathVariable Long placeId,
                                          @Validated @RequestBody ScheduleSaveRequest scheduleSaveRequest,
@@ -74,14 +74,14 @@ public class TripController {
         return new Result<>(savedId);
     }
 
-    @GetMapping("/trips/{tripId}/schedules")
+    @GetMapping("/{tripId}/schedules")
     public TripSearchResponse tripDetailWithSchedule(@PathVariable Long tripId) {
         Trip trip = tripService.getOneWithSchedule(tripId);
         return TripSearchResponse.toResponse(trip);
     }
 
     // ======= checklistCategory ======= //
-    @PostMapping("/trips/{tripId}/checklist-categories")
+    @PostMapping("/{tripId}/checklist-categories")
     public Result<Long> checklistCategoryAdd(@PathVariable Long tripId,
                                              @Validated @RequestBody ChecklistCategorySaveRequest categoryRequest,
                                              BindingResult bindingResult) {
@@ -92,14 +92,14 @@ public class TripController {
         return new Result<>(savedId);
     }
 
-    @GetMapping("/trips/{tripId}/checklist-categories")
+    @GetMapping("/{tripId}/checklist-categories")
     public TripSearchResponse tripDetailWithChecklistCategory(@PathVariable Long tripId) {
         Trip trip = tripService.getOneWithChecklistCategory(tripId);
         return TripSearchResponse.toResponse(trip);
     }
 
     // ======= budgets ======= //
-    @PostMapping("/trips/{tripId}/budgets")
+    @PostMapping("/{tripId}/budgets")
     public Result<Long> budgetAdd(@PathVariable Long tripId,
                                   @Validated @RequestBody BudgetSaveRequest budgetSaveRequest,
                                   BindingResult bindingResult) {
@@ -110,7 +110,7 @@ public class TripController {
         return new Result<>(save);
     }
 
-    @GetMapping("/trips/{tripId}/budgets")
+    @GetMapping("/{tripId}/budgets")
     public TripSearchResponse tripDetailWithBudget(@PathVariable Long tripId) {
         Trip trip = tripService.getOneWithBudget(tripId);
         return TripSearchResponse.toResponse(trip);

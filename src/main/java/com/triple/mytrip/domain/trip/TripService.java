@@ -14,6 +14,7 @@ import com.triple.mytrip.domain.place.PlaceRepository;
 import com.triple.mytrip.domain.schedule.Schedule;
 import com.triple.mytrip.domain.schedule.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -26,6 +27,7 @@ import java.util.Objects;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class TripService {
 
     private final TripRepository tripRepository;
@@ -54,7 +56,7 @@ public class TripService {
         validateDate(trip, flight.getDepartureDate());
 
         Flight savedFlight = flightRepository.save(flight);
-        Schedule savedSchedule = saveFilghtSchedule(trip, flight);
+        Schedule savedSchedule = saveFlightSchedule(trip, flight);
         return makeIdMap(savedFlight, savedSchedule);
     }
 
@@ -74,23 +76,22 @@ public class TripService {
         return findTrip(tripId);
     }
 
-    @Transactional(readOnly = true)
     public Trip getOneWithSchedule(Long tripId) {
-        Trip trip = tripRepository.findAllByIdWithSchedule(tripId);
+        Trip trip = findTripWithSchedule(tripId);
         initTripPeriodIfNull(trip);
         return trip;
     }
 
     @Transactional(readOnly = true)
     public Trip getOneWithChecklistCategory(Long tripId) {
-        Trip trip = tripRepository.findAllByIdWithChecklistCategory(tripId);
+        Trip trip = findTripWithChecklistCategory(tripId);
         initChecklist(trip);
         return trip;
     }
 
     @Transactional(readOnly = true)
     public Trip getOneWithBudget(Long tripId) {
-        return tripRepository.findAllByIdWithBudget(tripId);
+        return findTripWithBudget(tripId);
     }
 
     public Trip modify(Long tripId, Trip modified) {
@@ -133,7 +134,22 @@ public class TripService {
                 new EntityNotFoundException("해당 ID와 일치하는 장소를 찾을 수 없음"));
     }
 
-    private Schedule saveFilghtSchedule(Trip trip, Flight flight) {
+    private Trip findTripWithSchedule(Long tripId) {
+        return tripRepository.findByIdWithSchedule(tripId).orElseThrow(() ->
+                new EntityNotFoundException("해당 ID와 일치하는 여행을 찾을 수 없음"));
+    }
+
+    private Trip findTripWithChecklistCategory(Long tripId) {
+        return tripRepository.findByIdWithChecklistCategory(tripId).orElseThrow(() ->
+                new EntityNotFoundException("해당 ID와 일치하는 여행을 찾을 수 없음"));
+    }
+
+    private Trip findTripWithBudget(Long tripId) {
+        return tripRepository.findByIdWithBudget(tripId).orElseThrow(() ->
+                new EntityNotFoundException("해당 ID와 일치하는 여행을 찾을 수 없음"));
+    }
+
+    private Schedule saveFlightSchedule(Trip trip, Flight flight) {
         Schedule schedule = Schedule.builder()
                 .date(flight.getDepartureDate())
                 .visitOrder(null)
