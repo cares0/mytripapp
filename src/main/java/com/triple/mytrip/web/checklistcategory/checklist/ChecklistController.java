@@ -11,17 +11,18 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/checklists")
 public class ChecklistController {
 
     private final ChecklistService checklistService;
 
-    @GetMapping("/checklists/{checklistId}")
+    @GetMapping("/{checklistId}")
     public ChecklistSearchResponse checklistDetail(@PathVariable Long checklistId) {
         Checklist checklist = checklistService.getOne(checklistId);
         return ChecklistSearchResponse.toResponse(checklist);
     }
 
-    @PatchMapping("/checklists/{checklistId}")
+    @PatchMapping("/{checklistId}")
     public ChecklistEditResponse checklistModify(@PathVariable Long checklistId,
                                                  @RequestBody ChecklistEditRequest checklistEditRequest) {
         Checklist modified = checklistEditRequest.toEntity();
@@ -29,7 +30,7 @@ public class ChecklistController {
         return ChecklistEditResponse.toResponse(modified);
     }
 
-    @DeleteMapping("/checklists/{checklistId}")
+    @DeleteMapping("/{checklistId}")
     public Result<String> checklistRemove(@PathVariable Long checklistId) {
         checklistService.remove(checklistId);
         return new Result<>("Success");

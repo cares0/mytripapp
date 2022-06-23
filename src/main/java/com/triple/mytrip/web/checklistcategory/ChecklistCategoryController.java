@@ -13,15 +13,15 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/checklist-categories")
 public class ChecklistCategoryController {
 
     private final ChecklistCategoryService categoryService;
     private final ValidationUtils validationUtils;
 
-    @PostMapping("/checklist-categories/{categoryId}/checklists")
+    @PostMapping("/{categoryId}/checklists")
     public Result<Long> checklistAdd(@PathVariable Long categoryId,
                                      @Validated @RequestBody ChecklistSaveRequest checklistSaveRequest,
                                      BindingResult bindingResult) {
@@ -32,7 +32,7 @@ public class ChecklistCategoryController {
         return new Result<>(savedId);
     }
 
-    @PatchMapping("/checklist-categories/{categoryId}")
+    @PatchMapping("/{categoryId}")
     public ChecklistCategoryEditResponse checklistCategoryModify(@PathVariable Long categoryId,
                                                                  @RequestBody ChecklistCategoryEditRequest checklistCategoryEditRequest) {
         ChecklistCategory modified = checklistCategoryEditRequest.toEntity();
@@ -40,7 +40,7 @@ public class ChecklistCategoryController {
         return ChecklistCategoryEditResponse.toResponse(modified);
     }
 
-    @DeleteMapping("/checklist-categories/{categoryId}")
+    @DeleteMapping("/{categoryId}")
     public Result<Long> checklistCategoryRemove(@PathVariable Long categoryId) {
         categoryService.remove(categoryId);
         return new Result<>(categoryId);

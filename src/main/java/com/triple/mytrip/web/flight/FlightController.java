@@ -10,20 +10,20 @@ import com.triple.mytrip.web.flight.response.FlightSearchResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/flights")
 public class FlightController {
 
     private final FlightService flightService;
 
-    @GetMapping("/flights/{flightId}")
+    @GetMapping("/{flightId}")
     public FlightSearchResponse flightDetail(@PathVariable Long flightId) {
         Flight flight = flightService.getOne(flightId);
         return FlightSearchResponse.toResponse(flight);
     }
 
-    @PatchMapping("/flights/{flightId}")
+    @PatchMapping("/{flightId}")
     public FlightEditResponse flightModify(@PathVariable Long flightId,
                                            @RequestBody FlightEditRequest flightEditRequest) {
         Flight modified = flightEditRequest.toEntity();
@@ -31,7 +31,7 @@ public class FlightController {
         return FlightEditResponse.toResponse(modified);
     }
 
-    @DeleteMapping("/flights/{flightId}")
+    @DeleteMapping("/{flightId}")
     public Result<Long> delete(@PathVariable Long flightId) {
         flightService.remove(flightId);
         return new Result<>(flightId);

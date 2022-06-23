@@ -18,25 +18,26 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/budgets")
 public class BudgetController {
 
     private final BudgetService budgetService;
     private final ValidationUtils validationUtils;
 
-    @PostMapping("/budgets/{budgetId}/budget-files")
+    @PostMapping("/{budgetId}/budget-files")
     public Result<List<Long>> budgetFileAdd(@PathVariable Long budgetId,
                                             @RequestParam List<MultipartFile> files) throws IOException {
         List<Long> savedIds = budgetService.addFile(budgetId, files);
         return new Result<>(savedIds);
     }
 
-    @GetMapping("/budgets/{budgetId}")
+    @GetMapping("/{budgetId}")
     public BudgetSearchResponse budgetDetail(@PathVariable Long budgetId) {
         Budget budget = budgetService.getOneWithBudgetFile(budgetId);
         return BudgetSearchResponse.toResponse(budget);
     }
 
-    @PatchMapping(value = "/budgets/{budgetId}")
+    @PatchMapping(value = "/{budgetId}")
     public BudgetEditResponse budgetModify(@PathVariable Long budgetId,
                                            @Validated @RequestBody BudgetEditRequest budgetEditRequest,
                                            BindingResult bindingResult) {
@@ -47,7 +48,7 @@ public class BudgetController {
         return BudgetEditResponse.toResponse(modified);
     }
 
-    @DeleteMapping("/budgets/{budgetId}")
+    @DeleteMapping("/{budgetId}")
     public Result<Long> budgetRemove(@PathVariable Long budgetId) {
         budgetService.remove(budgetId);
         return new Result<>(budgetId);

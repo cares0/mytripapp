@@ -11,17 +11,18 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/schedules")
 public class ScheduleController {
 
     private final ScheduleService scheduleService;
 
-    @GetMapping("/schedules/{scheduleId}")
+    @GetMapping("/{scheduleId}")
     public ScheduleSearchResponse scheduleDetailsWithAll(@PathVariable Long scheduleId) {
         Schedule schedule = scheduleService.getOneWithAll(scheduleId);
         return ScheduleSearchResponse.toResponse(schedule);
     }
 
-    @PatchMapping("/schedules/{scheduleId}")
+    @PatchMapping("/{scheduleId}")
     public ScheduleEditResponse scheduleModify(@PathVariable Long scheduleId,
                                                @RequestBody ScheduleEditRequest scheduleEditRequest) {
         Schedule modified = scheduleEditRequest.toEntity();
@@ -29,7 +30,7 @@ public class ScheduleController {
         return ScheduleEditResponse.toResponse(modified);
     }
 
-    @DeleteMapping("/schedules/{scheduleId}")
+    @DeleteMapping("/{scheduleId}")
     public Result<Long> scheduleRemove(@PathVariable Long scheduleId) {
         scheduleService.remove(scheduleId);
         return new Result<>(scheduleId);
