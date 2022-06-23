@@ -27,7 +27,7 @@ public class BudgetService {
 
     private final FileManager fileManager;
 
-    public int addFile(Long budgetId, List<MultipartFile> multipartFiles) throws IOException {
+    public List<Long> addFile(Long budgetId, List<MultipartFile> multipartFiles) throws IOException {
         Budget budget = findBudget(budgetId);
 
         List<UploadFile> uploadFiles = fileManager.storeFiles(multipartFiles);
@@ -36,7 +36,7 @@ public class BudgetService {
 
         saveFile(budgetFiles);
 
-        return budgetFiles.size();
+        return makeIdList(budgetFiles);
     }
 
     @Transactional(readOnly = true)
@@ -80,6 +80,11 @@ public class BudgetService {
     private void saveFile(List<BudgetFile> budgetFiles) {
         budgetFiles.stream()
                 .forEach((budgetFile) -> budgetFileRepository.save(budgetFile));
+    }
+
+    private List<Long> makeIdList(List<BudgetFile> budgetFiles) {
+        return budgetFiles.stream().map((budgetFile ->
+                budgetFile.getId())).collect(Collectors.toList());
     }
 
     private Budget findBudgetWithBudgetFiles(Long budgetFileId) {

@@ -20,9 +20,9 @@ public class BudgetController {
     private final BudgetService budgetService;
 
     @PostMapping("/budgets/{budgetId}/budget-files")
-    public Result<Integer> budgetFileAdd(@PathVariable Long budgetId, List<MultipartFile> files) throws IOException {
-        int count = budgetService.addFile(budgetId, files);
-        return new Result<>(count);
+    public Result<List<Long>> budgetFileAdd(@PathVariable Long budgetId, @RequestParam List<MultipartFile> files) throws IOException {
+        List<Long> savedIds = budgetService.addFile(budgetId, files);
+        return new Result<>(savedIds);
     }
 
     @GetMapping("/budgets/{budgetId}")
