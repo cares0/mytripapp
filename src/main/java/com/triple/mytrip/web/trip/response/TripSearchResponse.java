@@ -42,7 +42,13 @@ public class TripSearchResponse {
         String tripStyle = Objects.isNull(trip.getTripStyle()) ?
                 null : trip.getTripStyle().getKorName();
 
-
+        LocalDate arrivalDate = null;
+        LocalDate departureDate = null;
+        if (Objects.nonNull(trip.getPeriod())) {
+            arrivalDate = trip.getPeriod().getArrivalDate();
+            departureDate = trip.getPeriod().getDepartureDate();
+        }
+        
         List<BudgetSearchResponse> budgets =
                 getBudgetSearchResponses(trip.getBudgets());
 
@@ -56,8 +62,8 @@ public class TripSearchResponse {
                 .id(trip.getId())
                 .city(trip.getCity())
                 .title(trip.getTitle())
-                .arrivalDate(trip.getPeriod().getArrivalDate())
-                .departureDate(trip.getPeriod().getDepartureDate())
+                .arrivalDate(arrivalDate)
+                .departureDate(departureDate)
                 .partner(partner)
                 .tripStyle(tripStyle)
                 .budgets(budgets)
@@ -68,7 +74,8 @@ public class TripSearchResponse {
 
     private static List<BudgetSearchResponse> getBudgetSearchResponses(List<Budget> budgets) {
         try {
-            return budgets.stream().map(budget ->
+            return CollectionUtils.isEmpty(budgets) ?
+                    null : budgets.stream().map(budget ->
                             BudgetSearchResponse.toResponse(budget))
                     .collect(Collectors.toList());
         } catch (LazyInitializationException e) {
@@ -78,7 +85,8 @@ public class TripSearchResponse {
 
     private static List<ChecklistCategorySearchResponse> getChecklistCategorySearchResponses(List<ChecklistCategory> checklistCategories) {
         try {
-            return checklistCategories.stream().map(checklistCategory ->
+            return CollectionUtils.isEmpty(checklistCategories) ?
+                    null : checklistCategories.stream().map(checklistCategory ->
                             ChecklistCategorySearchResponse.toResponse(checklistCategory))
                     .collect(Collectors.toList());
         } catch (LazyInitializationException e) {
@@ -88,7 +96,8 @@ public class TripSearchResponse {
 
     private static List<ScheduleSearchResponse> getScheduleSearchResponses(List<Schedule> schedules) {
         try {
-            return schedules.stream().map(schedule ->
+            return CollectionUtils.isEmpty(schedules) ?
+                    null : schedules.stream().map(schedule ->
                             ScheduleSearchResponse.toResponse(schedule))
                     .collect(Collectors.toList());
         } catch (LazyInitializationException e) {

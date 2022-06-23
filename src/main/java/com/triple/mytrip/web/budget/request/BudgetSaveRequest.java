@@ -5,6 +5,8 @@ import com.triple.mytrip.domain.budget.PaymentPlan;
 import com.triple.mytrip.domain.budget.BudgetCategory;
 import lombok.*;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
@@ -27,7 +29,8 @@ public class BudgetSaveRequest {
     @NotNull
     private BudgetCategory budgetCategory;
 
-    @NotNull
+    @Max(value = 10000000)
+    @Min(value = 10)
     private Integer price;
 
     @NotNull
