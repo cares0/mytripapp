@@ -41,7 +41,7 @@ public class BudgetController {
                                            @Validated @RequestBody BudgetEditRequest budgetEditRequest,
                                            BindingResult bindingResult) {
         validationUtils.validate(bindingResult);
-        
+
         Budget modified = budgetEditRequest.toEntity();
         modified = budgetService.modify(budgetId, modified);
         return BudgetEditResponse.toResponse(modified);

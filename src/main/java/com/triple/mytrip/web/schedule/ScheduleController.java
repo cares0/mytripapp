@@ -22,7 +22,8 @@ public class ScheduleController {
     }
 
     @PatchMapping("/schedules/{scheduleId}")
-    public ScheduleEditResponse scheduleModify(@PathVariable Long scheduleId, @RequestBody ScheduleEditRequest scheduleEditRequest) {
+    public ScheduleEditResponse scheduleModify(@PathVariable Long scheduleId,
+                                               @RequestBody ScheduleEditRequest scheduleEditRequest) {
         Schedule modified = scheduleEditRequest.toEntity();
         modified = scheduleService.modify(scheduleId, modified);
         return ScheduleEditResponse.toResponse(modified);

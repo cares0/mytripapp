@@ -38,7 +38,8 @@ public class TripController {
     }
 
     @PatchMapping("/{tripId}")
-    public TripEditResponse tripModify(@PathVariable Long tripId, @RequestBody TripEditRequest tripEditRequest) {
+    public TripEditResponse tripModify(@PathVariable Long tripId,
+                                       @RequestBody TripEditRequest tripEditRequest) {
         Trip modified = tripEditRequest.toEntity();
         modified = tripService.modify(tripId, modified);
         return TripEditResponse.toResponse(modified);

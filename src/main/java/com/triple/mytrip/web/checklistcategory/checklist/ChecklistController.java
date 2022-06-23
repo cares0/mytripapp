@@ -22,7 +22,8 @@ public class ChecklistController {
     }
 
     @PatchMapping("/checklists/{checklistId}")
-    public ChecklistEditResponse checklistModify(@PathVariable Long checklistId, @RequestBody ChecklistEditRequest checklistEditRequest) {
+    public ChecklistEditResponse checklistModify(@PathVariable Long checklistId,
+                                                 @RequestBody ChecklistEditRequest checklistEditRequest) {
         Checklist modified = checklistEditRequest.toEntity();
         modified = checklistService.modify(checklistId, modified);
         return ChecklistEditResponse.toResponse(modified);

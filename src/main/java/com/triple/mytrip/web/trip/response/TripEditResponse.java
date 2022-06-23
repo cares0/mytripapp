@@ -1,14 +1,15 @@
 package com.triple.mytrip.web.trip.response;
 
-import com.triple.mytrip.domain.trip.Partner;
 import com.triple.mytrip.domain.trip.Trip;
-import com.triple.mytrip.domain.trip.TripStyle;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.Objects;
 
-import static lombok.AccessLevel.*;
+import static lombok.AccessLevel.PRIVATE;
 
 @Getter @Setter
 @Builder

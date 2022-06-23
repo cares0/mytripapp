@@ -24,7 +24,8 @@ public class FlightController {
     }
 
     @PatchMapping("/flights/{flightId}")
-    public FlightEditResponse flightModify(@PathVariable Long flightId, @RequestBody FlightEditRequest flightEditRequest) {
+    public FlightEditResponse flightModify(@PathVariable Long flightId,
+                                           @RequestBody FlightEditRequest flightEditRequest) {
         Flight modified = flightEditRequest.toEntity();
         modified = flightService.modify(flightId, modified);
         return FlightEditResponse.toResponse(modified);

@@ -22,7 +22,9 @@ public class ChecklistCategoryController {
     private final ValidationUtils validationUtils;
 
     @PostMapping("/checklist-categories/{categoryId}/checklists")
-    public Result<Long> checklistAdd(@PathVariable Long categoryId, @Validated @RequestBody ChecklistSaveRequest checklistSaveRequest, BindingResult bindingResult) {
+    public Result<Long> checklistAdd(@PathVariable Long categoryId,
+                                     @Validated @RequestBody ChecklistSaveRequest checklistSaveRequest,
+                                     BindingResult bindingResult) {
         validationUtils.validate(bindingResult);
 
         Checklist checklist = checklistSaveRequest.toEntity();
@@ -31,7 +33,8 @@ public class ChecklistCategoryController {
     }
 
     @PatchMapping("/checklist-categories/{categoryId}")
-    public ChecklistCategoryEditResponse checklistCategoryModify(@PathVariable Long categoryId, @RequestBody ChecklistCategoryEditRequest checklistCategoryEditRequest) {
+    public ChecklistCategoryEditResponse checklistCategoryModify(@PathVariable Long categoryId,
+                                                                 @RequestBody ChecklistCategoryEditRequest checklistCategoryEditRequest) {
         ChecklistCategory modified = checklistCategoryEditRequest.toEntity();
         modified = categoryService.modify(categoryId, modified);
         return ChecklistCategoryEditResponse.toResponse(modified);
