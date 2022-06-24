@@ -1,14 +1,13 @@
 package com.triple.mytrip.web.trip.request;
 
 import com.triple.mytrip.domain.trip.Trip;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 
-import static lombok.AccessLevel.*;
+import static lombok.AccessLevel.PRIVATE;
 
 @Getter @Setter
 @NoArgsConstructor(access = PRIVATE)

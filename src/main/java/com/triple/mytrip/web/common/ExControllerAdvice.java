@@ -2,6 +2,8 @@ package com.triple.mytrip.web.common;
 
 import com.triple.mytrip.domain.exception.EntityNotFoundException;
 import com.triple.mytrip.domain.exception.EntityNotWithinPeriodException;
+import com.triple.mytrip.domain.exception.NotInitPeriodException;
+import com.triple.mytrip.domain.exception.WrongDepartureDateException;
 import com.triple.mytrip.web.exception.ValidationFailException;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.exception.ConstraintViolationException;
@@ -60,5 +62,21 @@ public class ExControllerAdvice {
         log.error("[ValidationFailException]", e);
         return new ErrorResult(LocalTime.now(), "ValidationFail", e.getMessage());
     }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler
+    public ErrorResult WrongDepartureDateExHandler(WrongDepartureDateException e) {
+        log.error("[WrongDepartureDateException]", e);
+        return new ErrorResult(LocalTime.now(), "WrongMessage", e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler
+    public ErrorResult NotInitPeriodExHandler(NotInitPeriodException e) {
+        log.error("[NotInitPeriodException]", e);
+        return new ErrorResult(LocalTime.now(), "NotInitPeriod", e.getMessage());
+    }
+
+
 
 }

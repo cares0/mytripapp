@@ -1,5 +1,6 @@
 package com.triple.mytrip.domain.common;
 
+import com.triple.mytrip.domain.exception.WrongDepartureDateException;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,6 +20,9 @@ public class Period {
 
     @Builder
     private Period(LocalDate arrivalDate, LocalDate departureDate) {
+        if (departureDate.isAfter(arrivalDate)) {
+            throw new WrongDepartureDateException();
+        }
         this.arrivalDate = arrivalDate;
         this.departureDate = departureDate;
     }

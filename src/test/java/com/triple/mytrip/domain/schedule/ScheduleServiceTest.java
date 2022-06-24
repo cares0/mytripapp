@@ -1,10 +1,10 @@
 package com.triple.mytrip.domain.schedule;
 
 import com.triple.mytrip.domain.checklistcategory.ChecklistCategory;
+import com.triple.mytrip.domain.flight.Flight;
 import com.triple.mytrip.domain.member.Member;
 import com.triple.mytrip.domain.place.Place;
 import com.triple.mytrip.domain.place.PlaceType;
-import com.triple.mytrip.domain.flight.Flight;
 import com.triple.mytrip.domain.trip.Trip;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @Transactional
@@ -35,10 +34,10 @@ class ScheduleServiceTest {
         Trip trip = createTrip(member, "제주");
         Place place = createPlace("장소1", "위치1", PlaceType.SHOP);
         Flight flight = createFlight("number1", "대한항공",
-                LocalDate.of(2022, 06, 19), LocalTime.of(10, 10),
+                LocalDate.now().plusDays(1), LocalTime.of(10, 10),
                 LocalTime.of(12, 10), "인천공항", "제주공항");
-        Schedule schedule1 = createSchedule(trip, place, null, LocalDate.of(2022, 06, 19), 0, 0);
-        Schedule schedule2 = createSchedule(trip, null, flight, LocalDate.of(2022, 06, 19), 0, 0);
+        Schedule schedule1 = createSchedule(trip, place, LocalDate.now().plusDays(1), 0, 0);
+        Schedule schedule2 = createFlightSchedule(flight, trip);
         // when
         Schedule findSchedule1 = scheduleService.getOneWithAll(schedule1.getId());
         Schedule findSchedule2 = scheduleService.getOneWithAll(schedule2.getId());
@@ -56,13 +55,13 @@ class ScheduleServiceTest {
         Member member = createMember("email1", "1234");
         Trip trip = createTrip(member, "제주");
         Place place = createPlace("장소1", "위치1", PlaceType.SHOP);
-        Schedule schedule = createSchedule(trip, place, null, LocalDate.of(2022, 06, 19), 0, 0);
+        Schedule schedule = createSchedule(trip, place, LocalDate.now().plusDays(1), 0, 0);
 
         em.flush();
         em.clear();
 
         Schedule modified = Schedule.builder()
-                .date(LocalDate.of(2022, 07, 19))
+                .date(LocalDate.now().plusDays(1))
                 .visitOrder(2)
                 .arrangeOrder(0)
                 .visitTime(LocalTime.of(10, 10))
@@ -78,7 +77,7 @@ class ScheduleServiceTest {
         modified = em.find(Schedule.class, schedule.getId());
 
         // then
-        assertThat(modified.getDate()).isEqualTo(LocalDate.of(2022, 07, 19));
+        assertThat(modified.getDate()).isEqualTo(LocalDate.now().plusDays(1));
         assertThat(modified.getVisitOrder()).isEqualTo(2);
         assertThat(modified.getArrangeOrder()).isEqualTo(0); // 변경 X
         assertThat(modified.getVisitTime()).isEqualTo(LocalTime.of(10, 10));
@@ -91,7 +90,7 @@ class ScheduleServiceTest {
         Member member = createMember("email1", "1234");
         Trip trip = createTrip(member, "제주");
         Place place = createPlace("장소1", "위치1", PlaceType.SHOP);
-        Schedule schedule = createSchedule(trip, place, null, LocalDate.of(2022, 06, 19), 0, 0);
+        Schedule schedule = createSchedule(trip, place, LocalDate.now().plusDays(1), 0, 0);
 
         // when
         scheduleService.remove(schedule.getId());
@@ -114,7 +113,19 @@ class ScheduleServiceTest {
         return flight;
     }
 
-    private Schedule createSchedule(Trip trip, Place place, Flight flight, LocalDate date, Integer visitOrder, Integer arrangeOrder) {
+    private Schedule createFlightSchedule(Flight flight, Trip trip) {
+        Schedule schedule = Schedule.builder()
+                .date(flight.getDepartureDate())
+                .visitOrder(0)
+                .arrangeOrder(0)
+                .build();
+        schedule.addTrip(trip);
+        schedule.addFlight(flight);
+        em.persist(schedule);
+        return schedule;
+    }
+
+    private Schedule createSchedule(Trip trip, Place place, LocalDate date, Integer visitOrder, Integer arrangeOrder) {
         Schedule schedule = Schedule.builder()
                 .date(date)
                 .visitOrder(visitOrder)
@@ -123,7 +134,6 @@ class ScheduleServiceTest {
 
         schedule.addPlace(place);
         schedule.addTrip(trip);
-        schedule.addFlight(flight);
         em.persist(schedule);
         return schedule;
     }
@@ -149,7 +159,9 @@ class ScheduleServiceTest {
     }
 
     private Trip createTrip(Member member, String city) {
-        Trip trip = Trip.builder().city(city).title(city + " 여행").build();
+        Trip trip = Trip.builder().city(city).title(city + " 여행")
+                .departureDate(LocalDate.now())
+                .arrivalDate(LocalDate.now().plusDays(3)).build();
         trip.addMember(member);
         em.persist(trip);
         return trip;

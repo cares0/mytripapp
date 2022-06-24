@@ -1,23 +1,22 @@
 package com.triple.mytrip.domain.schedule;
 
 import com.triple.mytrip.domain.common.BaseEntity;
-import com.triple.mytrip.domain.place.Place;
+import com.triple.mytrip.domain.exception.EntityNotWithinPeriodException;
 import com.triple.mytrip.domain.flight.Flight;
+import com.triple.mytrip.domain.place.Place;
 import com.triple.mytrip.domain.trip.Trip;
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-import static javax.persistence.CascadeType.*;
-import static javax.persistence.FetchType.*;
-import static javax.persistence.GenerationType.*;
-import static lombok.AccessLevel.*;
+import static javax.persistence.CascadeType.REMOVE;
+import static javax.persistence.FetchType.LAZY;
+import static javax.persistence.GenerationType.IDENTITY;
+import static lombok.AccessLevel.PROTECTED;
 
 @Entity
 @Getter
@@ -61,6 +60,7 @@ public class Schedule extends BaseEntity {
     }
 
     public void addTrip(Trip trip) {
+        validateDate(trip, date);
         this.trip = trip;
         trip.getSchedules().add(this);
     }
@@ -70,6 +70,7 @@ public class Schedule extends BaseEntity {
     }
 
     public void addFlight(Flight flight) {
+        validateDate(trip, flight.getDepartureDate());
         this.flight = flight;
     }
 
@@ -82,6 +83,7 @@ public class Schedule extends BaseEntity {
     }
 
     public void editDate(LocalDate date) {
+        validateDate(trip, date);
         this.date = date;
     }
 
@@ -91,5 +93,13 @@ public class Schedule extends BaseEntity {
 
     public void editArrangeOrder(Integer arrangeOrder) {
         this.arrangeOrder = arrangeOrder;
+    }
+
+    private void validateDate(Trip trip, LocalDate date) {
+        if (!trip.getPeriod().isWithinPeriod(date)) {
+            throw new EntityNotWithinPeriodException(date,
+                    trip.getPeriod().getDepartureDate(),
+                    trip.getPeriod().getArrivalDate());
+        }
     }
 }

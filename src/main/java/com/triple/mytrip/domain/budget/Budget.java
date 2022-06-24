@@ -2,6 +2,7 @@ package com.triple.mytrip.domain.budget;
 
 import com.triple.mytrip.domain.budget.budgetfile.BudgetFile;
 import com.triple.mytrip.domain.common.BaseEntity;
+import com.triple.mytrip.domain.exception.EntityNotWithinPeriodException;
 import com.triple.mytrip.domain.trip.Trip;
 import lombok.*;
 
@@ -66,7 +67,9 @@ public class Budget extends BaseEntity {
     }
 
     public void addTrip(Trip trip) {
+        validateDate(trip, date);
         this.trip = trip;
+        trip.getBudgets().add(this);
     }
 
     public void editBudgetCategory(BudgetCategory budgetCategory) {
@@ -78,6 +81,7 @@ public class Budget extends BaseEntity {
     }
 
     public void editDate(LocalDate date) {
+        validateDate(trip, date);
         this.date = date;
     }
 
@@ -95,5 +99,13 @@ public class Budget extends BaseEntity {
 
     public void editContent(String content) {
         this.content = content;
+    }
+
+    private void validateDate(Trip trip, LocalDate date) {
+        if (!trip.getPeriod().isWithinPeriod(date)) {
+            throw new EntityNotWithinPeriodException(date,
+                    trip.getPeriod().getDepartureDate(),
+                    trip.getPeriod().getArrivalDate());
+        }
     }
 }

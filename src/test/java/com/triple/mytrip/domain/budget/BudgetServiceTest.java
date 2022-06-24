@@ -67,7 +67,7 @@ class BudgetServiceTest {
         Budget modified = Budget.builder()
                 .budgetCategory(BudgetCategory.ETC)
                 .price(10000)
-                .date(LocalDate.of(2020, 12, 22))
+                .date(LocalDate.now().plusDays(1))
                 .paymentPlan(PaymentPlan.CASH)
                 .order(3)
                 .place("수정장소")
@@ -117,7 +117,9 @@ class BudgetServiceTest {
     }
 
     private Trip createTrip(Member member, String city) {
-        Trip trip = Trip.builder().city(city).title(city + " 여행").build();
+        Trip trip = Trip.builder().city(city).title(city + " 여행")
+                .departureDate(LocalDate.now())
+                .arrivalDate(LocalDate.now().plusDays(3)).build();
         trip.addMember(member);
         em.persist(trip);
         return trip;

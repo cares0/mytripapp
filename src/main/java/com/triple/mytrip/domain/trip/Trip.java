@@ -5,7 +5,6 @@ import com.triple.mytrip.domain.checklistcategory.ChecklistCategory;
 import com.triple.mytrip.domain.common.Period;
 import com.triple.mytrip.domain.member.Member;
 import com.triple.mytrip.domain.schedule.Schedule;
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,12 +13,13 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-import static javax.persistence.CascadeType.*;
-import static javax.persistence.EnumType.*;
-import static javax.persistence.FetchType.*;
-import static javax.persistence.GenerationType.*;
-import static lombok.AccessLevel.*;
+import static javax.persistence.CascadeType.REMOVE;
+import static javax.persistence.EnumType.STRING;
+import static javax.persistence.FetchType.LAZY;
+import static javax.persistence.GenerationType.IDENTITY;
+import static lombok.AccessLevel.PROTECTED;
 
 @Entity
 @Getter
@@ -71,10 +71,6 @@ public class Trip {
         this.member = member;
     }
 
-    public void addPeriod(Period period) {
-        this.period = period;
-    }
-
     public void editCity(String city) {
         this.city = city;
     }
@@ -84,11 +80,17 @@ public class Trip {
     }
 
     public void editArrivalDate(LocalDate arrivalDate) {
-        this.period.editArrivalDate(arrivalDate);
+        if (Objects.isNull(period)) {
+            period = Period.builder().build();
+        }
+        period.editArrivalDate(arrivalDate);
     }
 
     public void editDepartureDate(LocalDate departureDate) {
-        this.period.editDepartureDate(departureDate);
+        if (Objects.isNull(period)) {
+            period = Period.builder().build();
+        }
+        period.editDepartureDate(departureDate);
     }
 
     public void editPartner(Partner partner) {
