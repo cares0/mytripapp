@@ -24,59 +24,56 @@ public class ExControllerAdvice {
     @ExceptionHandler
     public ErrorResult entityNotFoundExHandler(EntityNotFoundException e) {
         log.error("[EntityNotFoundException]", e);
-
         return new ErrorResult(LocalTime.now(), "EntityNotFound", e.getMessage());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler
-    public ErrorResult HttpMessageNotReadableExHandler(HttpMessageNotReadableException e) {
-        log.error("[HttpMessageNotReadableException]", e);
-        return new ErrorResult(LocalTime.now(), "WrongMessage", e.getMessage());
-    }
-
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler
-    public ErrorResult EmptyResultDataAccessExHandler(EmptyResultDataAccessException e) {
-        log.error("[EmptyResultDataAccessException]", e);
-        return new ErrorResult(LocalTime.now(), "EntityNotFound", "삭제하려는 데이터가 없습니다.");
-    }
-
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler
-    public ErrorResult ConstraintViolationExHandler(ConstraintViolationException e) {
-        log.error("[ConstraintViolationException]", e);
-        return new ErrorResult(LocalTime.now(), "ConstraintViolation", e.getMessage());
-    }
-
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler
-    public ErrorResult EntityNotWithinPeriodExHandler(EntityNotWithinPeriodException e) {
+    public ErrorResult entityNotWithinPeriodExHandler(EntityNotWithinPeriodException e) {
         log.error("[EntityNotWithinPeriodException]", e);
         return new ErrorResult(LocalTime.now(), "NotWithinTripDate", e.getMessage());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler
-    public ErrorResult ValidationFailExHandler(ValidationFailException e) {
+    public ErrorResult validationFailExHandler(ValidationFailException e) {
         log.error("[ValidationFailException]", e);
         return new ErrorResult(LocalTime.now(), "ValidationFail", e.getMessage());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler
-    public ErrorResult WrongDepartureDateExHandler(WrongDepartureDateException e) {
-        log.error("[WrongDepartureDateException]", e);
+    public ErrorResult httpMessageNotReadableExHandler(HttpMessageNotReadableException e) {
+        log.error("[HttpMessageNotReadableException]", e);
         return new ErrorResult(LocalTime.now(), "WrongMessage", e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler
+    public ErrorResult emptyResultDataAccessExHandler(EmptyResultDataAccessException e) {
+        log.error("[EmptyResultDataAccessException]", e);
+        return new ErrorResult(LocalTime.now(), "EntityNotFound", "삭제하려는 데이터가 없습니다.");
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler
-    public ErrorResult NotInitPeriodExHandler(NotInitPeriodException e) {
+    public ErrorResult constraintViolationExHandler(ConstraintViolationException e) {
+        log.error("[ConstraintViolationException]", e);
+        return new ErrorResult(LocalTime.now(), "ConstraintViolation", e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler
+    public ErrorResult wrongDepartureDateExHandler(WrongDepartureDateException e) {
+        log.error("[WrongDepartureDateException]", e);
+        return new ErrorResult(LocalTime.now(), "WrongDate", e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler
+    public ErrorResult notInitPeriodExHandler(NotInitPeriodException e) {
         log.error("[NotInitPeriodException]", e);
         return new ErrorResult(LocalTime.now(), "NotInitPeriod", e.getMessage());
     }
-
-
 
 }
