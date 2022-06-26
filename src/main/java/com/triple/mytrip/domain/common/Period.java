@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Embeddable;
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Embeddable
 @Getter
@@ -20,7 +21,8 @@ public class Period {
 
     @Builder
     private Period(LocalDate arrivalDate, LocalDate departureDate) {
-        if (departureDate.isAfter(arrivalDate)) {
+        if (Objects.nonNull(departureDate) && Objects.nonNull(arrivalDate)
+                && departureDate.isAfter(arrivalDate)) {
             throw new WrongDepartureDateException();
         }
         this.arrivalDate = arrivalDate;

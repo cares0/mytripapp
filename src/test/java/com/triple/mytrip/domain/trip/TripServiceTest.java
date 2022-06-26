@@ -229,7 +229,7 @@ class TripServiceTest {
         em.clear();
 
         // when
-        Trip modified = new Trip("제주", "제목수정", LocalDate.of(2022, 01, 02),
+        Trip modified = new Trip("제주", "제목수정", LocalDate.of(2022, 02, 02),
                 LocalDate.of(2022, 02, 01), Partner.CHILD, null);
 
         tripService.modify(trip.getId(), modified);
@@ -240,7 +240,7 @@ class TripServiceTest {
         // then
         assertThat(modified.getCity()).isEqualTo("제주");
         assertThat(modified.getTitle()).isEqualTo("제목수정");
-        assertThat(modified.getPeriod().getArrivalDate()).isEqualTo(LocalDate.of(2022, 01, 02));
+        assertThat(modified.getPeriod().getArrivalDate()).isEqualTo(LocalDate.of(2022, 02, 02));
         assertThat(modified.getPeriod().getDepartureDate()).isEqualTo(LocalDate.of(2022, 02, 01));
         assertThat(modified.getPartner()).isEqualTo(Partner.CHILD);
         assertThat(modified.getTripStyle()).isEqualTo(null);
