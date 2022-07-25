@@ -9,6 +9,7 @@ import com.triple.mytrip.domain.trip.TripService;
 import com.triple.mytrip.web.budget.request.BudgetSaveRequest;
 import com.triple.mytrip.web.checklistcategory.request.ChecklistCategorySaveRequest;
 import com.triple.mytrip.web.common.Result;
+import com.triple.mytrip.web.trip.request.TripSaveRequest;
 import com.triple.mytrip.web.util.ValidationUtils;
 import com.triple.mytrip.web.flight.request.FlightSaveRequest;
 import com.triple.mytrip.web.schedule.request.ScheduleSaveRequest;
@@ -29,6 +30,14 @@ public class TripController {
 
     private final TripService tripService;
     private final ValidationUtils validationUtils;
+
+    @PostMapping
+    public Result<Long> tripAdd(@RequestBody TripSaveRequest tripSaveRequest) {
+        Long tripId = tripService.add(tripSaveRequest.toEntity());
+        return new Result<>(tripId);
+    }
+
+    
 
     // ======= trip ======= //
     @GetMapping("/{tripId}")

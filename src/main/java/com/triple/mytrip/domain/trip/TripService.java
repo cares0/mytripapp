@@ -36,6 +36,10 @@ public class TripService {
     private final PlaceRepository placeRepository;
     private final ChecklistCategoryRepository checklistCategoryRepository;
 
+    public Long add(Trip trip) {
+        return tripRepository.save(trip).getId();
+    }
+
     public Long addBudget(Long tripId, Budget budget) {
         Trip trip = findTrip(tripId);
         validatePeriodInit(trip);
