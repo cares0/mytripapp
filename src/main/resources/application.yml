@@ -1,5 +1,18 @@
 spring:
   profiles:
-    default: prod
+    default: dev
 
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+        default_batch_fetch_size: 100
+    open-in-view: false
 
+server:
+  error:
+    include-message: always
+  port: 80
+
+logging.level:
+  org.hibernate.SQL: debug
